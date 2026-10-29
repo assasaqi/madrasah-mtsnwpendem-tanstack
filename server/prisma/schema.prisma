@@ -1,0 +1,451 @@
+datasource db {
+  provider = "mysql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  GURU
+  SISWA
+  ORANG_TUA
+  CALON_PENDAFTAR
+}
+
+enum StatusPPDB {
+  BELUM_ISI
+  DITINJAU
+  LULUS_ADMINISTRASI
+  TIDAK_LULUS
+  LULUS_FINAL
+}
+
+enum JenisDokumen {
+  PAS_FOTO
+  KARTU_KELUARGA
+  AKTA_KELAHIRAN
+  IJAZAH
+  SKHU
+}
+
+enum JenisKelamin {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum Semester {
+  GANJIL
+  GENAP
+}
+
+enum StatusAbsensi {
+  HADIR
+  IZIN
+  SAKIT
+  ALPA
+}
+
+enum PredikatTahfidz {
+  MUMTAZ
+  JAYYID_JIDDAN
+  JAYYID
+  MAQBUL
+}
+
+model User {
+  id           String           @id @default(uuid())
+  email        String           @unique
+  password     String
+  role         Role             @default(CALON_PENDAFTAR)
+  foto         String?
+  isVerified   Boolean          @default(false)
+  emailToken   String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  guruProfile  Guru?
+  siswaProfile Siswa?
+  ortuProfile  OrangTua?
+  pendaftaran  PendaftaranPPDB?
+  berita       Berita[]
+
+  @@map("users")
+}
+
+model ProfilSekolah {
+  id          String   @id @default(uuid())
+  namaSekolah String   @default("MA Negeri 1 Contoh")
+  npsn        String   @default("-")
+  akreditasi  String   @default("A")
+  tagline     String?
+  deskripsi   String?  @db.Text
+  sejarah     String?  @db.Text
+  logo        String?
+  banner      String?
+  alamat      String?  @db.Text
+  email       String?
+  telepon     String?
+  whatsapp    String?
+  mapsUrl     String?  @db.Text
+  visi        String?  @db.Text
+  misi        Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("profilSekolah")
+}
+
+model StrukturOrganisasi {
+  id        String   @id @default(uuid())
+  nama      String
+  jabatan   String
+  foto      String?
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("strukturOrganisasi")
+}
+
+model Fasilitas {
+  id        String   @id @default(uuid())
+  nama      String
+  deskripsi String?  @db.Text
+  ikon      String?  @default("building")
+  gambar    String?
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("fasilitas")
+}
+
+model KategoriBerita {
+  id     String   @id @default(uuid())
+  nama   String
+  slug   String   @unique
+  berita Berita[]
+
+  @@map("kategoriBerita")
+}
+
+model Berita {
+  id          String          @id @default(uuid())
+  judul       String
+  slug        String          @unique
+  konten      String          @db.Text
+  gambar      String?
+  isPublished Boolean         @default(true)
+  authorId    String
+  author      User            @relation(fields: [authorId], references: [id])
+  kategoriId  String?
+  kategori    KategoriBerita? @relation(fields: [kategoriId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("berita")
+}
+
+model Pengumuman {
+  id          String   @id @default(uuid())
+  judul       String
+  slug        String   @unique
+  konten      String   @db.Text
+  fileUrl     String?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("pengumuman")
+}
+
+model Galeri {
+  id        String   @id @default(uuid())
+  judul     String
+  deskripsi String?
+  imageUrl  String
+  kategori  String?
+  createdAt DateTime @default(now())
+
+  @@map("galeri")
+}
+
+model PesanKontak {
+  id        String   @id @default(uuid())
+  nama      String
+  email     String
+  subjek    String
+  pesan     String   @db.Text
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("pesanKontak")
+}
+
+model Agenda {
+  id          String   @id @default(uuid())
+  judul       String
+  slug        String   @unique
+  deskripsi   String   @db.Text
+  lokasi      String?
+  mulai       DateTime
+  selesai     DateTime?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("agenda")
+}
+
+model Prestasi {
+  id          String   @id @default(uuid())
+  judul       String
+  peraih      String?
+  tingkat     String   @default("Sekolah")
+  juara       String?
+  tahun       Int
+  deskripsi   String?  @db.Text
+  gambar      String?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("prestasi")
+}
+
+model Unduhan {
+  id            String   @id @default(uuid())
+  judul         String
+  deskripsi     String?  @db.Text
+  kategori      String   @default("Umum")
+  fileUrl       String
+  namaFile      String
+  tipeFile      String?
+  ukuran        Int?
+  jumlahUnduhan Int      @default(0)
+  isPublished   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("unduhan")
+}
+
+model Faq {
+  id          String   @id @default(uuid())
+  pertanyaan  String   @db.Text
+  jawaban     String   @db.Text
+  kategori    String   @default("Umum")
+  urutan      Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("faq")
+}
+
+model PendaftaranPPDB {
+  id               String            @id @default(uuid())
+  nomorPendaftaran String            @unique
+  userId           String            @unique
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status           StatusPPDB        @default(BELUM_ISI)
+  gelombang        String            @default("Gelombang 1")
+  catatan          String?           @db.Text
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  biodata          BiodataSiswaPPDB?
+  orangTua         DataOrangTuaPPDB?
+  dokumen          DokumenPPDB[]
+
+  @@map("pendaftaranPpdb")
+}
+
+model BiodataSiswaPPDB {
+  id            String          @id @default(uuid())
+  pendaftaranId String          @unique
+  pendaftaran   PendaftaranPPDB @relation(fields: [pendaftaranId], references: [id], onDelete: Cascade)
+  namaLengkap   String
+  nisn          String?
+  nik           String?
+  tempatLahir   String
+  tanggalLahir  DateTime
+  jenisKelamin  JenisKelamin
+  agama         String          @default("Islam")
+  alamat        String          @db.Text
+  asalSekolah   String
+
+  @@map("biodataSiswaPpdb")
+}
+
+model DataOrangTuaPPDB {
+  id             String          @id @default(uuid())
+  pendaftaranId String          @unique
+  pendaftaran   PendaftaranPPDB @relation(fields: [pendaftaranId], references: [id], onDelete: Cascade)
+  namaAyah       String
+  pekerjaanAyah String?
+  noHpAyah       String?
+  namaIbu        String
+  pekerjaanIbu   String?
+  noHpIbu        String?
+  alamatOrangTua String?         @db.Text
+
+  @@map("dataOrangTuaPpdb")
+}
+
+model DokumenPPDB {
+  id            String          @id @default(uuid())
+  pendaftaranId String
+  pendaftaran   PendaftaranPPDB @relation(fields: [pendaftaranId], references: [id], onDelete: Cascade)
+  jenisDokumen  JenisDokumen
+  fileUrl       String
+  isVerified    Boolean         @default(false)
+
+  @@unique([pendaftaranId, jenisDokumen])
+  @@map("dokumenPpdb")
+}
+
+model PengaturanPPDB {
+  id                 String   @id @default(uuid())
+  tahunAjaran        String   @default("2026/2027")
+  kodeSurat          String   @default("SPMB/SKL")
+  tempatPenerbitan   String?
+  namaKetuaPanitia   String?
+  nipKetuaPanitia    String?
+  namaKepalaMadrasah String?
+  nipKepalaMadrasah  String?
+  catatanSurat       String?  @db.Text
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("pengaturanPpdb")
+}
+
+model TahunAjaran {
+  id       String   @id @default(uuid())
+  tahun    String
+  semester Semester
+  isActive Boolean  @default(false)
+  kelas    Kelas[]
+  nilai    Nilai[]
+
+  @@map("tahunAjaran")
+}
+
+model Guru {
+  id           String       @id @default(uuid())
+  userId       String?      @unique
+  user         User?        @relation(fields: [userId], references: [id])
+  nip          String?      @unique
+  namaLengkap  String
+  noHp         String?
+  jenisKelamin JenisKelamin
+  kelasWali    Kelas[]
+  tahfidzInput Tahfidz[]
+
+  @@map("guru")
+}
+
+model Kelas {
+  id            String      @id @default(uuid())
+  namaKelas     String
+  tingkat       Int
+  tahunAjaranId String
+  tahunAjaran   TahunAjaran @relation(fields: [tahunAjaranId], references: [id])
+  waliKelasId   String?
+  waliKelas     Guru?       @relation(fields: [waliKelasId], references: [id])
+  siswa         Siswa[]
+  nilai         Nilai[]
+  absensi       Absensi[]
+
+  @@map("kelas")
+}
+
+model OrangTua {
+  id          String   @id @default(uuid())
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id])
+  namaLengkap String
+  noHp        String
+  alamat      String   @db.Text
+  siswa       Siswa[]
+
+  @@map("orangTua")
+}
+
+model Siswa {
+  id           String       @id @default(uuid())
+  userId       String?      @unique
+  user         User?        @relation(fields: [userId], references: [id])
+  nis          String       @unique
+  nisn         String?      @unique
+  namaLengkap  String
+  jenisKelamin JenisKelamin
+  kelasId      String
+  kelas        Kelas        @relation(fields: [kelasId], references: [id])
+  orangTuaId   String?
+  orangTua     OrangTua?    @relation(fields: [orangTuaId], references: [id])
+  nilai        Nilai[]
+  absensi      Absensi[]
+  tahfidz      Tahfidz[]
+
+  @@map("siswa")
+}
+
+model MataPelajaran {
+  id       String  @id @default(uuid())
+  kode     String  @unique
+  nama     String
+  kelompok String?
+  nilai    Nilai[]
+
+  @@map("mataPelajaran")
+}
+
+model Nilai {
+  id              String        @id @default(uuid())
+  siswaId         String
+  siswa           Siswa         @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  mataPelajaranId String
+  mataPelajaran   MataPelajaran @relation(fields: [mataPelajaranId], references: [id])
+  kelasId         String
+  kelas           Kelas         @relation(fields: [kelasId], references: [id])
+  tahunAjaranId   String
+  tahunAjaran     TahunAjaran   @relation(fields: [tahunAjaranId], references: [id])
+  nilaiTugas      Float         @default(0)
+  nilaiUTS        Float         @default(0)
+  nilaiUAS        Float         @default(0)
+  nilaiAkhir      Float         @default(0)
+  grade           String?
+
+  @@map("nilai")
+}
+
+model Absensi {
+  id         String        @id @default(uuid())
+  siswaId    String
+  siswa      Siswa         @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  kelasId    String
+  kelas      Kelas         @relation(fields: [kelasId], references: [id])
+  tanggal    DateTime
+  status     StatusAbsensi
+  keterangan String?
+
+  @@map("absensi")
+}
+
+model Tahfidz {
+  id           String          @id @default(uuid())
+  siswaId      String
+  siswa        Siswa           @relation(fields: [siswaId], references: [id], onDelete: Cascade)
+  tanggal      DateTime        @default(now())
+  surah        String
+  ayatMulai    Int
+  ayatSelesai  Int
+  predikat     PredikatTahfidz
+  catatan      String?
+  pembimbingId String
+  pembimbing   Guru            @relation(fields: [pembimbingId], references: [id])
+
+  @@map("tahfidz")
+}

@@ -1,0 +1,17 @@
+{
+  "name": "madrasah-mtsnwpendem-tanstack",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "start:server": "npm run start --workspace=server",
+    "lint:client": "npm run lint --workspace=client",
+    "prisma:generate": "npx prisma generate --schema=server/prisma/schema.prisma",
+    "install:all": "npm install"
+  }
+}

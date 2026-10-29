@@ -1,16 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import {
-  ArrowUpRight,
-  History,
-  IdCard,
-  Landmark,
-  MapPin,
-  Network,
-  RefreshCw,
-  Target,
-  Users
-} from 'lucide-react';
+import { RefreshCw, Users } from 'lucide-react';
 import { spmbService } from '../../services/spmbService';
 import { beritaService } from '../../services/beritaService';
 import { pengumumanService } from '../../services/pengumumanService';
@@ -19,14 +9,6 @@ import { prestasiService } from '../../services/prestasiService';
 import { unduhanService } from '../../services/unduhanService';
 import { faqService } from '../../services/faqService';
 import { galeriService } from '../../services/galeriService';
-import { kontakService } from '../../services/kontakService';
-import {
-  getAdminSchoolProfile,
-  getSejarah,
-  getStruktur,
-  getFasilitas
-} from '../../services/profileService';
-import { stripHtml } from '../../utils/helpers';
 import {
   PageHeader,
   Panel,
@@ -51,12 +33,7 @@ const SUMBER_DATA = {
   prestasi: () => prestasiService.getAll(),
   unduhan: () => unduhanService.getAll(),
   faq: () => faqService.getAll(),
-  galeri: () => galeriService.getAll(),
-  kontak: () => kontakService.getAll(),
-  profil: () => getAdminSchoolProfile(),
-  sejarah: () => getSejarah(),
-  struktur: () => getStruktur(),
-  fasilitas: () => getFasilitas()
+  galeri: () => galeriService.getAll()
 };
 
 const JUMLAH_SUMBER = Object.keys(SUMBER_DATA).length;
@@ -117,7 +94,6 @@ export default function Dashboard() {
   const angka = (nilai) => (loading ? '—' : nilai);
 
   const pendaftar = daftar(data.pendaftar);
-  const kontak = daftar(data.kontak);
 
   const hitungStatus = (status) =>
     pendaftar.filter((item) => {
@@ -147,15 +123,6 @@ export default function Dashboard() {
     jumlahFaq +
     jumlahGaleri;
 
-  const belumDibaca = kontak.filter((item) => !item.isRead).length;
-
-  const profil = data.profil || null;
-  const narasiSejarah =
-    typeof data.sejarah === 'string' ? data.sejarah : data.sejarah?.sejarah || '';
-  const kataSejarah = stripHtml(narasiSejarah).trim().split(/\s+/).filter(Boolean).length;
-  const jumlahStruktur = hitung(data.struktur);
-  const jumlahFasilitas = hitung(data.fasilitas);
-
   const persen = (nilai) => {
     if (!totalPendaftar) return 0;
     return Math.round((nilai / totalPendaftar) * 100);
@@ -168,56 +135,11 @@ export default function Dashboard() {
     { label: 'Tidak lulus', value: tidakLulus, bar: 'bg-rose-400' }
   ];
 
-  const profilRows = [
-    {
-      label: 'Identitas',
-      icon: IdCard,
-      value: loading ? '—' : profil?.namaSekolah ? 'Terisi' : 'Belum diisi',
-      keterangan: profil?.npsn ? `NPSN ${profil.npsn}` : 'Nama, akreditasi, logo, banner',
-      to: '/admin/profil-sekolah'
-    },
-    {
-      label: 'Kontak',
-      icon: MapPin,
-      value: loading ? '—' : profil?.alamat ? 'Terisi' : 'Belum diisi',
-      keterangan: 'Alamat, email, telepon, WhatsApp, peta',
-      to: '/admin/profil-sekolah/kontak'
-    },
-    {
-      label: 'Visi & misi',
-      icon: Target,
-      value: loading ? '—' : profil?.visi ? 'Terisi' : 'Belum diisi',
-      keterangan: 'Visi dan pokok misi madrasah',
-      to: '/admin/profil-sekolah/visi-misi'
-    },
-    {
-      label: 'Sejarah singkat',
-      icon: History,
-      value: loading ? '—' : kataSejarah > 0 ? `${kataSejarah} kata` : 'Belum diisi',
-      keterangan: 'Narasi berdirinya madrasah',
-      to: '/admin/profil-sekolah/sejarah'
-    },
-    {
-      label: 'Struktur organisasi',
-      icon: Network,
-      value: loading ? '—' : `${jumlahStruktur} orang`,
-      keterangan: 'Pimpinan dan pengurus',
-      to: '/admin/profil-sekolah/struktur'
-    },
-    {
-      label: 'Fasilitas',
-      icon: Landmark,
-      value: loading ? '—' : `${jumlahFasilitas} unit`,
-      keterangan: 'Sarana dan prasarana',
-      to: '/admin/profil-sekolah/fasilitas'
-    }
-  ];
-
   return (
     <div className="space-y-6">
       <PageHeader
         title="Selamat datang kembali"
-        description="Ringkasan seluruh menu pengelola: pendaftaran SPMB, profil sekolah, konten publik, dan pesan kontak. Angka diperbarui setiap kali halaman ini dibuka."
+        description="Ringkasan pendaftaran SPMB dan konten publik madrasah. Angka diperbarui setiap kali halaman ini dibuka."
         actions={
           <>
             <Button
@@ -243,7 +165,7 @@ export default function Dashboard() {
         </Alert>
       )}
 
-      <StatStrip>
+      <StatStrip className="sm:grid-cols-3">
         <Stat
           label="Total pendaftar"
           value={angka(totalPendaftar)}
@@ -260,23 +182,22 @@ export default function Dashboard() {
           value={angka(totalKonten)}
           hint="berita, pengumuman, agenda, prestasi, unduhan, FAQ, galeri"
         />
-        <Stat
-          label="Pesan belum dibaca"
-          value={angka(belumDibaca)}
-          hint="dari formulir kontak"
-          tone={belumDibaca > 0 ? 'rose' : 'ink'}
-        />
       </StatStrip>
 
-      <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
-        <Panel>
-          <PanelHeader
-            title="Pendaftaran SPMB"
-            description="Sebaran status pendaftar pada tiap tahap seleksi."
-            actions={<Tag>{angka(totalPendaftar)} total</Tag>}
-          />
+      <Panel>
+        <PanelHeader
+          title="Pendaftaran SPMB"
+          description="Sebaran status pendaftar pada tiap tahap seleksi."
+          actions={<Tag>{angka(totalPendaftar)} total</Tag>}
+        />
 
-          <div className="admin-scroll overflow-x-auto">
+        <div className="admin-scroll overflow-x-auto">
+          {totalPendaftar === 0 && !loading ? (
+            <div className="py-12 text-center">
+              <p className="text-[12.5px] font-semibold text-ink">Info data belum tersedia</p>
+              <p className="mt-1 text-[11px] text-muted">Belum ada berkas pendaftaran calon siswa yang masuk.</p>
+            </div>
+          ) : (
             <Table>
               <thead>
                 <tr>
@@ -294,7 +215,7 @@ export default function Dashboard() {
                     </Td>
                     <Td>
                       <div className="flex items-center gap-2.5">
-                        <div className="h-1.5 w-full max-w-[160px] overflow-hidden rounded-full bg-[#efece4]">
+                        <div className="h-1.5 w-full max-w-[200px] overflow-hidden rounded-full bg-[#efece4]">
                           <div
                             className={`h-full rounded-full ${row.bar}`}
                             style={{ width: `${persen(row.value)}%` }}
@@ -309,57 +230,9 @@ export default function Dashboard() {
                 ))}
               </tbody>
             </Table>
-          </div>
-        </Panel>
-
-        <Panel>
-          <PanelHeader
-            title="Profil sekolah"
-            description="Kelengkapan data identitas dan profil publik."
-          />
-
-          <div className="admin-scroll overflow-x-auto">
-            <Table>
-              <thead>
-                <tr>
-                  <Th>Bagian</Th>
-                  <Th>Isi</Th>
-                  <Th align="right">Kelola</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {profilRows.map((row) => {
-                  const Icon = row.icon;
-                  return (
-                    <tr key={row.label} className="transition-colors hover:bg-[#faf8f3]">
-                      <Td>
-                        <span className="flex items-center gap-2 font-medium">
-                          <Icon size={14} className="shrink-0 text-[#a9a396]" />
-                          <span className="min-w-0">
-                            {row.label}
-                            <span className="mt-0.5 block text-[10.5px] font-normal text-muted">
-                              {row.keterangan}
-                            </span>
-                          </span>
-                        </span>
-                      </Td>
-                      <Td className="whitespace-nowrap font-semibold">{row.value}</Td>
-                      <Td align="right">
-                        <Link
-                          to={row.to}
-                          className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-brand hover:underline"
-                        >
-                          Buka <ArrowUpRight size={12} />
-                        </Link>
-                      </Td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>
-        </Panel>
-      </div>
+          )}
+        </div>
+      </Panel>
     </div>
   );
 }

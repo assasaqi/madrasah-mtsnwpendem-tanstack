@@ -1,5 +1,5 @@
 const multer = require('multer');
-const { Prisma } = require('@prisma/client');
+const { Prisma } = require('../config/prisma');
 const { ZodError } = require('zod');
 const env = require('../config/env');
 

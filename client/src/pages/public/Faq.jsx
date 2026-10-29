@@ -191,7 +191,7 @@ export default function Faq() {
         ) : (
           <p className="mt-6 text-[13px] text-muted">
             {daftar.length === 0
-              ? 'Data tanya jawab (FAQ) madrasah belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ada pertanyaan yang sesuai dengan kata kunci pencarian.'}
           </p>
         )}

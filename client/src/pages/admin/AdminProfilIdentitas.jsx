@@ -18,7 +18,9 @@ import {
   Button,
   Alert,
   Loader,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 export default function AdminProfilIdentitas() {
@@ -33,6 +35,16 @@ export default function AdminProfilIdentitas() {
   const [files, setFiles] = useState({ logo: null, banner: null });
   const [logoPreview, setLogoPreview] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
+
+  // State untuk modal crop gambar
+  const [cropModal, setCropModal] = useState({
+    open: false,
+    src: '',
+    field: '',
+    aspectRatio: 1,
+    title: '',
+    fileName: ''
+  });
 
   const [statusMsg, setStatusMsg] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
@@ -84,22 +96,53 @@ export default function AdminProfilIdentitas() {
     setProfileData({ ...profileData, [e.target.name]: e.target.value });
   };
 
-  // Memproses berkas logo baru dan pratinjaunya
+  // Memproses berkas logo baru dan membuka modal cropper
   const handleLogoChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setFiles((prev) => ({ ...prev, logo: file }));
-      setLogoPreview(URL.createObjectURL(file));
+      const src = URL.createObjectURL(file);
+      setCropModal({
+        open: true,
+        src,
+        field: 'logo',
+        aspectRatio: 1,
+        title: 'Crop Logo Madrasah (1:1)',
+        fileName: file.name
+      });
     }
+    e.target.value = '';
   };
 
-  // Memproses berkas banner baru dan pratinjaunya
+  // Memproses berkas banner baru dan membuka modal cropper
   const handleBannerChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setFiles((prev) => ({ ...prev, banner: file }));
-      setBannerPreview(URL.createObjectURL(file));
+      const src = URL.createObjectURL(file);
+      setCropModal({
+        open: true,
+        src,
+        field: 'banner',
+        aspectRatio: 16 / 6,
+        title: 'Crop Banner Halaman Depan (16:6)',
+        fileName: file.name
+      });
     }
+    e.target.value = '';
+  };
+
+  // Menerima hasil crop gambar dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+
+    if (cropModal.field === 'logo') {
+      setFiles((prev) => ({ ...prev, logo: croppedFile }));
+      setLogoPreview(previewUrl);
+    } else if (cropModal.field === 'banner') {
+      setFiles((prev) => ({ ...prev, banner: croppedFile }));
+      setBannerPreview(previewUrl);
+    }
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Menyimpan perubahan identitas madrasah ke server
@@ -192,7 +235,7 @@ export default function AdminProfilIdentitas() {
             <div>
               <p className="mb-2 text-[11.5px] font-semibold text-ink/80">Banner halaman depan</p>
               <div className="flex items-center gap-3.5">
-                <div className="flex h-20 w-32 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#faf8f3] text-[10.5px] text-[#a9a396]">
+                <div className="flex w-36 aspect-[16/6] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#faf8f3] text-[10.5px] text-[#a9a396]">
                   {bannerPreview ? (
                     <img src={bannerPreview} alt="Banner Depan" className="h-full w-full object-cover" />
                   ) : (
@@ -206,7 +249,7 @@ export default function AdminProfilIdentitas() {
                     <input type="file" accept="image/*" className="hidden" onChange={handleBannerChange} />
                   </label>
                   <p className="mt-1.5 text-[10.5px] leading-relaxed text-muted">
-                    Rasio lanskap 16:9, maksimal 2MB.
+                    Rasio lanskap 16:6, maksimal 2MB.
                   </p>
                 </div>
               </div>
@@ -278,6 +321,24 @@ export default function AdminProfilIdentitas() {
           </div>
         </Panel>
       </form>
+
+      {/* Loading Overlay saat mengunggah berkas/menyimpan */}
+      <UploadLoadingOverlay
+        open={loading}
+        title="Menyimpan Identitas Madrasah"
+        message="Mohon tunggu, berkas gambar dan informasi madrasah sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Gambar */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={cropModal.aspectRatio}
+        title={cropModal.title}
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

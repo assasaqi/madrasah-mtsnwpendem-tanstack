@@ -106,7 +106,7 @@ export default function Pengumuman() {
         ) : (
           <p className="mt-6 text-[13px] text-muted">
             {daftar.length === 0
-              ? 'Data pengumuman madrasah belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ditemukan pengumuman yang sesuai.'}
           </p>
         )}

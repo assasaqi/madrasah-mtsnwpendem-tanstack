@@ -258,7 +258,7 @@ export default function Agenda() {
         ) : (
           <p className="mt-6 text-[13px] text-muted">
             {daftar.length === 0
-              ? 'Data agenda kegiatan madrasah belum tersedia.'
+              ? 'Info data belum tersedia.'
               : tab === 'mendatang'
                 ? 'Tidak ada agenda yang akan datang dalam waktu dekat.'
                 : 'Tidak ada agenda pada kategori ini.'}

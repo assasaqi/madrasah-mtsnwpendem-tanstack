@@ -7,7 +7,6 @@ import {
   FileText,
   Megaphone,
   Images,
-  Mail,
   LogOut,
   X,
   ChevronDown,
@@ -78,8 +77,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         { path: '/admin/faq', label: 'Pertanyaan Umum', icon: HelpCircle }
       ]
     },
-    { path: '/admin/galeri', label: 'Galeri', icon: Images },
-    { path: '/admin/pesan-kontak', label: 'Pesan Kontak', icon: Mail }
+    { path: '/admin/galeri', label: 'Galeri', icon: Images }
   ];
 
   return (

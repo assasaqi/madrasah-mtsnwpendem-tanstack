@@ -135,7 +135,7 @@ export default function Berita() {
         ) : (
           <p className="mt-4 text-[13px] text-muted">
             {berita.length === 0
-              ? 'Data berita madrasah belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ada berita yang cocok dengan kriteria pencarian.'}
           </p>
         )}

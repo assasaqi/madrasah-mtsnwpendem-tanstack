@@ -12,7 +12,9 @@ import {
   Button,
   Alert,
   Loader,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 export default function AdminProfile() {
@@ -33,6 +35,7 @@ export default function AdminProfile() {
   const [statusMsg, setStatusMsg] = useState({ type: '', text: '' });
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   // Memuat data profil admin dari API saat komponen pertama kali dimuat
   useEffect(() => {
@@ -67,13 +70,27 @@ export default function AdminProfile() {
     }
   };
 
-  // Memproses unggahan foto profil dan menampilkan pratinjau
+  // Memproses unggahan foto profil dan membuka modal cropper
   const handleFotoChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setProfile((prev) => ({ ...prev, foto: file }));
-      setPreviewFoto(URL.createObjectURL(file));
+      const src = URL.createObjectURL(file);
+      setCropModal({
+        open: true,
+        src,
+        fileName: file.name
+      });
     }
+    e.target.value = '';
+  };
+
+  // Menerima hasil crop foto profil dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+    setProfile((prev) => ({ ...prev, foto: croppedFile }));
+    if (previewUrl) setPreviewFoto(previewUrl);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Mengirim pembaruan data profil ke server dan memperbarui state global
@@ -249,6 +266,24 @@ export default function AdminProfile() {
           </form>
         </Panel>
       </div>
+
+      {/* Loading Overlay saat mengunggah foto / menyimpan profil */}
+      <UploadLoadingOverlay
+        open={loading}
+        title="Menyimpan Profil Admin"
+        message="Mohon tunggu, foto profil dan perubahan sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Foto Avatar Admin */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={1}
+        title="Crop Foto Profil Admin (1:1)"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

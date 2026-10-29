@@ -23,9 +23,12 @@ server/uploads/*
 uploads/*
 !uploads/.gitkeep
 
-# SQLite database (if stored locally)
+# SQLite database (if stored locally) & Database backups
 server/prisma/*.db
 server/prisma/*.db-journal
+*.sql
+backups/
+server/backups/
 
 # Logs
 logs/
@@ -37,6 +40,7 @@ pnpm-debug.log*
 # Editor & System
 .DS_Store
 Thumbs.db
+*.zip
 .vscode/
 !.vscode/extensions.json
 .idea/

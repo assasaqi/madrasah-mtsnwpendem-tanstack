@@ -189,7 +189,7 @@ export default function Galeri() {
         ) : (
           <p className="mt-4 text-[13px] text-muted">
             {items.length === 0
-              ? 'Data dokumentasi galeri kegiatan belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ada foto yang cocok dengan kriteria pencarian.'}
           </p>
         )}

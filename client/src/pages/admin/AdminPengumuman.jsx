@@ -29,7 +29,9 @@ import {
   Field,
   Input,
   Textarea,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 export default function AdminPengumuman() {
@@ -43,6 +45,7 @@ export default function AdminPengumuman() {
   const [lampiran, setLampiran] = useState(null);
   const [notice, setNotice] = useState({ type: '', message: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   useEffect(() => {
     fetchPengumuman();
@@ -94,6 +97,30 @@ export default function AdminPengumuman() {
       title: title || 'Lampiran pengumuman',
       isPdf: String(fileName).toLowerCase().endsWith('.pdf')
     });
+  };
+
+  // Menangani pemilihan lampiran berkas / gambar dan membuka cropper jika gambar
+  const handleLampiranChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.type.startsWith('image/')) {
+      const src = URL.createObjectURL(file);
+      setCropModal({
+        open: true,
+        src,
+        fileName: file.name
+      });
+    } else {
+      setLampiran(file);
+    }
+    event.target.value = '';
+  };
+
+  // Menerima hasil crop gambar lampiran dari ImageCropperModal
+  const handleCropComplete = (res) => {
+    const croppedFile = res?.file || res;
+    setLampiran(croppedFile);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Menyimpan pengumuman baru atau hasil edit
@@ -326,7 +353,7 @@ export default function AdminPengumuman() {
               {lampiran ? lampiran.name : 'Pilih berkas lampiran'}
               <input
                 type="file"
-                onChange={(event) => setLampiran(event.target.files[0])}
+                onChange={handleLampiranChange}
                 className="hidden"
               />
             </label>
@@ -382,6 +409,24 @@ export default function AdminPengumuman() {
           </div>
         )}
       </Modal>
+
+      {/* Loading Overlay saat mengunggah berkas lampiran / menyimpan pengumuman */}
+      <UploadLoadingOverlay
+        open={submitting}
+        title="Menyimpan Pengumuman"
+        message="Mohon tunggu, berkas lampiran dan pengumuman sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper jika lampiran adalah gambar */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={16 / 9}
+        title="Crop Gambar Lampiran"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

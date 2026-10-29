@@ -9,7 +9,10 @@
     "start": "node src/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build": "prisma generate"
+    "build": "prisma generate",
+    "postinstall": "prisma generate",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.10.0",

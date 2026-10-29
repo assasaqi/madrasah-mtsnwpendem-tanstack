@@ -21,10 +21,22 @@ const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
-// Middleware keamanan, parser request, dan CORS berkredensial
+// Middleware keamanan, parser request, dan CORS berkredensial fleksibel (mendukung http/https dan localhost)
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cookieParser());
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const cleanOrigin = origin.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    const cleanFrontend = String(env.FRONTEND_URL).replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+
+    if (cleanOrigin === cleanFrontend || cleanOrigin.endsWith(cleanFrontend) || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 

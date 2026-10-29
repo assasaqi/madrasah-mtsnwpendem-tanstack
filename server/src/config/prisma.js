@@ -1,4 +1,15 @@
-const { PrismaClient } = require('@prisma/client');
+let PrismaClient;
+let Prisma;
+try {
+  ({ PrismaClient, Prisma } = require('../generated/prisma'));
+} catch (generatedError) {
+  try {
+    ({ PrismaClient, Prisma } = require('@prisma/client'));
+  } catch {
+    console.error('❌ Folder src/generated/prisma belum ada di server hosting:', generatedError.message);
+    throw generatedError;
+  }
+}
 const { PrismaMariaDb } = require('@prisma/adapter-mariadb');
 const env = require('./env');
 
@@ -10,4 +21,7 @@ if (env.NODE_ENV !== 'production') {
   global.prisma = prisma;
 }
 
+prisma.Prisma = Prisma;
 module.exports = prisma;
+module.exports.prisma = prisma;
+module.exports.Prisma = Prisma;

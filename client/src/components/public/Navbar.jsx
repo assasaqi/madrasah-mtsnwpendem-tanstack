@@ -94,7 +94,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur-md">
+      <header className="sticky top-0 z-40 border-b border-white/30 bg-paper/40 backdrop-blur-md lg:border-line lg:bg-paper/95">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 sm:px-8">
           <Link to="/" className="flex min-w-0 items-center gap-2.5">
             {logoSekolah ? (
@@ -203,7 +203,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(true)}
               aria-label="Buka menu navigasi"
               aria-expanded={mobileOpen}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-line text-ink/75 transition-colors hover:bg-[#faf8f3]"
+              className="flex h-9 w-9 items-center justify-center rounded-md border border-ink/15 bg-white/30 text-ink/80 transition-colors hover:bg-white/60"
             >
               <Menu size={16} />
             </button>

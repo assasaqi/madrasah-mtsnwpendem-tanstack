@@ -18,7 +18,6 @@ import AdminAgenda from '../pages/admin/AdminAgenda';
 import AdminPrestasi from '../pages/admin/AdminPrestasi';
 import AdminUnduhan from '../pages/admin/AdminUnduhan';
 import AdminFaq from '../pages/admin/AdminFaq';
-import AdminPesanKontak from '../pages/admin/AdminPesanKontak';
 import AdminProfile from '../pages/admin/AdminProfile';
 
 export const adminGuardRoute = createRoute({
@@ -135,7 +134,9 @@ export const adminFaqRoute = createRoute({
 export const adminPesanKontakRoute = createRoute({
   getParentRoute: () => adminLayoutRoute,
   path: '/admin/pesan-kontak',
-  component: AdminPesanKontak
+  beforeLoad: () => {
+    throw redirect({ to: '/admin/dashboard' });
+  }
 });
 
 export const adminProfileRoute = createRoute({

@@ -214,7 +214,7 @@ export default function Unduhan() {
         ) : (
           <p className="mt-4 text-[13px] text-muted">
             {daftar.length === 0
-              ? 'Data pusat unduhan belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ada dokumen yang cocok dengan filter pencarian.'}
           </p>
         )}

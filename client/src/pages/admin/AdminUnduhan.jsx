@@ -33,7 +33,8 @@ import {
   Field,
   Input,
   Textarea,
-  buttonClass
+  buttonClass,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 const KATEGORI = ['Umum', 'Formulir', 'Jadwal', 'Panduan', 'Brosur', 'Administrasi', 'Akademik'];
@@ -407,6 +408,13 @@ export default function AdminUnduhan() {
           </label>
         </form>
       </Modal>
+
+      {/* Loading Overlay saat mengunggah berkas dokumen */}
+      <UploadLoadingOverlay
+        open={submitting}
+        title="Mengunggah Dokumen"
+        message="Mohon tunggu, berkas dokumen sedang diunggah ke pusat unduhan server..."
+      />
     </div>
   );
 }

@@ -85,14 +85,6 @@ export default function Navbar({ setSidebarOpen, getPageTitle }) {
                 <User className="text-brand" size={14} />
               )}
             </span>
-            <span className="hidden text-left sm:block">
-              <span className="block text-[11.5px] font-semibold leading-tight text-ink">
-                {user?.nama || 'Admin Madrasah'}
-              </span>
-              <span className="mt-0.5 block text-[9.5px] uppercase tracking-[0.14em] text-muted">
-                {user?.role ? String(user.role).toLowerCase().replace('_', ' ') : 'Administrator'}
-              </span>
-            </span>
             <ChevronDown size={13} className="text-muted" />
           </button>
 

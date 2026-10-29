@@ -29,7 +29,9 @@ import {
   Input,
   Select,
   Textarea,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 export default function AdminBerita() {
@@ -51,6 +53,7 @@ export default function AdminBerita() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   // Ambil data berita dan kategori saat komponen pertama kali dimuat
   useEffect(() => {
@@ -144,13 +147,27 @@ export default function AdminBerita() {
     }));
   };
 
-  // Memproses pemilihan berkas gambar dari input komputer
+  // Memproses pemilihan berkas gambar dan membuka modal cropper
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      const src = URL.createObjectURL(file);
+      setCropModal({
+        open: true,
+        src,
+        fileName: file.name
+      });
     }
+    e.target.value = '';
+  };
+
+  // Menerima hasil crop gambar berita dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+    setImageFile(croppedFile);
+    if (previewUrl) setImagePreview(previewUrl);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Mengirim data formulir berita ke API backend
@@ -465,6 +482,24 @@ export default function AdminBerita() {
           </label>
         </form>
       </Modal>
+
+      {/* Loading Overlay saat mengunggah gambar / menyimpan artikel berita */}
+      <UploadLoadingOverlay
+        open={submitting}
+        title="Menyimpan Berita"
+        message="Mohon tunggu, gambar dan data artikel sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Gambar Berita */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={16 / 9}
+        title="Crop Foto Header Berita (16:9)"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

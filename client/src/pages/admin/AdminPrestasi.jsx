@@ -29,7 +29,9 @@ import {
   Input,
   Select,
   Textarea,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 const TINGKAT = ['Sekolah', 'Kecamatan', 'Kabupaten/Kota', 'Provinsi', 'Nasional', 'Internasional'];
@@ -55,6 +57,7 @@ export default function AdminPrestasi() {
   const [preview, setPreview] = useState('');
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   // Memuat seluruh prestasi dari API
   const fetchPrestasi = async () => {
@@ -101,16 +104,30 @@ export default function AdminPrestasi() {
     setShowModal(true);
   };
 
-  // Menangani pemilihan foto dokumentasi
+  // Menangani pemilihan foto dokumentasi dan membuka modal cropper
   const handleFileChange = (event) => {
     const selected = event.target.files?.[0];
     if (!selected) return;
-    if (selected.size > 5 * 1024 * 1024) {
-      setAlert({ type: 'error', message: 'Ukuran foto maksimal 5MB.' });
+    if (selected.size > 15 * 1024 * 1024) {
+      setAlert({ type: 'error', message: 'Ukuran foto maksimal 15MB.' });
       return;
     }
-    setFile(selected);
-    setPreview(URL.createObjectURL(selected));
+    const src = URL.createObjectURL(selected);
+    setCropModal({
+      open: true,
+      src,
+      fileName: selected.name
+    });
+    event.target.value = '';
+  };
+
+  // Menerima hasil crop foto prestasi dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+    setFile(croppedFile);
+    if (previewUrl) setPreview(previewUrl);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Menyimpan prestasi baru atau hasil edit
@@ -398,6 +415,24 @@ export default function AdminPrestasi() {
           </label>
         </form>
       </Modal>
+
+      {/* Loading Overlay saat mengunggah foto / menyimpan prestasi */}
+      <UploadLoadingOverlay
+        open={submitting}
+        title="Menyimpan Data Prestasi"
+        message="Mohon tunggu, berkas foto dan informasi prestasi sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Foto Prestasi */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={16 / 9}
+        title="Crop Foto Prestasi (16:9)"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

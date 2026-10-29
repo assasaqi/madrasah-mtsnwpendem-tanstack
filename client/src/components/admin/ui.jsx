@@ -191,7 +191,7 @@ export function Td({ children, align = 'left', className }) {
   );
 }
 
-export function EmptyRow({ colSpan, title = 'Belum ada data', description, icon: Icon = Inbox }) {
+export function EmptyRow({ colSpan, title = 'Info data belum tersedia', description, icon: Icon = Inbox }) {
   return (
     <tr>
       <td colSpan={colSpan} className="px-4 py-14">
@@ -207,7 +207,7 @@ export function EmptyRow({ colSpan, title = 'Belum ada data', description, icon:
   );
 }
 
-export function EmptyState({ title = 'Belum ada data', description, icon: Icon = Inbox, action }) {
+export function EmptyState({ title = 'Info data belum tersedia', description, icon: Icon = Inbox, action }) {
   return (
     <div className="flex flex-col items-center gap-2 px-4 py-16 text-center">
       <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-[#faf8f3] text-[#b3ac9d]">
@@ -413,3 +413,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
     </div>
   );
 }
+
+export { default as ImageCropperModal } from './ImageCropperModal';
+export { default as UploadLoadingOverlay } from './UploadLoadingOverlay';
+

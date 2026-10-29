@@ -106,7 +106,9 @@ export default function Profil() {
   // Penetapan susunan bagan organisasi
   const kamadItem = struktur.find((i) =>
     /kepala\s*madrasah|kamad/i.test(i.jabatan || '') ||
-    (/kepala/i.test(i.jabatan || '') && !/tata\s*usaha|tu/i.test(i.jabatan || ''))
+    (/^kepala$/i.test((i.jabatan || '').trim())) ||
+    (/kepala\s*sekolah/i.test(i.jabatan || '')) ||
+    (/kepala/i.test(i.jabatan || '') && !/tata\s*usaha|tu|perpus|perpustakaan|lab|leb|komputer|ipa/i.test(i.jabatan || ''))
   );
   const komiteItem = struktur.find((i) => /komite/i.test(i.jabatan || ''));
 
@@ -192,6 +194,40 @@ export default function Profil() {
     { role: 'OPERATOR', item: slotTendik3 },
     { role: 'STAF TATA USAHA', item: slotTendik4 },
     ...unassignedTendik.map((item, idx) => ({ role: item.jabatan || `STAF ${idx + 5}`, item }))
+  ];
+
+  // BARIS 2 KANAN (UNIT PENUNJANG): 3 SLOT KEPALA (Kepala Perpustakaan, Kepala Lab IPA, Kepala Lab Komputer)
+  const kepalaUnitItems = struktur.filter(
+    (i) =>
+      !assignedIds.has(i.id) &&
+      /perpus|perpustakaan|lab|leb/i.test(i.jabatan || '')
+  );
+  kepalaUnitItems.forEach((i) => assignedIds.add(i.id));
+
+  const kepalaPerpus = kepalaUnitItems.find((i) =>
+    /perpus|perpustakaan/i.test(i.jabatan || '')
+  );
+  const kepalaLabIpa = kepalaUnitItems.find((i) =>
+    /ipa|biologi|fisika|kimia|sains/i.test(i.jabatan || '')
+  );
+  const kepalaLabKomputer = kepalaUnitItems.find((i) =>
+    /komputer|komp|tik|multimedia|it/i.test(i.jabatan || '')
+  );
+
+  const matchedKepalaUnitIds = new Set(
+    [kepalaPerpus?.id, kepalaLabIpa?.id, kepalaLabKomputer?.id].filter(Boolean)
+  );
+  const unassignedKepalaUnit = kepalaUnitItems.filter((i) => !matchedKepalaUnitIds.has(i.id));
+
+  const slotKepala1 = kepalaPerpus || unassignedKepalaUnit.shift() || null;
+  const slotKepala2 = kepalaLabIpa || unassignedKepalaUnit.shift() || null;
+  const slotKepala3 = kepalaLabKomputer || unassignedKepalaUnit.shift() || null;
+
+  const kepalaUnitSlots = [
+    { role: 'KEPALA PERPUSTAKAAN', item: slotKepala1 },
+    { role: 'KEPALA LAB IPA', item: slotKepala2 },
+    { role: 'KEPALA LAB KOMPUTER', item: slotKepala3 },
+    ...unassignedKepalaUnit.map((item, idx) => ({ role: item.jabatan || `KEPALA UNIT ${idx + 4}`, item }))
   ];
 
   // BARIS 3 KIRI: 6 SLOT WALI KELAS (7A, 7B, 8A, 8B, 9A, 9B)
@@ -416,6 +452,31 @@ export default function Profil() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 w-fit mx-auto">
                     {tendikSlots.map((slot, idx) => (
                       <div key={slot.item?.id || `tendik-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
+                        {slot.item ? (
+                          <KartuStruktur item={slot.item} compact />
+                        ) : (
+                          <div className="w-full aspect-[3/4] rounded-md sm:rounded-lg border border-dashed border-line bg-canvas/40 p-1 flex flex-col items-center justify-center text-center">
+                            <span className="text-[5px] sm:text-[6.5px] font-semibold text-muted break-words leading-tight">
+                              {slot.role}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sisi Kanan: Kepala Laboratorium & Perpustakaan (3 Card Slots) */}
+                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                  <div className="border-b border-line pb-1.5 sm:pb-2">
+                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Kepala Laboratorium & Perpustakaan</h3>
+                    <p className="text-[6px] sm:text-[7.5px] text-muted">Perpus, lab IPA, lab komputer (3 kepala)</p>
+                  </div>
+
+                  {/* Di mobile: 2 kolom; di desktop: 3 kolom */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 w-fit mx-auto">
+                    {kepalaUnitSlots.map((slot, idx) => (
+                      <div key={slot.item?.id || `kepala-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
                         {slot.item ? (
                           <KartuStruktur item={slot.item} compact />
                         ) : (

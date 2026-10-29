@@ -197,7 +197,7 @@ export default function Prestasi() {
         ) : (
           <p className="mt-6 text-[13px] text-muted">
             {daftar.length === 0
-              ? 'Data prestasi madrasah belum tersedia.'
+              ? 'Info data belum tersedia.'
               : 'Tidak ada prestasi yang cocok dengan kriteria pencarian.'}
           </p>
         )}

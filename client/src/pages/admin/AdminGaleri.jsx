@@ -28,7 +28,9 @@ import {
   Input,
   Select,
   Textarea,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 const KATEGORI = ['Kegiatan', 'Prestasi', 'Fasilitas', 'Ekstrakurikuler'];
@@ -46,6 +48,7 @@ export default function AdminGaleri() {
   const [preview, setPreview] = useState('');
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [searchQuery, setSearchQuery] = useState('');
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   useEffect(() => {
     fetchGaleri();
@@ -83,16 +86,30 @@ export default function AdminGaleri() {
     setShowModal(true);
   };
 
-  // Menangani pemilihan berkas foto
+  // Menangani pemilihan berkas foto dan membuka modal cropper
   const handleFileChange = (event) => {
     const selected = event.target.files?.[0];
     if (!selected) return;
-    if (selected.size > 5 * 1024 * 1024) {
-      setAlert({ type: 'error', message: 'Ukuran foto maksimal 5MB.' });
+    if (selected.size > 15 * 1024 * 1024) {
+      setAlert({ type: 'error', message: 'Ukuran foto maksimal 15MB.' });
       return;
     }
-    setFile(selected);
-    setPreview(URL.createObjectURL(selected));
+    const src = URL.createObjectURL(selected);
+    setCropModal({
+      open: true,
+      src,
+      fileName: selected.name
+    });
+    event.target.value = '';
+  };
+
+  // Menerima hasil crop foto galeri dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+    setFile(croppedFile);
+    if (previewUrl) setPreview(previewUrl);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Menyimpan data galeri baru atau hasil edit
@@ -323,6 +340,24 @@ export default function AdminGaleri() {
           )}
         </form>
       </Modal>
+
+      {/* Loading Overlay saat mengunggah foto / menyimpan data galeri */}
+      <UploadLoadingOverlay
+        open={submitting}
+        title="Menyimpan Foto Galeri"
+        message="Mohon tunggu, berkas foto sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Foto Galeri */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={16 / 9}
+        title="Crop Foto Galeri (16:9)"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

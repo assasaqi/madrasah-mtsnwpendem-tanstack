@@ -32,7 +32,9 @@ import {
   Input,
   Textarea,
   Select,
-  buttonClass
+  buttonClass,
+  ImageCropperModal,
+  UploadLoadingOverlay
 } from '../../components/admin/ui';
 
 const emptyForm = { nama: '', deskripsi: '', ikon: 'building', urutan: 0 };
@@ -47,6 +49,7 @@ export default function AdminProfilFasilitas() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState('');
   const [alert, setAlert] = useState({ type: '', message: '' });
+  const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
   useEffect(() => {
     fetchData();
@@ -99,13 +102,27 @@ export default function AdminProfilFasilitas() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Memproses pemilihan gambar fasilitas
+  // Memproses pemilihan gambar fasilitas dan membuka modal cropper
   const handleFileChange = (e) => {
-    const selected = e.target.files[0];
+    const selected = e.target.files?.[0];
     if (selected) {
-      setFile(selected);
-      setPreview(URL.createObjectURL(selected));
+      const src = URL.createObjectURL(selected);
+      setCropModal({
+        open: true,
+        src,
+        fileName: selected.name
+      });
     }
+    e.target.value = '';
+  };
+
+  // Menerima hasil crop gambar fasilitas dari ImageCropperModal
+  const handleCropComplete = (res, directPreview) => {
+    const croppedFile = res?.file || res;
+    const previewUrl = res?.previewUrl || directPreview;
+    setFile(croppedFile);
+    if (previewUrl) setPreview(previewUrl);
+    setCropModal((prev) => ({ ...prev, open: false }));
   };
 
   // Menyimpan data fasilitas baru atau perubahan
@@ -356,6 +373,24 @@ export default function AdminProfilFasilitas() {
           </Field>
         </form>
       </Modal>
+
+      {/* Loading Overlay saat mengunggah gambar / menyimpan data fasilitas */}
+      <UploadLoadingOverlay
+        open={saving}
+        title="Menyimpan Fasilitas Madrasah"
+        message="Mohon tunggu, gambar dan data fasilitas sedang diunggah ke server..."
+      />
+
+      {/* Modal Cropper Gambar Fasilitas */}
+      <ImageCropperModal
+        open={cropModal.open}
+        onClose={() => setCropModal((prev) => ({ ...prev, open: false }))}
+        imageSrc={cropModal.src}
+        onCrop={handleCropComplete}
+        aspectRatio={16 / 9}
+        title="Crop Gambar Fasilitas (16:9)"
+        fileName={cropModal.fileName}
+      />
     </div>
   );
 }

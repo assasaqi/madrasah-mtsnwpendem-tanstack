@@ -28,20 +28,32 @@ exports.getHomeData = catchAsync(async (req, res) => {
       take: 6,
       orderBy: { createdAt: 'desc' },
       include: { kategori: { select: { id: true, nama: true, slug: true } } }
+    }).catch((err) => {
+      console.error('getHomeData latestNews error:', err?.message);
+      return [];
     }),
     prisma.pengumuman.findMany({
       where: { isPublished: true },
       take: 6,
       orderBy: { createdAt: 'desc' }
+    }).catch((err) => {
+      console.error('getHomeData announcements error:', err?.message);
+      return [];
     }),
-    prisma.strukturOrganisasi.count(),
-    prisma.galeri.count(),
-    prisma.pengumuman.count({ where: { isPublished: true } }),
-    prisma.profilSekolah.findFirst(),
-    prisma.fasilitas.findMany({ orderBy: [{ urutan: 'asc' }, { createdAt: 'asc' }] })
+    prisma.strukturOrganisasi.count().catch(() => 0),
+    prisma.galeri.count().catch(() => 0),
+    prisma.pengumuman.count({ where: { isPublished: true } }).catch(() => 0),
+    prisma.profilSekolah.findFirst().catch((err) => {
+      console.error('getHomeData profilSekolah error:', err?.message);
+      return null;
+    }),
+    prisma.fasilitas.findMany({ orderBy: [{ urutan: 'asc' }, { createdAt: 'asc' }] }).catch((err) => {
+      console.error('getHomeData fasilitas error:', err?.message);
+      return [];
+    })
   ]);
 
-  const announcements = announcementsRaw.map((item) => ({
+  const announcements = (announcementsRaw || []).map((item) => ({
     ...item,
     title: item.judul,
     isi: item.konten,
@@ -56,15 +68,15 @@ exports.getHomeData = catchAsync(async (req, res) => {
     success: true,
     stats: {
       totalSiswa: 0,
-      totalGuru,
-      totalGaleri,
-      totalPengumuman,
+      totalGuru: totalGuru || 0,
+      totalGaleri: totalGaleri || 0,
+      totalPengumuman: totalPengumuman || 0,
       akreditasi: schoolProfile?.akreditasi || null
     },
-    latestNews,
+    latestNews: latestNews || [],
     announcements,
-    fasilitas,
-    schoolProfile
+    fasilitas: fasilitas || [],
+    schoolProfile: schoolProfile || null
   });
 });
 

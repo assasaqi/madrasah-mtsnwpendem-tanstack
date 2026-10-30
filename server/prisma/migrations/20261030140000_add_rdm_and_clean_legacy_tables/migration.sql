@@ -17,3 +17,4 @@ DROP TABLE IF EXISTS `guru`;
 DROP TABLE IF EXISTS `orangtua`;
 DROP TABLE IF EXISTS `matapelajaran`;
 DROP TABLE IF EXISTS `tahunajaran`;
+

@@ -17,7 +17,6 @@ exports.getHomeData = catchAsync(async (req, res) => {
   const [
     latestNews,
     announcementsRaw,
-    totalSiswa,
     totalGuru,
     totalGaleri,
     totalPengumuman,
@@ -35,8 +34,7 @@ exports.getHomeData = catchAsync(async (req, res) => {
       take: 6,
       orderBy: { createdAt: 'desc' }
     }),
-    prisma.siswa.count(),
-    prisma.guru.count(),
+    prisma.strukturOrganisasi.count(),
     prisma.galeri.count(),
     prisma.pengumuman.count({ where: { isPublished: true } }),
     prisma.profilSekolah.findFirst(),
@@ -57,7 +55,7 @@ exports.getHomeData = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
     stats: {
-      totalSiswa,
+      totalSiswa: 0,
       totalGuru,
       totalGaleri,
       totalPengumuman,

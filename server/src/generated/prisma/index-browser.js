@@ -338,90 +338,6 @@ exports.Prisma.PengaturanPPDBScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.TahunAjaranScalarFieldEnum = {
-  id: 'id',
-  tahun: 'tahun',
-  semester: 'semester',
-  isActive: 'isActive'
-};
-
-exports.Prisma.GuruScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  nip: 'nip',
-  namaLengkap: 'namaLengkap',
-  noHp: 'noHp',
-  jenisKelamin: 'jenisKelamin'
-};
-
-exports.Prisma.KelasScalarFieldEnum = {
-  id: 'id',
-  namaKelas: 'namaKelas',
-  tingkat: 'tingkat',
-  tahunAjaranId: 'tahunAjaranId',
-  waliKelasId: 'waliKelasId'
-};
-
-exports.Prisma.OrangTuaScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  namaLengkap: 'namaLengkap',
-  noHp: 'noHp',
-  alamat: 'alamat'
-};
-
-exports.Prisma.SiswaScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  nis: 'nis',
-  nisn: 'nisn',
-  namaLengkap: 'namaLengkap',
-  jenisKelamin: 'jenisKelamin',
-  kelasId: 'kelasId',
-  orangTuaId: 'orangTuaId'
-};
-
-exports.Prisma.MataPelajaranScalarFieldEnum = {
-  id: 'id',
-  kode: 'kode',
-  nama: 'nama',
-  kelompok: 'kelompok'
-};
-
-exports.Prisma.NilaiScalarFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  mataPelajaranId: 'mataPelajaranId',
-  kelasId: 'kelasId',
-  tahunAjaranId: 'tahunAjaranId',
-  nilaiTugas: 'nilaiTugas',
-  nilaiUTS: 'nilaiUTS',
-  nilaiUAS: 'nilaiUAS',
-  nilaiAkhir: 'nilaiAkhir',
-  grade: 'grade'
-};
-
-exports.Prisma.AbsensiScalarFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  kelasId: 'kelasId',
-  tanggal: 'tanggal',
-  status: 'status',
-  keterangan: 'keterangan'
-};
-
-exports.Prisma.TahfidzScalarFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  tanggal: 'tanggal',
-  surah: 'surah',
-  ayatMulai: 'ayatMulai',
-  ayatSelesai: 'ayatSelesai',
-  predikat: 'predikat',
-  catatan: 'catatan',
-  pembimbingId: 'pembimbingId'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -615,75 +531,6 @@ exports.Prisma.PengaturanPPDBOrderByRelevanceFieldEnum = {
   nipKepalaMadrasah: 'nipKepalaMadrasah',
   catatanSurat: 'catatanSurat'
 };
-
-exports.Prisma.TahunAjaranOrderByRelevanceFieldEnum = {
-  id: 'id',
-  tahun: 'tahun'
-};
-
-exports.Prisma.GuruOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  nip: 'nip',
-  namaLengkap: 'namaLengkap',
-  noHp: 'noHp'
-};
-
-exports.Prisma.KelasOrderByRelevanceFieldEnum = {
-  id: 'id',
-  namaKelas: 'namaKelas',
-  tahunAjaranId: 'tahunAjaranId',
-  waliKelasId: 'waliKelasId'
-};
-
-exports.Prisma.OrangTuaOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  namaLengkap: 'namaLengkap',
-  noHp: 'noHp',
-  alamat: 'alamat'
-};
-
-exports.Prisma.SiswaOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  nis: 'nis',
-  nisn: 'nisn',
-  namaLengkap: 'namaLengkap',
-  kelasId: 'kelasId',
-  orangTuaId: 'orangTuaId'
-};
-
-exports.Prisma.MataPelajaranOrderByRelevanceFieldEnum = {
-  id: 'id',
-  kode: 'kode',
-  nama: 'nama',
-  kelompok: 'kelompok'
-};
-
-exports.Prisma.NilaiOrderByRelevanceFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  mataPelajaranId: 'mataPelajaranId',
-  kelasId: 'kelasId',
-  tahunAjaranId: 'tahunAjaranId',
-  grade: 'grade'
-};
-
-exports.Prisma.AbsensiOrderByRelevanceFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  kelasId: 'kelasId',
-  keterangan: 'keterangan'
-};
-
-exports.Prisma.TahfidzOrderByRelevanceFieldEnum = {
-  id: 'id',
-  siswaId: 'siswaId',
-  surah: 'surah',
-  catatan: 'catatan',
-  pembimbingId: 'pembimbingId'
-};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   GURU: 'GURU',
@@ -713,25 +560,6 @@ exports.JenisDokumen = exports.$Enums.JenisDokumen = {
   SKHU: 'SKHU'
 };
 
-exports.Semester = exports.$Enums.Semester = {
-  GANJIL: 'GANJIL',
-  GENAP: 'GENAP'
-};
-
-exports.StatusAbsensi = exports.$Enums.StatusAbsensi = {
-  HADIR: 'HADIR',
-  IZIN: 'IZIN',
-  SAKIT: 'SAKIT',
-  ALPA: 'ALPA'
-};
-
-exports.PredikatTahfidz = exports.$Enums.PredikatTahfidz = {
-  MUMTAZ: 'MUMTAZ',
-  JAYYID_JIDDAN: 'JAYYID_JIDDAN',
-  JAYYID: 'JAYYID',
-  MAQBUL: 'MAQBUL'
-};
-
 exports.Prisma.ModelName = {
   User: 'User',
   ProfilSekolah: 'ProfilSekolah',
@@ -750,16 +578,7 @@ exports.Prisma.ModelName = {
   BiodataSiswaPPDB: 'BiodataSiswaPPDB',
   DataOrangTuaPPDB: 'DataOrangTuaPPDB',
   DokumenPPDB: 'DokumenPPDB',
-  PengaturanPPDB: 'PengaturanPPDB',
-  TahunAjaran: 'TahunAjaran',
-  Guru: 'Guru',
-  Kelas: 'Kelas',
-  OrangTua: 'OrangTua',
-  Siswa: 'Siswa',
-  MataPelajaran: 'MataPelajaran',
-  Nilai: 'Nilai',
-  Absensi: 'Absensi',
-  Tahfidz: 'Tahfidz'
+  PengaturanPPDB: 'PengaturanPPDB'
 };
 
 /**

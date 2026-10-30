@@ -24,8 +24,6 @@ const cookieOptions = {
 };
 
 const buildDisplayName = (user) =>
-  user.guruProfile?.namaLengkap ||
-  user.siswaProfile?.namaLengkap ||
   user.pendaftaran?.biodata?.namaLengkap ||
   user.email.split('@')[0];
 
@@ -96,8 +94,6 @@ exports.login = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: { email: parsed.data.email },
       include: {
-        guruProfile: { select: { namaLengkap: true } },
-        siswaProfile: { select: { namaLengkap: true } },
         pendaftaran: { include: { biodata: { select: { namaLengkap: true } } } }
       }
     });
@@ -153,8 +149,6 @@ exports.getMe = async (req, res, next) => {
         role: true,
         foto: true,
         createdAt: true,
-        guruProfile: true,
-        siswaProfile: true,
         pendaftaran: { include: { biodata: true, orangTua: true, dokumen: true } }
       }
     });

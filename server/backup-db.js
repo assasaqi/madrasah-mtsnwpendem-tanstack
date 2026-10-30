@@ -58,16 +58,7 @@ async function runBackup() {
     { name: 'biodataSiswaPpdb', model: prisma.biodataSiswaPPDB },
     { name: 'dataOrangTuaPpdb', model: prisma.dataOrangTuaPPDB },
     { name: 'dokumenPpdb', model: prisma.dokumenPPDB },
-    { name: 'pengaturanPpdb', model: prisma.pengaturanPPDB },
-    { name: 'tahunAjaran', model: prisma.tahunAjaran },
-    { name: 'guru', model: prisma.guru },
-    { name: 'kelas', model: prisma.kelas },
-    { name: 'orangTua', model: prisma.orangTua },
-    { name: 'siswa', model: prisma.siswa },
-    { name: 'mataPelajaran', model: prisma.mataPelajaran },
-    { name: 'nilai', model: prisma.nilai },
-    { name: 'absensi', model: prisma.absensi },
-    { name: 'tahfidz', model: prisma.tahfidz }
+    { name: 'pengaturanPpdb', model: prisma.pengaturanPPDB }
   ];
 
   let totalRows = 0;

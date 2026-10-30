@@ -37,40 +37,18 @@ enum JenisKelamin {
   PEREMPUAN
 }
 
-enum Semester {
-  GANJIL
-  GENAP
-}
-
-enum StatusAbsensi {
-  HADIR
-  IZIN
-  SAKIT
-  ALPA
-}
-
-enum PredikatTahfidz {
-  MUMTAZ
-  JAYYID_JIDDAN
-  JAYYID
-  MAQBUL
-}
-
 model User {
-  id           String           @id @default(uuid())
-  email        String           @unique
-  password     String
-  role         Role             @default(CALON_PENDAFTAR)
-  foto         String?
-  isVerified   Boolean          @default(false)
-  emailToken   String?
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-  guruProfile  Guru?
-  siswaProfile Siswa?
-  ortuProfile  OrangTua?
-  pendaftaran  PendaftaranPPDB?
-  berita       Berita[]
+  id          String           @id @default(uuid())
+  email       String           @unique
+  password    String
+  role        Role             @default(CALON_PENDAFTAR)
+  foto        String?
+  isVerified  Boolean          @default(false)
+  emailToken  String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  pendaftaran PendaftaranPPDB?
+  berita      Berita[]
 
   @@map("users")
 }
@@ -324,133 +302,4 @@ model PengaturanPPDB {
   updatedAt          DateTime @updatedAt
 
   @@map("pengaturanPpdb")
-}
-
-model TahunAjaran {
-  id       String   @id @default(uuid())
-  tahun    String
-  semester Semester
-  isActive Boolean  @default(false)
-  kelas    Kelas[]
-  nilai    Nilai[]
-
-  @@map("tahunAjaran")
-}
-
-model Guru {
-  id           String       @id @default(uuid())
-  userId       String?      @unique
-  user         User?        @relation(fields: [userId], references: [id])
-  nip          String?      @unique
-  namaLengkap  String
-  noHp         String?
-  jenisKelamin JenisKelamin
-  kelasWali    Kelas[]
-  tahfidzInput Tahfidz[]
-
-  @@map("guru")
-}
-
-model Kelas {
-  id            String      @id @default(uuid())
-  namaKelas     String
-  tingkat       Int
-  tahunAjaranId String
-  tahunAjaran   TahunAjaran @relation(fields: [tahunAjaranId], references: [id])
-  waliKelasId   String?
-  waliKelas     Guru?       @relation(fields: [waliKelasId], references: [id])
-  siswa         Siswa[]
-  nilai         Nilai[]
-  absensi       Absensi[]
-
-  @@map("kelas")
-}
-
-model OrangTua {
-  id          String  @id @default(uuid())
-  userId      String? @unique
-  user        User?   @relation(fields: [userId], references: [id])
-  namaLengkap String
-  noHp        String
-  alamat      String  @db.Text
-  siswa       Siswa[]
-
-  @@map("orangTua")
-}
-
-model Siswa {
-  id           String       @id @default(uuid())
-  userId       String?      @unique
-  user         User?        @relation(fields: [userId], references: [id])
-  nis          String       @unique
-  nisn         String?      @unique
-  namaLengkap  String
-  jenisKelamin JenisKelamin
-  kelasId      String
-  kelas        Kelas        @relation(fields: [kelasId], references: [id])
-  orangTuaId   String?
-  orangTua     OrangTua?    @relation(fields: [orangTuaId], references: [id])
-  nilai        Nilai[]
-  absensi      Absensi[]
-  tahfidz      Tahfidz[]
-
-  @@map("siswa")
-}
-
-model MataPelajaran {
-  id       String  @id @default(uuid())
-  kode     String  @unique
-  nama     String
-  kelompok String?
-  nilai    Nilai[]
-
-  @@map("mataPelajaran")
-}
-
-model Nilai {
-  id              String        @id @default(uuid())
-  siswaId         String
-  siswa           Siswa         @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  mataPelajaranId String
-  mataPelajaran   MataPelajaran @relation(fields: [mataPelajaranId], references: [id])
-  kelasId         String
-  kelas           Kelas         @relation(fields: [kelasId], references: [id])
-  tahunAjaranId   String
-  tahunAjaran     TahunAjaran   @relation(fields: [tahunAjaranId], references: [id])
-  nilaiTugas      Float         @default(0)
-  nilaiUTS        Float         @default(0)
-  nilaiUAS        Float         @default(0)
-  nilaiAkhir      Float         @default(0)
-  grade           String?
-
-  @@map("nilai")
-}
-
-model Absensi {
-  id         String        @id @default(uuid())
-  siswaId    String
-  siswa      Siswa         @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  kelasId    String
-  kelas      Kelas         @relation(fields: [kelasId], references: [id])
-  tanggal    DateTime
-  status     StatusAbsensi
-  keterangan String?
-
-  @@map("absensi")
-}
-
-model Tahfidz {
-  id           String          @id @default(uuid())
-  siswaId      String
-  siswa        Siswa           @relation(fields: [siswaId], references: [id], onDelete: Cascade)
-  tanggal      DateTime        @default(now())
-  surah        String
-  ayatMulai    Int
-  ayatSelesai  Int
-  predikat     PredikatTahfidz
-  catatan      String?
-  pembimbingId String
-  pembimbing   Guru            @relation(fields: [pembimbingId], references: [id])
-
-  @@map("tahfidz")
 }

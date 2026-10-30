@@ -9,7 +9,6 @@ const env = require('./config/env');
 
 const authRoutes = require('./routes/authRoutes');
 const ppdbRoutes = require('./routes/ppdbRoutes');
-const akademikRoutes = require('./routes/akademikRoutes');
 const publicRoutes = require('./routes/publicRoutes');
 const publicProfileRoutes = require('./routes/publicProfileRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -68,7 +67,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/public/profile', publicProfileRoutes);
 app.use('/api/ppdb', ppdbRoutes);
-app.use('/api/akademik', akademikRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/cms', adminCmsRoutes);
 app.use('/api/admin/profile', adminProfileRoutes);

@@ -178,6 +178,7 @@ model Agenda {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  @@index([mulai])
   @@map("agenda")
 }
 
@@ -194,6 +195,8 @@ model Prestasi {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@index([tahun])
+  @@index([tingkat])
   @@map("prestasi")
 }
 
@@ -211,6 +214,7 @@ model Unduhan {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  @@index([kategori])
   @@map("unduhan")
 }
 
@@ -224,6 +228,8 @@ model Faq {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  @@index([kategori])
+  @@index([urutan])
   @@map("faq")
 }
 

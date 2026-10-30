@@ -27,6 +27,8 @@ uploads/*
 server/prisma/*.db
 server/prisma/*.db-journal
 *.sql
+!server/prisma/migrations/**/*.sql
+!server/prisma/*.sql
 backups/
 server/backups/
 

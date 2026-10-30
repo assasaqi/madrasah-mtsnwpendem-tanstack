@@ -193,7 +193,7 @@ export default function DetailPengumuman() {
 
           {/* Teks Isi Pengumuman */}
           <div
-            className="public-article mt-8 text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
+            className="public-article mt-8 text-justify text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
             dangerouslySetInnerHTML={{ __html: formatArticleHtml(pengumuman.konten) }}
           />
 

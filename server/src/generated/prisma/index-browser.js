@@ -149,6 +149,9 @@ exports.Prisma.ProfilSekolahScalarFieldEnum = {
   mapsUrl: 'mapsUrl',
   visi: 'visi',
   misi: 'misi',
+  rdmUrl: 'rdmUrl',
+  rdmKeterangan: 'rdmKeterangan',
+  rdmAktif: 'rdmAktif',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -468,7 +471,9 @@ exports.Prisma.ProfilSekolahOrderByRelevanceFieldEnum = {
   telepon: 'telepon',
   whatsapp: 'whatsapp',
   mapsUrl: 'mapsUrl',
-  visi: 'visi'
+  visi: 'visi',
+  rdmUrl: 'rdmUrl',
+  rdmKeterangan: 'rdmKeterangan'
 };
 
 exports.Prisma.StrukturOrganisasiOrderByRelevanceFieldEnum = {

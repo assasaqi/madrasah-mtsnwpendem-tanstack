@@ -76,24 +76,27 @@ model User {
 }
 
 model ProfilSekolah {
-  id          String   @id @default(uuid())
-  namaSekolah String   @default("MA Negeri 1 Contoh")
-  npsn        String   @default("-")
-  akreditasi  String   @default("A")
-  tagline     String?
-  deskripsi   String?  @db.Text
-  sejarah     String?  @db.Text
-  logo        String?
-  banner      String?
-  alamat      String?  @db.Text
-  email       String?
-  telepon     String?
-  whatsapp    String?
-  mapsUrl     String?  @db.Text
-  visi        String?  @db.Text
-  misi        Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(uuid())
+  namaSekolah   String   @default("MA Negeri 1 Contoh")
+  npsn          String   @default("-")
+  akreditasi    String   @default("A")
+  tagline       String?
+  deskripsi     String?  @db.Text
+  sejarah       String?  @db.Text
+  logo          String?
+  banner        String?
+  alamat        String?  @db.Text
+  email         String?
+  telepon       String?
+  whatsapp      String?
+  mapsUrl       String?  @db.Text
+  visi          String?  @db.Text
+  misi          Json?
+  rdmUrl        String?  @db.Text
+  rdmKeterangan String?  @db.Text
+  rdmAktif      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("profilSekolah")
 }

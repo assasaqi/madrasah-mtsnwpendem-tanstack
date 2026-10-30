@@ -4600,6 +4600,9 @@ export namespace Prisma {
     whatsapp: string | null
     mapsUrl: string | null
     visi: string | null
+    rdmUrl: string | null
+    rdmKeterangan: string | null
+    rdmAktif: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4620,6 +4623,9 @@ export namespace Prisma {
     whatsapp: string | null
     mapsUrl: string | null
     visi: string | null
+    rdmUrl: string | null
+    rdmKeterangan: string | null
+    rdmAktif: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4641,6 +4647,9 @@ export namespace Prisma {
     mapsUrl: number
     visi: number
     misi: number
+    rdmUrl: number
+    rdmKeterangan: number
+    rdmAktif: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4663,6 +4672,9 @@ export namespace Prisma {
     whatsapp?: true
     mapsUrl?: true
     visi?: true
+    rdmUrl?: true
+    rdmKeterangan?: true
+    rdmAktif?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4683,6 +4695,9 @@ export namespace Prisma {
     whatsapp?: true
     mapsUrl?: true
     visi?: true
+    rdmUrl?: true
+    rdmKeterangan?: true
+    rdmAktif?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4704,6 +4719,9 @@ export namespace Prisma {
     mapsUrl?: true
     visi?: true
     misi?: true
+    rdmUrl?: true
+    rdmKeterangan?: true
+    rdmAktif?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4798,6 +4816,9 @@ export namespace Prisma {
     mapsUrl: string | null
     visi: string | null
     misi: JsonValue | null
+    rdmUrl: string | null
+    rdmKeterangan: string | null
+    rdmAktif: boolean
     createdAt: Date
     updatedAt: Date
     _count: ProfilSekolahCountAggregateOutputType | null
@@ -4836,6 +4857,9 @@ export namespace Prisma {
     mapsUrl?: boolean
     visi?: boolean
     misi?: boolean
+    rdmUrl?: boolean
+    rdmKeterangan?: boolean
+    rdmAktif?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["profilSekolah"]>
@@ -4859,11 +4883,14 @@ export namespace Prisma {
     mapsUrl?: boolean
     visi?: boolean
     misi?: boolean
+    rdmUrl?: boolean
+    rdmKeterangan?: boolean
+    rdmAktif?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProfilSekolahOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "namaSekolah" | "npsn" | "akreditasi" | "tagline" | "deskripsi" | "sejarah" | "logo" | "banner" | "alamat" | "email" | "telepon" | "whatsapp" | "mapsUrl" | "visi" | "misi" | "createdAt" | "updatedAt", ExtArgs["result"]["profilSekolah"]>
+  export type ProfilSekolahOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "namaSekolah" | "npsn" | "akreditasi" | "tagline" | "deskripsi" | "sejarah" | "logo" | "banner" | "alamat" | "email" | "telepon" | "whatsapp" | "mapsUrl" | "visi" | "misi" | "rdmUrl" | "rdmKeterangan" | "rdmAktif" | "createdAt" | "updatedAt", ExtArgs["result"]["profilSekolah"]>
 
   export type $ProfilSekolahPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ProfilSekolah"
@@ -4885,6 +4912,9 @@ export namespace Prisma {
       mapsUrl: string | null
       visi: string | null
       misi: Prisma.JsonValue | null
+      rdmUrl: string | null
+      rdmKeterangan: string | null
+      rdmAktif: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["profilSekolah"]>
@@ -5272,6 +5302,9 @@ export namespace Prisma {
     readonly mapsUrl: FieldRef<"ProfilSekolah", 'String'>
     readonly visi: FieldRef<"ProfilSekolah", 'String'>
     readonly misi: FieldRef<"ProfilSekolah", 'Json'>
+    readonly rdmUrl: FieldRef<"ProfilSekolah", 'String'>
+    readonly rdmKeterangan: FieldRef<"ProfilSekolah", 'String'>
+    readonly rdmAktif: FieldRef<"ProfilSekolah", 'Boolean'>
     readonly createdAt: FieldRef<"ProfilSekolah", 'DateTime'>
     readonly updatedAt: FieldRef<"ProfilSekolah", 'DateTime'>
   }
@@ -30136,6 +30169,9 @@ export namespace Prisma {
     mapsUrl: 'mapsUrl',
     visi: 'visi',
     misi: 'misi',
+    rdmUrl: 'rdmUrl',
+    rdmKeterangan: 'rdmKeterangan',
+    rdmAktif: 'rdmAktif',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -30551,7 +30587,9 @@ export namespace Prisma {
     telepon: 'telepon',
     whatsapp: 'whatsapp',
     mapsUrl: 'mapsUrl',
-    visi: 'visi'
+    visi: 'visi',
+    rdmUrl: 'rdmUrl',
+    rdmKeterangan: 'rdmKeterangan'
   };
 
   export type ProfilSekolahOrderByRelevanceFieldEnum = (typeof ProfilSekolahOrderByRelevanceFieldEnum)[keyof typeof ProfilSekolahOrderByRelevanceFieldEnum]
@@ -31055,6 +31093,9 @@ export namespace Prisma {
     mapsUrl?: StringNullableFilter<"ProfilSekolah"> | string | null
     visi?: StringNullableFilter<"ProfilSekolah"> | string | null
     misi?: JsonNullableFilter<"ProfilSekolah">
+    rdmUrl?: StringNullableFilter<"ProfilSekolah"> | string | null
+    rdmKeterangan?: StringNullableFilter<"ProfilSekolah"> | string | null
+    rdmAktif?: BoolFilter<"ProfilSekolah"> | boolean
     createdAt?: DateTimeFilter<"ProfilSekolah"> | Date | string
     updatedAt?: DateTimeFilter<"ProfilSekolah"> | Date | string
   }
@@ -31076,6 +31117,9 @@ export namespace Prisma {
     mapsUrl?: SortOrderInput | SortOrder
     visi?: SortOrderInput | SortOrder
     misi?: SortOrderInput | SortOrder
+    rdmUrl?: SortOrderInput | SortOrder
+    rdmKeterangan?: SortOrderInput | SortOrder
+    rdmAktif?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _relevance?: ProfilSekolahOrderByRelevanceInput
@@ -31101,6 +31145,9 @@ export namespace Prisma {
     mapsUrl?: StringNullableFilter<"ProfilSekolah"> | string | null
     visi?: StringNullableFilter<"ProfilSekolah"> | string | null
     misi?: JsonNullableFilter<"ProfilSekolah">
+    rdmUrl?: StringNullableFilter<"ProfilSekolah"> | string | null
+    rdmKeterangan?: StringNullableFilter<"ProfilSekolah"> | string | null
+    rdmAktif?: BoolFilter<"ProfilSekolah"> | boolean
     createdAt?: DateTimeFilter<"ProfilSekolah"> | Date | string
     updatedAt?: DateTimeFilter<"ProfilSekolah"> | Date | string
   }, "id">
@@ -31122,6 +31169,9 @@ export namespace Prisma {
     mapsUrl?: SortOrderInput | SortOrder
     visi?: SortOrderInput | SortOrder
     misi?: SortOrderInput | SortOrder
+    rdmUrl?: SortOrderInput | SortOrder
+    rdmKeterangan?: SortOrderInput | SortOrder
+    rdmAktif?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProfilSekolahCountOrderByAggregateInput
@@ -31149,6 +31199,9 @@ export namespace Prisma {
     mapsUrl?: StringNullableWithAggregatesFilter<"ProfilSekolah"> | string | null
     visi?: StringNullableWithAggregatesFilter<"ProfilSekolah"> | string | null
     misi?: JsonNullableWithAggregatesFilter<"ProfilSekolah">
+    rdmUrl?: StringNullableWithAggregatesFilter<"ProfilSekolah"> | string | null
+    rdmKeterangan?: StringNullableWithAggregatesFilter<"ProfilSekolah"> | string | null
+    rdmAktif?: BoolWithAggregatesFilter<"ProfilSekolah"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ProfilSekolah"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ProfilSekolah"> | Date | string
   }
@@ -33057,6 +33110,9 @@ export namespace Prisma {
     mapsUrl?: string | null
     visi?: string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: string | null
+    rdmKeterangan?: string | null
+    rdmAktif?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33078,6 +33134,9 @@ export namespace Prisma {
     mapsUrl?: string | null
     visi?: string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: string | null
+    rdmKeterangan?: string | null
+    rdmAktif?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33099,6 +33158,9 @@ export namespace Prisma {
     mapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     visi?: NullableStringFieldUpdateOperationsInput | string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmKeterangan?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmAktif?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33120,6 +33182,9 @@ export namespace Prisma {
     mapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     visi?: NullableStringFieldUpdateOperationsInput | string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmKeterangan?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmAktif?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33141,6 +33206,9 @@ export namespace Prisma {
     mapsUrl?: string | null
     visi?: string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: string | null
+    rdmKeterangan?: string | null
+    rdmAktif?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33162,6 +33230,9 @@ export namespace Prisma {
     mapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     visi?: NullableStringFieldUpdateOperationsInput | string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmKeterangan?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmAktif?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33183,6 +33254,9 @@ export namespace Prisma {
     mapsUrl?: NullableStringFieldUpdateOperationsInput | string | null
     visi?: NullableStringFieldUpdateOperationsInput | string | null
     misi?: NullableJsonNullValueInput | InputJsonValue
+    rdmUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmKeterangan?: NullableStringFieldUpdateOperationsInput | string | null
+    rdmAktif?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35336,6 +35410,9 @@ export namespace Prisma {
     mapsUrl?: SortOrder
     visi?: SortOrder
     misi?: SortOrder
+    rdmUrl?: SortOrder
+    rdmKeterangan?: SortOrder
+    rdmAktif?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35356,6 +35433,9 @@ export namespace Prisma {
     whatsapp?: SortOrder
     mapsUrl?: SortOrder
     visi?: SortOrder
+    rdmUrl?: SortOrder
+    rdmKeterangan?: SortOrder
+    rdmAktif?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35376,6 +35456,9 @@ export namespace Prisma {
     whatsapp?: SortOrder
     mapsUrl?: SortOrder
     visi?: SortOrder
+    rdmUrl?: SortOrder
+    rdmKeterangan?: SortOrder
+    rdmAktif?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }

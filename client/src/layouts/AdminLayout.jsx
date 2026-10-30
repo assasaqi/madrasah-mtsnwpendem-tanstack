@@ -19,6 +19,7 @@ export default function AdminLayout() {
       case '/admin/profil-sekolah/fasilitas': return 'Fasilitas Madrasah';
       case '/admin/berita': return 'Kelola Berita';
       case '/admin/spmb': return 'Verifikasi SPMB';
+      case '/admin/rdm': return 'Rapor Digital (RDM)';
       case '/admin/unduhan': return 'Pusat Unduhan';
       case '/admin/faq': return 'Tanya Jawab (FAQ)';
       case '/admin/pengumuman': return 'Pengumuman';

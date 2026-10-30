@@ -24,6 +24,7 @@ export const MENU = [
     label: 'Layanan',
     children: [
       { label: 'Pendaftaran SPMB', to: '/spmb' },
+      { label: 'Rapor Digital (RDM)', to: '/rdm' },
       { label: 'Pusat Unduhan', to: '/unduhan' },
       { label: 'Tanya Jawab (FAQ)', to: '/faq' }
     ]

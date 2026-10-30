@@ -21,7 +21,8 @@ import {
   FolderDown,
   HelpCircle,
   Info,
-  Layers
+  Layers,
+  BookOpenCheck
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { cx } from './ui';
@@ -67,6 +68,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: Layers,
       children: [
         { path: '/admin/spmb', label: 'Pendaftaran SPMB', icon: Users },
+        { path: '/admin/rdm', label: 'Rapor Digital (RDM)', icon: BookOpenCheck },
         { path: '/admin/unduhan', label: 'Pusat Unduhan', icon: FolderDown },
         { path: '/admin/faq', label: 'Tanya Jawab (FAQ)', icon: HelpCircle }
       ]

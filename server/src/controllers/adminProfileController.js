@@ -124,7 +124,10 @@ exports.updateSchoolProfile = catchAsync(async (req, res) => {
     ...(body.whatsapp !== undefined && { whatsapp: body.whatsapp }),
     ...(body.mapsUrl !== undefined && { mapsUrl: body.mapsUrl }),
     ...(body.visi !== undefined && { visi: body.visi }),
-    ...(body.misi !== undefined && { misi: parseMisi(body.misi) })
+    ...(body.misi !== undefined && { misi: parseMisi(body.misi) }),
+    ...(body.rdmUrl !== undefined && { rdmUrl: body.rdmUrl ? String(body.rdmUrl).trim() : null }),
+    ...(body.rdmKeterangan !== undefined && { rdmKeterangan: body.rdmKeterangan ? String(body.rdmKeterangan).trim() : null }),
+    ...(body.rdmAktif !== undefined && { rdmAktif: Boolean(body.rdmAktif) })
   };
 
   if (req.files?.logo) {
@@ -143,4 +146,87 @@ exports.updateSchoolProfile = catchAsync(async (req, res) => {
     : await prisma.profilSekolah.create({ data: payload });
 
   res.status(200).json({ success: true, message: 'Profil sekolah berhasil diperbarui.', data: result });
+});
+
+// Mengambil konfigurasi tautan Rapor Digital Madrasah (RDM)
+exports.getRdmSettings = catchAsync(async (req, res) => {
+  let profil = await prisma.profilSekolah.findFirst({
+    select: {
+      id: true,
+      rdmUrl: true,
+      rdmKeterangan: true,
+      rdmAktif: true,
+      namaSekolah: true,
+      updatedAt: true
+    }
+  });
+
+  if (!profil) {
+    profil = await prisma.profilSekolah.create({
+      data: {
+        namaSekolah: 'MTs NW Pendem',
+        npsn: '50222811',
+        akreditasi: 'B',
+        rdmAktif: true
+      },
+      select: {
+        id: true,
+        rdmUrl: true,
+        rdmKeterangan: true,
+        rdmAktif: true,
+        namaSekolah: true,
+        updatedAt: true
+      }
+    });
+  }
+
+  res.status(200).json({ success: true, data: profil });
+});
+
+// Memperbarui konfigurasi tautan Rapor Digital Madrasah (RDM)
+exports.updateRdmSettings = catchAsync(async (req, res) => {
+  const existing = await prisma.profilSekolah.findFirst();
+  const body = req.body || {};
+
+  const payload = {
+    ...(body.rdmUrl !== undefined && { rdmUrl: body.rdmUrl ? String(body.rdmUrl).trim() : null }),
+    ...(body.rdmKeterangan !== undefined && { rdmKeterangan: body.rdmKeterangan ? String(body.rdmKeterangan).trim() : null }),
+    ...(body.rdmAktif !== undefined && { rdmAktif: Boolean(body.rdmAktif) })
+  };
+
+  const result = existing
+    ? await prisma.profilSekolah.update({
+        where: { id: existing.id },
+        data: payload,
+        select: {
+          id: true,
+          rdmUrl: true,
+          rdmKeterangan: true,
+          rdmAktif: true,
+          namaSekolah: true,
+          updatedAt: true
+        }
+      })
+    : await prisma.profilSekolah.create({
+        data: {
+          namaSekolah: 'MTs NW Pendem',
+          npsn: '50222811',
+          akreditasi: 'B',
+          ...payload
+        },
+        select: {
+          id: true,
+          rdmUrl: true,
+          rdmKeterangan: true,
+          rdmAktif: true,
+          namaSekolah: true,
+          updatedAt: true
+        }
+      });
+
+  res.status(200).json({
+    success: true,
+    message: 'Pengaturan tautan RDM berhasil disimpan.',
+    data: result
+  });
 });

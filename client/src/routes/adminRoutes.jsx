@@ -18,6 +18,7 @@ import AdminAgenda from '../pages/admin/AdminAgenda';
 import AdminPrestasi from '../pages/admin/AdminPrestasi';
 import AdminUnduhan from '../pages/admin/AdminUnduhan';
 import AdminFaq from '../pages/admin/AdminFaq';
+import AdminRdm from '../pages/admin/AdminRdm';
 import AdminProfile from '../pages/admin/AdminProfile';
 
 export const adminGuardRoute = createRoute({
@@ -131,6 +132,12 @@ export const adminFaqRoute = createRoute({
   component: AdminFaq
 });
 
+export const adminRdmRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  path: '/admin/rdm',
+  component: AdminRdm
+});
+
 export const adminPesanKontakRoute = createRoute({
   getParentRoute: () => adminLayoutRoute,
   path: '/admin/pesan-kontak',
@@ -163,6 +170,7 @@ export const adminRouteTree = adminGuardRoute.addChildren([
     adminPrestasiRoute,
     adminUnduhanRoute,
     adminFaqRoute,
+    adminRdmRoute,
     adminPesanKontakRoute,
     adminProfileRoute
   ])

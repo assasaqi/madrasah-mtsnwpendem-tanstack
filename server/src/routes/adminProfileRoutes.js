@@ -19,6 +19,10 @@ router.put('/change-password', profileController.changePassword);
 router.get('/school', profileController.getSchoolProfile);
 router.put('/school', ...fields([{ name: 'logo', maxCount: 1 }, { name: 'banner', maxCount: 1 }]), profileController.updateSchoolProfile);
 
+// Pengaturan tautan Rapor Digital Madrasah (RDM)
+router.get('/rdm', profileController.getRdmSettings);
+router.put('/rdm', profileController.updateRdmSettings);
+
 // Sejarah singkat madrasah
 router.get('/sejarah', sejarahController.getSejarah);
 router.put('/sejarah', sejarahController.updateSejarah);

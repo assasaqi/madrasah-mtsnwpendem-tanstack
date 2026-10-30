@@ -92,6 +92,9 @@ model ProfilSekolah {
   mapsUrl     String?  @db.Text
   visi        String?  @db.Text
   misi        Json?
+  rdmUrl      String?  @db.Text
+  rdmKeterangan String? @db.Text
+  rdmAktif    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

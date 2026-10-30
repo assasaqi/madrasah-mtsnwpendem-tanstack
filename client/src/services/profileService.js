@@ -115,3 +115,15 @@ export const deleteFasilitas = async (id) => {
   const response = await api.delete(`/admin/profile/fasilitas/${id}`);
   return response.data;
 };
+
+// Mengambil konfigurasi tautan Rapor Digital Madrasah (RDM)
+export const getRdmSettings = async () => {
+  const response = await api.get('/admin/profile/rdm');
+  return unwrap(response);
+};
+
+// Memperbarui konfigurasi tautan Rapor Digital Madrasah (RDM)
+export const updateRdmSettings = async (payload) => {
+  const response = await api.put('/admin/profile/rdm', payload);
+  return unwrap(response);
+};

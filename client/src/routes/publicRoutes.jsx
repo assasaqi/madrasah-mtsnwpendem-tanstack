@@ -13,6 +13,7 @@ import Agenda from '../pages/public/Agenda';
 import Prestasi from '../pages/public/Prestasi';
 import Unduhan from '../pages/public/Unduhan';
 import Faq from '../pages/public/Faq';
+import Rdm from '../pages/public/Rdm';
 
 export const publicLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -92,6 +93,12 @@ export const faqRoute = createRoute({
   component: Faq
 });
 
+export const rdmRoute = createRoute({
+  getParentRoute: () => publicLayoutRoute,
+  path: '/rdm',
+  component: Rdm
+});
+
 export const publicRouteTree = publicLayoutRoute.addChildren([
   homeRoute,
   profilRoute,
@@ -104,5 +111,6 @@ export const publicRouteTree = publicLayoutRoute.addChildren([
   agendaRoute,
   prestasiRoute,
   unduhanRoute,
-  faqRoute
+  faqRoute,
+  rdmRoute
 ]);

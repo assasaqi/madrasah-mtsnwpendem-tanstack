@@ -20,7 +20,8 @@ import {
   Trophy,
   FolderDown,
   HelpCircle,
-  Info
+  Info,
+  Layers
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import { cx } from './ui';
@@ -48,7 +49,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
       path: '/admin/profil-sekolah',
-      label: 'Profil Sekolah',
+      label: 'Profil',
       icon: School,
       children: [
         { path: '/admin/profil-sekolah', label: 'Identitas Madrasah', icon: IdCard },
@@ -59,12 +60,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         { path: '/admin/profil-sekolah/fasilitas', label: 'Fasilitas', icon: Landmark }
       ]
     },
+    { path: '/admin/berita', label: 'Berita', icon: FileText },
     {
-      path: '/admin/spmb',
-      label: 'SPMB',
-      icon: Users
+      path: '/admin/layanan',
+      label: 'Layanan',
+      icon: Layers,
+      children: [
+        { path: '/admin/spmb', label: 'Pendaftaran SPMB', icon: Users },
+        { path: '/admin/unduhan', label: 'Pusat Unduhan', icon: FolderDown },
+        { path: '/admin/faq', label: 'Tanya Jawab (FAQ)', icon: HelpCircle }
+      ]
     },
-    { path: '/admin/berita', label: 'Kelola Berita', icon: FileText },
     {
       path: '/admin/informasi',
       label: 'Informasi',
@@ -72,9 +78,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       children: [
         { path: '/admin/pengumuman', label: 'Pengumuman', icon: Megaphone },
         { path: '/admin/agenda', label: 'Agenda Kegiatan', icon: CalendarDays },
-        { path: '/admin/prestasi', label: 'Prestasi', icon: Trophy },
-        { path: '/admin/unduhan', label: 'Pusat Unduhan', icon: FolderDown },
-        { path: '/admin/faq', label: 'Pertanyaan Umum', icon: HelpCircle }
+        { path: '/admin/prestasi', label: 'Prestasi', icon: Trophy }
       ]
     },
     { path: '/admin/galeri', label: 'Galeri', icon: Images }

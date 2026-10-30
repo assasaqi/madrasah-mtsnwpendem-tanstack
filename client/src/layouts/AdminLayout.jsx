@@ -17,9 +17,13 @@ export default function AdminLayout() {
       case '/admin/profil-sekolah/sejarah': return 'Sejarah Singkat';
       case '/admin/profil-sekolah/struktur': return 'Struktur Organisasi';
       case '/admin/profil-sekolah/fasilitas': return 'Fasilitas Madrasah';
-      case '/admin/spmb': return 'Verifikasi SPMB';
       case '/admin/berita': return 'Kelola Berita';
+      case '/admin/spmb': return 'Verifikasi SPMB';
+      case '/admin/unduhan': return 'Pusat Unduhan';
+      case '/admin/faq': return 'Tanya Jawab (FAQ)';
       case '/admin/pengumuman': return 'Pengumuman';
+      case '/admin/agenda': return 'Agenda Kegiatan';
+      case '/admin/prestasi': return 'Prestasi Madrasah';
       case '/admin/galeri': return 'Galeri Madrasah';
       case '/admin/pengaturan-profil': return 'Pengaturan Profil';
       default: return 'Panel Administrator';

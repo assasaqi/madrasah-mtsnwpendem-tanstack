@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import { publicService } from '../../services/publicService';
 import { getFileUrl } from '../../utils/helpers';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
@@ -78,6 +78,7 @@ export default function Home() {
   const banner = profil?.banner ? getFileUrl(profil.banner) : '';
   const tagline = String(profil?.tagline || '').trim() || 'Info data belum tersedia';
   const barisTagline = bagiDuaBaris(tagline);
+  const rdmUrl = profil?.rdmUrl || 'https://rdm-mtsnwpendem.rasmantech.web.id/';
 
   const kontenBanner = (
     <div className="absolute inset-0 flex items-center">
@@ -96,12 +97,14 @@ export default function Home() {
         )}
 
         <div className={`${tagline ? 'mt-2 sm:mt-5' : ''} flex flex-wrap items-center gap-1.5 sm:gap-2.5`}>
-          <Link
-            to="/spmb"
+          <a
+            href={rdmUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-gradient-to-r from-[#d9b26a] to-[#f3e7c4] px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#123a24] shadow-md transition-opacity hover:opacity-90"
           >
-            Daftar SPMB <ArrowRight size={13} />
-          </Link>
+            Rapor Digital (RDM) <ExternalLink size={13} />
+          </a>
           <Link
             to="/profil"
             className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#f7f5ee] backdrop-blur-sm transition-colors hover:bg-white/20"

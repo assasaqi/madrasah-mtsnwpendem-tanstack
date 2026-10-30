@@ -41,6 +41,33 @@ export const formatDate = (value, options = {}) => {
   });
 };
 
+// Memformat jam menjadi format lokal (HH:mm)
+export const formatTime = (value) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+};
+
+// Memformat tanggal beserta jam (contoh: 30 Oktober 2026 • 13:45 WIB)
+export const formatDateTime = (value, options = {}) => {
+  if (!value) return '-';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '-';
+  const dateStr = formatDate(value, options);
+  const timeStr = formatTime(value);
+  return timeStr ? `${dateStr} • ${timeStr} WIB` : dateStr;
+};
+
+// Mengubah tanggal ISO atau Date menjadi format input datetime-local (YYYY-MM-DDTHH:mm)
+export const toLocalInput = (value) => {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (number) => String(number).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
 // Menghapus seluruh tag HTML dari teks
 export const stripHtml = (html) => String(html || '')
   .replace(/<[^>]*>/g, ' ')

@@ -6,10 +6,13 @@ import {
   Edit2,
   Loader2,
   RefreshCw,
-  ImagePlus
+  ImagePlus,
+  User,
+  Clock,
+  CalendarDays
 } from 'lucide-react';
 import { beritaService } from '../../services/beritaService';
-import { formatDate, getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
 import {
   PageHeader,
   Panel,
@@ -49,7 +52,8 @@ export default function AdminBerita() {
     judul: '',
     kategoriId: '',
     konten: '',
-    isPublished: true
+    isPublished: true,
+    createdAt: ''
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -111,7 +115,8 @@ export default function AdminBerita() {
         judul: item.judul || item.title || '',
         kategoriId: item.kategoriId || item.kategori?.id || '',
         konten: item.konten || item.content || '',
-        isPublished: item.isPublished ?? item.published ?? true
+        isPublished: item.isPublished ?? item.published ?? true,
+        createdAt: toLocalInput(item.createdAt)
       });
       const rawGambar = item.gambar || item.imageUrl;
       setImagePreview(rawGambar ? getFileUrl(rawGambar) : null);
@@ -121,7 +126,8 @@ export default function AdminBerita() {
         judul: '',
         kategoriId: kategoriList.length > 0 ? kategoriList[0].id || kategoriList[0]._id : '',
         konten: '',
-        isPublished: true
+        isPublished: true,
+        createdAt: toLocalInput(new Date())
       });
       setImagePreview(null);
     }
@@ -133,7 +139,7 @@ export default function AdminBerita() {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingItem(null);
-    setFormData({ judul: '', kategoriId: '', konten: '', isPublished: true });
+    setFormData({ judul: '', kategoriId: '', konten: '', isPublished: true, createdAt: '' });
     setImageFile(null);
     setImagePreview(null);
   };
@@ -189,6 +195,7 @@ export default function AdminBerita() {
         konten: formData.konten,
         kategoriId: formData.kategoriId,
         isPublished: formData.isPublished,
+        createdAt: formData.createdAt ? new Date(formData.createdAt).toISOString() : new Date().toISOString(),
         imageFile: imageFile,
         gambar: imageFile
       };
@@ -330,7 +337,13 @@ export default function AdminBerita() {
                             <p className="mt-0.5 line-clamp-1 text-[10.5px] text-muted">
                               {item.konten || item.content || 'Belum ada isi artikel.'}
                             </p>
-                            <p className="mt-1 flex items-center gap-1 text-[10px] text-muted md:hidden">
+                            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-muted md:hidden">
+                              {item.author?.email && (
+                                <span className="inline-flex items-center gap-1 font-medium text-brand">
+                                  <User size={10} />
+                                  <span className="truncate max-w-[120px]">{item.author.email}</span>
+                                </span>
+                              )}
                               <span className="truncate">{kategori}</span>
                               <span className="whitespace-nowrap">
                                 · {formatDate(item.createdAt, { month: 'short' })}
@@ -349,7 +362,15 @@ export default function AdminBerita() {
                           <StatusDot tone="stone">Draf</StatusDot>
                         )}
                       </Td>
-                      <Td className="hidden whitespace-nowrap text-muted md:table-cell">{formatDate(item.createdAt)}</Td>
+                      <Td className="hidden whitespace-nowrap text-muted md:table-cell">
+                        <div className="font-medium text-ink/85">{formatDate(item.createdAt)}</div>
+                        <div className="text-[11px] text-muted/75">{formatTime(item.createdAt)} WIB</div>
+                        {item.author?.email && (
+                          <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-brand">
+                            <User size={11} /> {item.author.email}
+                          </div>
+                        )}
+                      </Td>
                       <Td align="right">
                         <div className="flex items-center justify-end gap-0.5">
                           <IconButton label="Edit berita" tone="brand" onClick={() => handleOpenModal(item)}>
@@ -421,6 +442,16 @@ export default function AdminBerita() {
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Tanggal & Waktu Publikasi" required>
+              <Input
+                type="datetime-local"
+                name="createdAt"
+                required
+                value={formData.createdAt}
+                onChange={handleInputChange}
+              />
+            </Field>
+
             <Field label="Kategori">
               <div className="flex items-center gap-2">
                 <Select name="kategoriId" value={formData.kategoriId} onChange={handleInputChange} className="flex-1">
@@ -436,15 +467,15 @@ export default function AdminBerita() {
                 </Button>
               </div>
             </Field>
-
-            <Field label="Foto header" hint="Rasio lanskap 16:9, maksimal 5MB.">
-              <label className={buttonClass('secondary', 'md', 'w-full cursor-pointer')}>
-                <ImagePlus size={15} />
-                {imageFile ? imageFile.name : 'Pilih gambar'}
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-              </label>
-            </Field>
           </div>
+
+          <Field label="Foto header" hint="Rasio lanskap 16:9, maksimal 5MB.">
+            <label className={buttonClass('secondary', 'md', 'w-full cursor-pointer')}>
+              <ImagePlus size={15} />
+              {imageFile ? imageFile.name : 'Pilih gambar'}
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+            </label>
+          </Field>
 
           {imagePreview && (
             <div className="flex items-center gap-3 rounded-lg border border-line bg-[#faf8f3] p-2.5">

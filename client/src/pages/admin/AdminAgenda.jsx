@@ -334,7 +334,7 @@ export default function AdminAgenda() {
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Mulai" required>
+            <Field label="Tanggal & Waktu Mulai" required>
               <Input
                 type="datetime-local"
                 required
@@ -342,7 +342,7 @@ export default function AdminAgenda() {
                 onChange={(event) => setForm({ ...form, mulai: event.target.value })}
               />
             </Field>
-            <Field label="Selesai" hint="Opsional.">
+            <Field label="Tanggal & Waktu Selesai" hint="Opsional.">
               <Input
                 type="datetime-local"
                 value={form.selesai}

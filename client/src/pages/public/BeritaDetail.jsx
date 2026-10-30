@@ -5,14 +5,14 @@ import {
   CalendarDays,
   Check,
   ChevronRight,
+  Clock,
   Home,
   Link2,
   Newspaper,
-  Share2,
-  User
+  Share2
 } from 'lucide-react';
 import { publicService } from '../../services/publicService';
-import { formatArticleHtml, formatDate, getFileUrl } from '../../utils/helpers';
+import { formatArticleHtml, formatDate, formatTime, getFileUrl } from '../../utils/helpers';
 import { Alert } from '../../components/ui';
 
 // Menampilkan artikel berita lengkap dengan format portal berita resmi Kemenag
@@ -145,9 +145,9 @@ export default function BeritaDetail() {
                       year: 'numeric'
                     })}
                   </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <User size={13} className="text-brand" />
-                    {berita.author?.nama || berita.author?.email || 'Humas Madrasah'}
+                  <span className="inline-flex items-center gap-1.5 font-medium text-ink/80">
+                    <Clock size={13} className="text-brand" />
+                    {formatTime(berita.createdAt)} WIB
                   </span>
                 </div>
 

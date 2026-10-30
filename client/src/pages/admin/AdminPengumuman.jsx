@@ -7,10 +7,12 @@ import {
   Loader2,
   Download,
   Paperclip,
-  ExternalLink
+  ExternalLink,
+  Clock,
+  CalendarDays
 } from 'lucide-react';
 import { pengumumanService } from '../../services/pengumumanService';
-import { formatDate, getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
 import {
   PageHeader,
   Panel,
@@ -41,7 +43,7 @@ export default function AdminPengumuman() {
   const [showModal, setShowModal] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
   const [editId, setEditId] = useState(null);
-  const [formData, setFormData] = useState({ judul: '', konten: '', isPublished: true });
+  const [formData, setFormData] = useState({ judul: '', konten: '', isPublished: true, createdAt: '' });
   const [lampiran, setLampiran] = useState(null);
   const [notice, setNotice] = useState({ type: '', message: '' });
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,7 +69,7 @@ export default function AdminPengumuman() {
 
   // Mengosongkan formulir pengumuman
   const resetForm = () => {
-    setFormData({ judul: '', konten: '', isPublished: true });
+    setFormData({ judul: '', konten: '', isPublished: true, createdAt: toLocalInput(new Date()) });
     setLampiran(null);
     setEditId(null);
   };
@@ -84,7 +86,8 @@ export default function AdminPengumuman() {
     setFormData({
       judul: item.judul || '',
       konten: item.konten || '',
-      isPublished: item.isPublished !== undefined ? item.isPublished : true
+      isPublished: item.isPublished !== undefined ? item.isPublished : true,
+      createdAt: toLocalInput(item.createdAt)
     });
     setLampiran(null);
     setShowModal(true);
@@ -134,6 +137,9 @@ export default function AdminPengumuman() {
       payload.append('judul', formData.judul);
       payload.append('konten', formData.konten);
       payload.append('isPublished', formData.isPublished);
+      if (formData.createdAt) {
+        payload.append('createdAt', new Date(formData.createdAt).toISOString());
+      }
       if (lampiran instanceof File) payload.append('lampiran', lampiran);
 
       if (editId) await pengumumanService.update(editId, payload);
@@ -246,7 +252,10 @@ export default function AdminPengumuman() {
                           )}
                         </div>
                       </Td>
-                      <Td className="hidden whitespace-nowrap text-muted md:table-cell">{formatDate(item.createdAt)}</Td>
+                      <Td className="hidden whitespace-nowrap text-muted md:table-cell">
+                        <div className="font-medium text-ink/85">{formatDate(item.createdAt)}</div>
+                        <div className="text-[11px] text-muted/75">{formatTime(item.createdAt)} WIB</div>
+                      </Td>
                       <Td>
                         {item.isPublished ? (
                           <StatusDot tone="brand">Aktif</StatusDot>
@@ -334,6 +343,15 @@ export default function AdminPengumuman() {
               value={formData.judul}
               onChange={(event) => setFormData({ ...formData, judul: event.target.value })}
               placeholder="Contoh: Pembukaan SPMB tahun ajaran 2027/2028"
+            />
+          </Field>
+
+          <Field label="Tanggal & Waktu Publikasi" required>
+            <Input
+              type="datetime-local"
+              required
+              value={formData.createdAt}
+              onChange={(event) => setFormData({ ...formData, createdAt: event.target.value })}
             />
           </Field>
 

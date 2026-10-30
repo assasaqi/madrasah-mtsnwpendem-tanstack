@@ -9,6 +9,7 @@ const buildBeritaFormData = (payload) => {
   data.append('konten', payload.konten || '');
   data.append('isPublished', payload.isPublished ?? true);
 
+  if (payload.createdAt) data.append('createdAt', payload.createdAt);
   if (payload.kategoriId) data.append('kategoriId', payload.kategoriId);
 
   const file = payload.imageFile || payload.gambar;

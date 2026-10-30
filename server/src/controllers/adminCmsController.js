@@ -67,7 +67,7 @@ const prestasiSchema = z.object({
   peraih: z.string().trim().max(200, 'Nama peraih maksimal 200 karakter.').optional().nullable(),
   tingkat: z.enum(TINGKAT_PRESTASI, { message: 'Tingkat prestasi tidak valid.' }),
   juara: z.string().trim().max(100, 'Juara maksimal 100 karakter.').optional().nullable(),
-  tahun: z.coerce.number().int().min(1990, 'Tahun minimal 1990.').max(2100, 'Tahun maksimal 2100.'),
+  tahun: z.coerce.number().int().min(1990, 'Tahun minimal 1990.').max(2100, 'Tahun maksimal 2100.').optional(),
   deskripsi: z.string().trim().max(2000, 'Deskripsi maksimal 2000 karakter.').optional().nullable()
 });
 
@@ -124,6 +124,8 @@ exports.createBerita = catchAsync(async (req, res) => {
   const authorId = req.user?.id || req.user?.userId;
   if (!authorId) throw new AppError('User pengunggah tidak terautentikasi.', 401);
 
+  const createdAt = req.body?.createdAt ? parseDate(req.body.createdAt, 'Tanggal dan waktu publikasi') : new Date();
+
   const berita = await prisma.berita.create({
     data: {
       judul: data.judul,
@@ -132,9 +134,13 @@ exports.createBerita = catchAsync(async (req, res) => {
       isPublished: toBoolean(req.body.isPublished),
       authorId,
       kategoriId: parseKategoriId(req.body.kategoriId) ?? null,
-      gambar: req.file ? req.file.filename : null
+      gambar: req.file ? req.file.filename : null,
+      createdAt: createdAt || new Date()
     },
-    include: { kategori: true }
+    include: {
+      kategori: true,
+      author: { select: { id: true, email: true } }
+    }
   });
 
   res.status(201).json({ success: true, message: 'Berita berhasil ditambahkan.', data: berita });
@@ -154,6 +160,10 @@ exports.updateBerita = catchAsync(async (req, res) => {
     ...(body.kategoriId !== undefined && { kategoriId: parseKategoriId(body.kategoriId) })
   };
 
+  if (body.createdAt !== undefined && body.createdAt !== '') {
+    payload.createdAt = parseDate(body.createdAt, 'Tanggal dan waktu publikasi', true);
+  }
+
   if (body.judul !== undefined && body.judul.trim().length < 3) {
     throw new AppError('Judul berita minimal 3 karakter.', 400);
   }
@@ -171,7 +181,10 @@ exports.updateBerita = catchAsync(async (req, res) => {
   const berita = await prisma.berita.update({
     where: { id },
     data: payload,
-    include: { kategori: true }
+    include: {
+      kategori: true,
+      author: { select: { id: true, email: true } }
+    }
   });
 
   res.status(200).json({ success: true, message: 'Berita berhasil diperbarui.', data: berita });
@@ -239,13 +252,16 @@ exports.getAllPengumuman = catchAsync(async (req, res) => {
 // Membuat pengumuman baru beserta lampiran
 exports.createPengumuman = catchAsync(async (req, res) => {
   const data = parseBody(pengumumanSchema, req.body || {});
+  const createdAt = req.body?.createdAt ? parseDate(req.body.createdAt, 'Tanggal dan waktu pengumuman') : new Date();
+
   const pengumuman = await prisma.pengumuman.create({
     data: {
       judul: data.judul,
       slug: await buildUniqueSlug(prisma.pengumuman, data.judul),
       konten: data.konten,
       isPublished: toBoolean(req.body.isPublished),
-      fileUrl: req.file ? req.file.filename : null
+      fileUrl: req.file ? req.file.filename : null,
+      createdAt: createdAt || new Date()
     }
   });
   res.status(201).json({ success: true, message: 'Pengumuman berhasil dibuat.', data: pengumuman });
@@ -263,6 +279,10 @@ exports.updatePengumuman = catchAsync(async (req, res) => {
     ...(body.konten !== undefined && { konten: body.konten.trim() }),
     ...(body.isPublished !== undefined && { isPublished: toBoolean(body.isPublished) })
   };
+
+  if (body.createdAt !== undefined && body.createdAt !== '') {
+    payload.createdAt = parseDate(body.createdAt, 'Tanggal dan waktu pengumuman', true);
+  }
 
   if (body.judul !== undefined && body.judul.trim().length < 3) {
     throw new AppError('Judul pengumuman minimal 3 karakter.', 400);
@@ -436,6 +456,8 @@ exports.getAllPrestasi = catchAsync(async (req, res) => {
 // Menambahkan prestasi baru beserta foto dokumentasi
 exports.createPrestasi = catchAsync(async (req, res) => {
   const data = parseBody(prestasiSchema, req.body || {});
+  const createdAt = req.body?.createdAt ? parseDate(req.body.createdAt, 'Tanggal dan waktu prestasi') : new Date();
+  const tahun = data.tahun || (createdAt ? createdAt.getFullYear() : new Date().getFullYear());
 
   const prestasi = await prisma.prestasi.create({
     data: {
@@ -443,10 +465,11 @@ exports.createPrestasi = catchAsync(async (req, res) => {
       peraih: data.peraih || null,
       tingkat: data.tingkat,
       juara: data.juara || null,
-      tahun: data.tahun,
+      tahun,
       deskripsi: data.deskripsi || null,
       gambar: req.file ? req.file.filename : null,
-      isPublished: toBoolean(req.body.isPublished)
+      isPublished: toBoolean(req.body.isPublished),
+      createdAt: createdAt || new Date()
     }
   });
 
@@ -461,6 +484,13 @@ exports.updatePrestasi = catchAsync(async (req, res) => {
 
   const body = req.body || {};
   const payload = { ...parseBody(prestasiSchema.partial(), body) };
+
+  if (body.createdAt !== undefined && body.createdAt !== '') {
+    payload.createdAt = parseDate(body.createdAt, 'Tanggal dan waktu prestasi', true);
+    if (!payload.tahun && payload.createdAt) {
+      payload.tahun = payload.createdAt.getFullYear();
+    }
+  }
 
   if (body.isPublished !== undefined) payload.isPublished = toBoolean(body.isPublished);
   if (payload.peraih !== undefined) payload.peraih = payload.peraih || null;

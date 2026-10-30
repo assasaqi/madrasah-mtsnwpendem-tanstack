@@ -6,10 +6,12 @@ import {
   RefreshCw,
   Trash2,
   Trophy,
-  Upload
+  Upload,
+  Clock,
+  CalendarDays
 } from 'lucide-react';
 import { prestasiService } from '../../services/prestasiService';
-import { getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
 import {
   PageHeader,
   Panel,
@@ -42,6 +44,7 @@ const emptyForm = {
   tingkat: 'Sekolah',
   juara: '',
   tahun: new Date().getFullYear(),
+  createdAt: '',
   deskripsi: '',
   isPublished: true
 };
@@ -93,10 +96,14 @@ export default function AdminPrestasi() {
             tingkat: item.tingkat || 'Sekolah',
             juara: item.juara || '',
             tahun: item.tahun || new Date().getFullYear(),
+            createdAt: toLocalInput(item.createdAt),
             deskripsi: item.deskripsi || '',
             isPublished: item.isPublished !== undefined ? item.isPublished : true
           }
-        : emptyForm
+        : {
+            ...emptyForm,
+            createdAt: toLocalInput(new Date())
+          }
     );
     setFile(null);
     setPreview(item?.gambar ? getFileUrl(item.gambar) : '');
@@ -146,7 +153,12 @@ export default function AdminPrestasi() {
 
     try {
       setSubmitting(true);
-      const payload = { ...form, tahun: Number(form.tahun), gambar: file };
+      const payload = {
+        ...form,
+        tahun: form.createdAt ? new Date(form.createdAt).getFullYear() : Number(form.tahun || new Date().getFullYear()),
+        createdAt: form.createdAt ? new Date(form.createdAt).toISOString() : new Date().toISOString(),
+        gambar: file
+      };
       if (editing) await prestasiService.update(editing.id, payload);
       else await prestasiService.create(payload);
 
@@ -228,7 +240,7 @@ export default function AdminPrestasi() {
               <tr>
                 <Th>Prestasi</Th>
                 <Th className="hidden md:table-cell">Tingkat</Th>
-                <Th className="hidden md:table-cell">Tahun</Th>
+                <Th className="hidden md:table-cell">Waktu & Tahun</Th>
                 <Th>Status</Th>
                 <Th align="right">Aksi</Th>
               </tr>
@@ -276,7 +288,12 @@ export default function AdminPrestasi() {
                     <Td className="hidden md:table-cell">
                       <Tag>{item.tingkat}</Tag>
                     </Td>
-                    <Td className="hidden whitespace-nowrap text-muted md:table-cell">{item.tahun}</Td>
+                    <Td className="hidden whitespace-nowrap text-muted md:table-cell">
+                      <div className="font-medium text-ink/85">{item.createdAt ? formatDate(item.createdAt) : item.tahun}</div>
+                      {item.createdAt && (
+                        <div className="text-[11px] text-muted/75">{formatTime(item.createdAt)} WIB</div>
+                      )}
+                    </Td>
                     <Td>
                       {item.isPublished ? (
                         <StatusDot tone="brand">Terbit</StatusDot>
@@ -340,6 +357,23 @@ export default function AdminPrestasi() {
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Tanggal & Waktu Prestasi" required>
+              <Input
+                type="datetime-local"
+                required
+                value={form.createdAt}
+                onChange={(event) => {
+                  const val = event.target.value;
+                  const date = new Date(val);
+                  setForm({
+                    ...form,
+                    createdAt: val,
+                    tahun: !Number.isNaN(date.getTime()) ? date.getFullYear() : form.tahun
+                  });
+                }}
+              />
+            </Field>
+
             <Field label="Tingkat" required>
               <Select
                 value={form.tingkat}
@@ -351,16 +385,6 @@ export default function AdminPrestasi() {
                   </option>
                 ))}
               </Select>
-            </Field>
-            <Field label="Tahun" required>
-              <Input
-                type="number"
-                required
-                min={1990}
-                max={2100}
-                value={form.tahun}
-                onChange={(event) => setForm({ ...form, tahun: event.target.value })}
-              />
             </Field>
           </div>
 

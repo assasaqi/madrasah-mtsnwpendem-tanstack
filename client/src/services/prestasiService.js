@@ -11,6 +11,7 @@ const buildFormData = (payload) => {
   data.append('tahun', payload.tahun || new Date().getFullYear());
   data.append('deskripsi', payload.deskripsi || '');
   data.append('isPublished', payload.isPublished !== false);
+  if (payload.createdAt) data.append('createdAt', payload.createdAt);
   if (payload.gambar instanceof File) data.append('gambar', payload.gambar);
   return data;
 };

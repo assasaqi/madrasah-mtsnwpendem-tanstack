@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, CalendarDays, FileText, Megaphone, Paperclip } from 'lucide-react';
-import { formatDate } from '../../utils/helpers';
+import { ArrowRight, CalendarDays, Clock, FileText, Megaphone, Paperclip } from 'lucide-react';
+import { formatDate, formatTime } from '../../utils/helpers';
 
 // Menampilkan kartu pengumuman resmi berstandar instansi keagamaan
 export default function AnnouncementCard({ item, judulTag: Judul = 'h3' }) {
@@ -15,9 +15,16 @@ export default function AnnouncementCard({ item, judulTag: Judul = 'h3' }) {
         <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand/20 bg-brand-soft text-brand transition-colors group-hover:bg-brand group-hover:text-white">
           <Megaphone size={16} />
         </span>
-        <span className="inline-flex items-center gap-1.5 text-[11px] text-muted">
-          <CalendarDays size={12} className="text-brand" />
-          {formatDate(item.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })}
+        <span className="inline-flex flex-wrap items-center justify-end gap-1.5 text-[11px] text-muted">
+          <span className="inline-flex items-center gap-1">
+            <CalendarDays size={12} className="text-brand" />
+            {formatDate(item.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })}
+          </span>
+          <span className="text-muted/60">·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock size={12} className="text-brand" />
+            {formatTime(item.createdAt)} WIB
+          </span>
         </span>
       </div>
 

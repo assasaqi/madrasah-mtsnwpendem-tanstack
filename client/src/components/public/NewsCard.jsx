@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, CalendarDays, Newspaper } from 'lucide-react';
-import { formatDate, getFileUrl } from '../../utils/helpers';
+import { ArrowRight, CalendarDays, Clock, Newspaper } from 'lucide-react';
+import { formatDate, formatTime, getFileUrl } from '../../utils/helpers';
 
 // Menampilkan kartu berita dengan gaya editorial modern portal Kemenag
 export default function NewsCard({ item, judulTag: Judul = 'h3' }) {
@@ -34,9 +34,12 @@ export default function NewsCard({ item, judulTag: Judul = 'h3' }) {
 
       {/* Konten Kartu Berita */}
       <div className="flex flex-1 flex-col p-2.5 sm:p-5">
-        <div className="flex items-center gap-1 sm:gap-1.5 text-[8.5px] sm:text-[11px] text-muted">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 text-[8.5px] sm:text-[11px] text-muted">
           <CalendarDays className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0 text-brand" />
           <span>{formatDate(item.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+          <span className="text-muted/60">·</span>
+          <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0 text-brand" />
+          <span>{formatTime(item.createdAt)} WIB</span>
         </div>
 
         <Judul className="mt-1 sm:mt-2 line-clamp-2 text-[10px] sm:text-[15.5px] font-semibold leading-snug tracking-[-0.01em] text-ink transition-colors group-hover:text-brand">

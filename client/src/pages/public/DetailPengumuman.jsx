@@ -5,6 +5,7 @@ import {
   CalendarDays,
   Check,
   ChevronRight,
+  Clock,
   Download,
   FileText,
   Home,
@@ -13,7 +14,7 @@ import {
   Share2
 } from 'lucide-react';
 import { pengumumanService } from '../../services/pengumumanService';
-import { formatArticleHtml, formatDate, getFileUrl } from '../../utils/helpers';
+import { formatArticleHtml, formatDate, formatTime, getFileUrl } from '../../utils/helpers';
 import { Alert } from '../../components/ui';
 
 // Menampilkan surat edaran / pengumuman resmi lengkap dengan lampiran unduhan
@@ -137,18 +138,24 @@ export default function DetailPengumuman() {
               {pengumuman.judul}
             </h1>
 
-            <div className="mt-3 flex items-center gap-2 text-[12px] text-muted">
-              <CalendarDays size={13} className="text-brand" />
-              <span>
-                Diterbitkan pada{' '}
-                <strong className="text-ink/80">
-                  {formatDate(pengumuman.createdAt, {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  })}
-                </strong>
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-[12px] text-muted">
+              <span className="inline-flex items-center gap-1.5">
+                <CalendarDays size={13} className="text-brand" />
+                <span>
+                  Diterbitkan pada{' '}
+                  <strong className="text-ink/80">
+                    {formatDate(pengumuman.createdAt, {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </strong>
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Clock size={13} className="text-brand" />
+                <strong className="text-ink/80">{formatTime(pengumuman.createdAt)} WIB</strong>
               </span>
             </div>
           </header>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Award, Medal, Search, Trophy, UserRound } from 'lucide-react';
+import { Award, CalendarDays, Clock, Medal, Search, Trophy, UserRound } from 'lucide-react';
 import { prestasiService } from '../../services/prestasiService';
-import { getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, getFileUrl } from '../../utils/helpers';
 import PageHeader from '../../components/public/PageHeader';
 import { Alert } from '../../components/ui';
 
@@ -66,6 +66,20 @@ function PrestasiCard({ item }) {
             <UserRound size={13} className="mt-0.5 shrink-0 text-brand" />
             <span className="line-clamp-1">{item.peraih}</span>
           </p>
+        )}
+
+        {item.createdAt && (
+          <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-line/60 pt-2.5 text-[11px] text-muted">
+            <span className="inline-flex items-center gap-1">
+              <CalendarDays size={12} className="text-brand" />
+              {formatDate(item.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+            <span className="text-muted/60">·</span>
+            <span className="inline-flex items-center gap-1">
+              <Clock size={12} className="text-brand" />
+              {formatTime(item.createdAt)} WIB
+            </span>
+          </div>
         )}
       </div>
     </article>

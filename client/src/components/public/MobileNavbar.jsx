@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, X, ExternalLink } from 'lucide-react';
 import { getFileUrl } from '../../utils/helpers';
 
 // Menampilkan drawer navigasi samping untuk perangkat mobile yang muncul dari kanan
@@ -165,6 +165,26 @@ export default function MobileNavbar({
                   {isSubmenuOpen && (
                     <ul className="mt-1 space-y-1 border-l-2 border-brand/20 pl-3 ml-2.5 py-1 animate-in fade-in-0 duration-150">
                       {item.children.map((child) => {
+                        if (child.isRdm || child.external) {
+                          const target = child.isRdm
+                            ? (profil?.rdmUrl || 'https://rdm-mtsnwpendem.rasmantech.web.id/')
+                            : child.to;
+                          return (
+                            <li key={child.label}>
+                              <a
+                                href={target}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={onClose}
+                                className="flex items-center justify-between rounded-lg px-3 py-2 text-[13px] font-medium text-ink/75 transition-colors hover:bg-canvas hover:text-ink"
+                              >
+                                <span>{child.label}</span>
+                                <ExternalLink size={12} className="text-muted" />
+                              </a>
+                            </li>
+                          );
+                        }
+
                         const childActive = isPathActive(child.to);
                         return (
                           <li key={child.to}>

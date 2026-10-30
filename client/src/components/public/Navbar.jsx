@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import {
   ChevronDown,
-  Menu
+  Menu,
+  ExternalLink
 } from 'lucide-react';
 import { getFileUrl } from '../../utils/helpers';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
@@ -24,7 +25,7 @@ export const MENU = [
     label: 'Layanan',
     children: [
       { label: 'Pendaftaran SPMB', to: '/spmb' },
-      { label: 'Rapor Digital (RDM)', to: '/rdm' },
+      { label: 'Rapor Digital (RDM)', isRdm: true },
       { label: 'Pusat Unduhan', to: '/unduhan' },
       { label: 'Tanya Jawab (FAQ)', to: '/faq' }
     ]
@@ -173,6 +174,25 @@ export default function Navbar() {
                     <div className="absolute left-1/2 top-full z-50 mt-2.5 w-48 -translate-x-1/2 rounded-xl border border-line bg-paper p-1.5 shadow-float ring-1 ring-black/5 animate-in fade-in-0 zoom-in-95 duration-150">
                       <div className="space-y-0.5">
                         {item.children.map((child) => {
+                          if (child.isRdm || child.external) {
+                            const target = child.isRdm
+                              ? (profil?.rdmUrl || 'https://rdm-mtsnwpendem.rasmantech.web.id/')
+                              : child.to;
+                            return (
+                              <a
+                                key={child.label}
+                                href={target}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setActiveDropdown(null)}
+                                className="flex items-center justify-between rounded-lg px-3 py-2 text-[13.5px] font-medium text-ink/80 transition-all duration-150 hover:bg-[#f6f3eb] hover:text-ink"
+                              >
+                                <span>{child.label}</span>
+                                <ExternalLink size={12} className="text-muted" />
+                              </a>
+                            );
+                          }
+
                           const isChildActive = isPathActive(child.to);
                           return (
                             <Link

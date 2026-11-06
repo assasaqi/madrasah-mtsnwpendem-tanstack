@@ -9,7 +9,7 @@ export default function AnnouncementCard({ item, judulTag: Judul = 'h3' }) {
   return (
     <article
       role="listitem"
-      className="group flex h-full flex-col rounded-xl border border-line bg-paper p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md sm:p-5"
+      className="group flex h-full flex-col rounded-xl border border-line bg-paper p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md active:scale-[0.99] sm:p-5"
     >
       <div className="flex items-center justify-between gap-2">
         <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-brand/20 bg-brand-soft text-brand transition-colors group-hover:bg-brand group-hover:text-white">

@@ -4,7 +4,7 @@
 -- ==============================================================
 
 -- 1. Tambah kolom RDM pada tabel profilSekolah (jika belum ada)
-ALTER TABLE `profilSekolah` 
+ALTER TABLE `profilSekolah`
     ADD COLUMN IF NOT EXISTS `rdmUrl` TEXT NULL,
     ADD COLUMN IF NOT EXISTS `rdmKeterangan` TEXT NULL,
     ADD COLUMN IF NOT EXISTS `rdmAktif` BOOLEAN NOT NULL DEFAULT true;

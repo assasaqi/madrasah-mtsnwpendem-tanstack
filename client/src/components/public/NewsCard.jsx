@@ -10,7 +10,7 @@ export default function NewsCard({ item, judulTag: Judul = 'h3' }) {
   return (
     <article
       role="listitem"
-      className="group flex h-full flex-col overflow-hidden rounded-lg sm:rounded-xl border border-line bg-paper shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md w-full"
+      className="group flex h-full flex-col overflow-hidden rounded-lg sm:rounded-xl border border-line bg-paper shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md active:scale-[0.99] w-full"
     >
       {/* Thumbnail Gambar dengan Badge Kategori Khas Kemenag */}
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-canvas">

@@ -101,13 +101,13 @@ export default function Home() {
             href={rdmUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-gradient-to-r from-[#d9b26a] to-[#f3e7c4] px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#123a24] shadow-md transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-gradient-to-r from-[#d9b26a] to-[#f3e7c4] px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#123a24] shadow-md transition-all duration-150 hover:brightness-105 active:scale-[0.97]"
           >
             Rapor Digital (RDM) <ExternalLink size={13} />
           </a>
           <Link
             to="/profil"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#f7f5ee] backdrop-blur-sm transition-colors hover:bg-white/20"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#f7f5ee] backdrop-blur-sm transition-all duration-150 hover:bg-white/20 active:scale-[0.97]"
           >
             Profil Madrasah
           </Link>

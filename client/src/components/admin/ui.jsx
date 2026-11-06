@@ -20,7 +20,7 @@ const BUTTON_SIZES = {
 // Menyusun kelas tombol agar seluruh tombol admin konsisten
 export const buttonClass = (variant = 'secondary', size = 'md', className) =>
   cx(
-    'inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition-all duration-150 ease-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer',
     BUTTON_VARIANTS[variant] || BUTTON_VARIANTS.secondary,
     BUTTON_SIZES[size] || BUTTON_SIZES.md,
     className
@@ -48,7 +48,7 @@ export function IconButton({ label, tone = 'default', className, children, ...pr
       title={label}
       aria-label={label}
       className={cx(
-        'inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25',
+        'inline-flex h-8 w-8 items-center justify-center rounded-md transition-all duration-150 ease-out active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/25 cursor-pointer',
         tones[tone] || tones.default,
         className
       )}
@@ -67,7 +67,7 @@ export function PageHeader({ title, description, actions }) {
           {title}
         </h1>
         {description && (
-          <p className="mt-2.5 max-w-2xl text-[12.5px] leading-relaxed text-muted">{description}</p>
+          <p className="mt-2.5 max-w-2xl text-[12.5px] leading-relaxed text-muted text-left">{description}</p>
         )}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
@@ -87,8 +87,8 @@ export function PanelHeader({ title, description, actions, className }) {
   return (
     <div className={cx('flex flex-wrap items-start justify-between gap-3 border-b border-line px-4 py-3.5', className)}>
       <div className="min-w-0">
-        <h2 className="text-[13px] font-semibold text-ink">{title}</h2>
-        {description && <p className="mt-0.5 text-[11.5px] leading-relaxed text-muted">{description}</p>}
+        <h2 className="text-[13px] font-semibold text-ink text-left">{title}</h2>
+        {description && <p className="mt-0.5 text-[11.5px] leading-relaxed text-muted text-left">{description}</p>}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
@@ -100,8 +100,8 @@ export function SectionTitle({ icon: Icon, title, description }) {
     <div className="flex items-start gap-2.5 border-b border-line px-4 py-3.5">
       {Icon && <Icon size={16} className="mt-0.5 text-brand" />}
       <div>
-        <h2 className="text-[13px] font-semibold text-ink">{title}</h2>
-        {description && <p className="mt-0.5 text-[11.5px] leading-relaxed text-muted">{description}</p>}
+        <h2 className="text-[13px] font-semibold text-ink text-left">{title}</h2>
+        {description && <p className="mt-0.5 text-[11.5px] leading-relaxed text-muted text-left">{description}</p>}
       </div>
     </div>
   );

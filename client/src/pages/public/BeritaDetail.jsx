@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Clock,
   Home,
-  Link2,
   Newspaper,
   Share2
 } from 'lucide-react';
@@ -54,10 +53,22 @@ export default function BeritaDetail() {
     };
   }, [id]);
 
-  // Menyalin tautan berita ke papan klip
-  const salinTautan = async () => {
+  // Membagikan berita atau menyalin tautan ke papan klip
+  const bagikan = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: berita?.judul || 'Berita Madrasah',
+          url
+        });
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(url);
       setTersalin(true);
       setTimeout(() => setTersalin(false), 2000);
     } catch {
@@ -134,31 +145,20 @@ export default function BeritaDetail() {
               </h1>
 
               {/* Meta Informasi Artikel */}
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-[12px] text-muted">
-                <div className="flex flex-wrap items-center gap-4">
-                  <span className="inline-flex items-center gap-1.5 font-medium text-ink/80">
-                    <CalendarDays size={13} className="text-brand" />
-                    {formatDate(berita.createdAt, {
-                      weekday: 'long',
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric'
-                    })}
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 font-medium text-ink/80">
-                    <Clock size={13} className="text-brand" />
-                    {formatTime(berita.createdAt)} WIB
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={salinTautan}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-paper px-3 py-1.5 text-[11.5px] font-medium text-ink/80 transition-colors hover:border-brand/40 hover:text-brand"
-                >
-                  {tersalin ? <Check size={13} className="text-brand" /> : <Share2 size={13} />}
-                  <span>{tersalin ? 'Tautan Tersalin' : 'Bagikan Berita'}</span>
-                </button>
+              <div className="mt-4 flex flex-wrap items-center gap-4 text-[12px] text-muted">
+                <span className="inline-flex items-center gap-1.5 font-medium text-ink/80">
+                  <CalendarDays size={13} className="text-brand" />
+                  {formatDate(berita.createdAt, {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                  })}
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-medium text-ink/80">
+                  <Clock size={13} className="text-brand" />
+                  {formatTime(berita.createdAt)} WIB
+                </span>
               </div>
             </header>
 
@@ -178,7 +178,7 @@ export default function BeritaDetail() {
 
             {/* Isi Konten Artikel */}
             <div
-              className="public-article mt-8 text-justify text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
+              className="public-article mt-8 text-left text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
               dangerouslySetInnerHTML={{ __html: formatArticleHtml(berita.konten) }}
             />
 
@@ -186,17 +186,18 @@ export default function BeritaDetail() {
             <div className="mt-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-paper p-4 shadow-xs">
               <Link
                 to="/berita"
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-soft px-3.5 py-2 text-[12px] font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
+                className="inline-flex items-center gap-2 rounded-lg bg-brand-soft px-3.5 py-2 text-[12px] font-semibold text-brand transition-all hover:bg-brand hover:text-white active:scale-95"
               >
                 <ArrowLeft size={13} /> Kembali ke Semua Berita
               </Link>
 
               <button
                 type="button"
-                onClick={salinTautan}
-                className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-brand hover:underline"
+                onClick={bagikan}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-canvas px-3.5 py-2 text-[12px] font-semibold text-ink/80 transition-all hover:border-brand/40 hover:text-brand active:scale-95 cursor-pointer"
               >
-                <Link2 size={13} /> {tersalin ? 'Tautan Berhasil Disalin!' : 'Salin Tautan Halaman Ini'}
+                {tersalin ? <Check size={14} className="text-brand" /> : <Share2 size={14} />}
+                <span>{tersalin ? 'Tautan Tersalin!' : 'Bagikan Berita'}</span>
               </button>
             </div>
           </article>

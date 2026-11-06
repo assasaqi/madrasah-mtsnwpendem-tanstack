@@ -21,7 +21,7 @@ function PrestasiCard({ item }) {
   return (
     <article
       role="listitem"
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md"
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-paper shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md active:scale-[0.99]"
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-canvas">
         {gambar ? (

@@ -89,13 +89,11 @@
     font-size: 13.5px;
     line-height: 1.85;
     overflow-wrap: anywhere;
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
   }
 
   .public-article p {
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: left;
   }
 
   .public-article > * + * {

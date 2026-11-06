@@ -70,8 +70,8 @@ export default function RegisterForm({ scope = 'spmb' }) {
       }
 
       navigate({
-        to: isAdmin ? '/login' : '/spmb/login',
-        state: { registeredEmail: emailClean }
+        to: '/konfirmasi-email',
+        search: { email: emailClean, scope: isAdmin ? 'admin' : 'spmb' }
       });
     } catch (err) {
       console.error('Register error:', err);

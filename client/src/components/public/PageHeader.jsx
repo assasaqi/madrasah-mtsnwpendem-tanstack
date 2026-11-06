@@ -50,7 +50,7 @@ export default function PageHeader({
             </h1>
 
             {description && (
-              <p className="mt-3 text-[13px] leading-relaxed text-muted sm:text-[14px]">
+              <p className="mt-3 text-left text-[13px] leading-relaxed text-muted sm:text-[14px]">
                 {description}
               </p>
             )}

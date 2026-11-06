@@ -1,9 +1,19 @@
-import api from './api';
+import api, { API_BASE_URL } from './api';
 
 export const authService = {
   // Melakukan login dan menyimpan sesi pada cookie HTTP-only
   login: async (credentials) => {
     const response = await api.post('/auth/login', credentials);
+    return response.data;
+  },
+
+  // Mendapatkan URL redirect autentikasi Google OAuth
+  getGoogleAuthUrl: (scope = 'spmb', mode = 'register') =>
+    `${API_BASE_URL}/auth/google?scope=${encodeURIComponent(scope)}&mode=${encodeURIComponent(mode)}`,
+
+  // Menyelesaikan konfirmasi akun Google dan mendaftarkan/masuk ke sistem
+  completeGoogleAuth: async (payload) => {
+    const response = await api.post('/auth/google/complete', payload);
     return response.data;
   },
 
@@ -16,6 +26,18 @@ export const authService = {
   // Mendaftarkan akun pengelola madrasah
   registerAdmin: async (userData) => {
     const response = await api.post('/auth/register-admin', userData);
+    return response.data;
+  },
+
+  // Mengirim ulang email konfirmasi pendaftaran
+  resendConfirmation: async (email) => {
+    const response = await api.post('/auth/resend-confirmation', { email });
+    return response.data;
+  },
+
+  // Memverifikasi token email pendaftar
+  verifyEmail: async (token) => {
+    const response = await api.post('/auth/verify-email', { token });
     return response.data;
   },
 

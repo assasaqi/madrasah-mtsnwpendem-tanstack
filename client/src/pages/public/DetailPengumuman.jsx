@@ -9,7 +9,6 @@ import {
   Download,
   FileText,
   Home,
-  Link2,
   Megaphone,
   Share2
 } from 'lucide-react';
@@ -49,10 +48,22 @@ export default function DetailPengumuman() {
     };
   }, [id]);
 
-  // Menyalin tautan pengumuman ke papan klip
-  const salinTautan = async () => {
+  // Membagikan pengumuman atau menyalin tautan ke papan klip
+  const bagikan = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: pengumuman?.judul || 'Pengumuman Madrasah',
+          url
+        });
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(url);
       setTersalin(true);
       setTimeout(() => setTersalin(false), 2000);
     } catch {
@@ -119,20 +130,9 @@ export default function DetailPengumuman() {
         {/* Konten Pengumuman Resmi */}
         <article className="mt-6 rounded-2xl border border-line bg-paper p-6 shadow-xs sm:p-9">
           <header className="border-b border-line pb-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="inline-flex items-center gap-1.5 rounded-md bg-[#004d26] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
-                <Megaphone size={12} /> Surat Edaran Resmi
-              </span>
-
-              <button
-                type="button"
-                onClick={salinTautan}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-canvas px-3 py-1.5 text-[11.5px] font-medium text-ink/80 transition-colors hover:border-brand/40 hover:text-brand"
-              >
-                {tersalin ? <Check size={13} className="text-brand" /> : <Share2 size={13} />}
-                <span>{tersalin ? 'Tautan Tersalin' : 'Bagikan'}</span>
-              </button>
-            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-[#004d26] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
+              <Megaphone size={12} /> Surat Edaran Resmi
+            </span>
 
             <h1 className="mt-4 text-[22px] font-bold leading-[1.3] tracking-[-0.025em] text-ink sm:text-[30px] lg:text-[34px]">
               {pengumuman.judul}
@@ -200,7 +200,7 @@ export default function DetailPengumuman() {
 
           {/* Teks Isi Pengumuman */}
           <div
-            className="public-article mt-8 text-justify text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
+            className="public-article mt-8 text-left text-[14.5px] leading-[1.85] text-ink/90 sm:text-[15px]"
             dangerouslySetInnerHTML={{ __html: formatArticleHtml(pengumuman.konten) }}
           />
 
@@ -208,17 +208,18 @@ export default function DetailPengumuman() {
           <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-6">
             <Link
               to="/pengumuman"
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-soft px-3.5 py-2 text-[12px] font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-soft px-3.5 py-2 text-[12px] font-semibold text-brand transition-all hover:bg-brand hover:text-white active:scale-95"
             >
               <ArrowLeft size={13} /> Semua Pengumuman
             </Link>
 
             <button
               type="button"
-              onClick={salinTautan}
-              className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-brand hover:underline"
+              onClick={bagikan}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line bg-canvas px-3.5 py-2 text-[12px] font-semibold text-ink/80 transition-all hover:border-brand/40 hover:text-brand active:scale-95 cursor-pointer"
             >
-              <Link2 size={13} /> {tersalin ? 'Tautan Berhasil Disalin!' : 'Salin Tautan'}
+              {tersalin ? <Check size={14} className="text-brand" /> : <Share2 size={14} />}
+              <span>{tersalin ? 'Tautan Tersalin!' : 'Bagikan Pengumuman'}</span>
             </button>
           </div>
         </article>

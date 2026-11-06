@@ -5,6 +5,9 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import SpmbLogin from '../pages/spmb/Login';
 import SpmbRegister from '../pages/spmb/Register';
+import KonfirmasiEmail from '../pages/KonfirmasiEmail';
+import VerifikasiEmail from '../pages/VerifikasiEmail';
+import GoogleAuth from '../pages/GoogleAuth';
 
 export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -30,9 +33,37 @@ export const spmbRegisterRoute = createRoute({
   component: SpmbRegister
 });
 
+export const konfirmasiEmailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/konfirmasi-email',
+  component: KonfirmasiEmail
+});
+
+export const spmbKonfirmasiEmailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/spmb/konfirmasi-email',
+  component: KonfirmasiEmail
+});
+
+export const verifikasiEmailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/verifikasi-email',
+  component: VerifikasiEmail
+});
+
+export const googleAuthRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/auth/google',
+  component: GoogleAuth
+});
+
 export const authRoutesList = [
   loginRoute,
   registerRoute,
   spmbLoginRoute,
-  spmbRegisterRoute
+  spmbRegisterRoute,
+  konfirmasiEmailRoute,
+  spmbKonfirmasiEmailRoute,
+  verifikasiEmailRoute,
+  googleAuthRoute
 ];

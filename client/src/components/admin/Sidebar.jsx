@@ -25,12 +25,17 @@ import {
   BookOpenCheck
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
+import useSchoolProfile from '../../hooks/useSchoolProfile';
+import { getFileUrl } from '../../utils/helpers';
 import { cx } from './ui';
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
+  const { profil } = useSchoolProfile();
+  const namaSekolah = profil?.namaSekolah || 'Madrasah';
+  const logo = profil?.logo ? getFileUrl(profil.logo) : '';
 
   // Submenu tidak aktif/terbuka secara otomatis saat halaman pertama kali dimuat
   const [openMenus, setOpenMenus] = useState({});
@@ -90,24 +95,32 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <>
       <aside
         className={cx(
-          'fixed inset-y-0 left-0 z-40 flex w-[268px] shrink-0 flex-col justify-between bg-[#14211a] text-[#e9e5d8] transition-transform duration-200 ease-out lg:sticky lg:bottom-auto lg:top-0 lg:h-screen lg:self-start lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-[268px] shrink-0 flex-col justify-between bg-[#0f172a] text-slate-200 transition-transform duration-200 ease-out lg:sticky lg:bottom-auto lg:top-0 lg:h-screen lg:self-start lg:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         <div className="admin-scroll flex-1 overflow-y-auto">
           <div className="flex items-center justify-between px-5 pb-5 pt-5">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-md border border-[#3a4a3d] text-[15px] font-semibold leading-none text-[#d9b26a]">
-                M
-              </span>
-              <div>
-                <p className="text-[14px] font-semibold leading-tight tracking-[-0.01em] text-[#f6f3e7]">Madrasah</p>
-                <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-[#8b9a8e]">Panel Admin</p>
+            <div className="flex min-w-0 items-center gap-3">
+              {logo ? (
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-white p-1">
+                  <img src={logo} alt={`Logo ${namaSekolah}`} className="h-full w-full object-contain" />
+                </span>
+              ) : (
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-slate-700 bg-emerald-500/10 text-[15px] font-semibold leading-none text-[#34d399]">
+                  {namaSekolah.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-[13.5px] font-semibold leading-tight tracking-[-0.01em] text-slate-50">
+                  {namaSekolah}
+                </p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">Panel Admin</p>
               </div>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="rounded-md p-1.5 text-[#8b9a8e] transition-colors hover:bg-white/5 hover:text-[#f6f3e7] lg:hidden"
+              className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-white/5 hover:text-slate-50 lg:hidden"
               aria-label="Tutup menu"
             >
               <X size={18} />
@@ -117,7 +130,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
           <div className="mx-5 border-t border-white/10" />
 
           <nav className="px-3 py-4 text-[12.5px]">
-            <p className="px-2.5 pb-2 text-[9.5px] font-semibold uppercase tracking-[0.22em] text-[#7b8a7e]">
+            <p className="px-2.5 pb-2 text-[9.5px] font-semibold uppercase tracking-[0.22em] text-slate-500">
               Menu
             </p>
 
@@ -135,14 +148,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                       className={cx(
                         'relative flex items-center gap-2.5 rounded-md px-2.5 py-2 transition-colors',
                         isActive
-                          ? 'bg-white/[0.07] font-semibold text-[#f6f3e7]'
-                          : 'text-[#a7b2a8] hover:bg-white/[0.04] hover:text-[#f2efe3]'
+                          ? 'bg-white/[0.08] font-semibold text-slate-50'
+                          : 'text-slate-300 hover:bg-white/[0.05] hover:text-white'
                       )}
                     >
                       {isActive && (
-                        <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[#d9b26a]" />
+                        <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[#10b981]" />
                       )}
-                      <Icon size={15} className={isActive ? 'text-[#d9b26a]' : 'text-[#7f8f82]'} />
+                      <Icon size={15} className={isActive ? 'text-[#34d399]' : 'text-slate-400'} />
                       <span>{item.label}</span>
                     </Link>
                   );
@@ -167,18 +180,18 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                       className={cx(
                         'relative flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors',
                         isGroupActive
-                          ? 'font-semibold text-[#f6f3e7]'
-                          : 'text-[#a7b2a8] hover:bg-white/[0.04] hover:text-[#f2efe3]'
+                          ? 'font-semibold text-slate-50'
+                          : 'text-slate-300 hover:bg-white/[0.05] hover:text-white'
                       )}
                     >
                       {isGroupActive && (
-                        <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[#d9b26a]" />
+                        <span className="absolute left-0 top-1/2 h-4 w-[2px] -translate-y-1/2 rounded-full bg-[#10b981]" />
                       )}
-                      <Icon size={15} className={isGroupActive ? 'text-[#d9b26a]' : 'text-[#7f8f82]'} />
+                      <Icon size={15} className={isGroupActive ? 'text-[#34d399]' : 'text-slate-400'} />
                       <span className="flex-1">{item.label}</span>
                       <ChevronDown
                         size={13}
-                        className={cx('text-[#7f8f82] transition-transform duration-200', isOpen && 'rotate-180')}
+                        className={cx('text-slate-400 transition-transform duration-200', isOpen && 'rotate-180')}
                       />
                     </button>
 
@@ -196,8 +209,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               className={cx(
                                 'flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[11.5px] transition-colors',
                                 isChildActive
-                                  ? 'bg-white/[0.06] font-semibold text-[#f6f3e7]'
-                                  : 'text-[#93a094] hover:bg-white/[0.04] hover:text-[#f2efe3]'
+                                  ? 'bg-white/[0.07] font-semibold text-slate-50'
+                                  : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100'
                               )}
                             >
                               {ChildIcon && (
@@ -205,7 +218,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                   size={13}
                                   className={cx(
                                     'shrink-0',
-                                    isChildActive ? 'text-[#d9b26a]' : 'text-[#6f7d72]'
+                                    isChildActive ? 'text-[#34d399]' : 'text-slate-500'
                                   )}
                                 />
                               )}
@@ -225,12 +238,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="border-t border-white/10 p-3">
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-[12px] font-medium text-[#a7b2a8] transition-colors hover:bg-rose-500/10 hover:text-rose-200"
+            className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-[12px] font-medium text-slate-300 transition-colors hover:bg-rose-500/15 hover:text-rose-200"
           >
             <LogOut size={15} />
             <span>Keluar dari panel</span>
           </button>
-          <p className="px-2.5 pt-3 text-[10px] leading-relaxed text-[#6f7d72]">
+          <p className="px-2.5 pt-3 text-[10px] leading-relaxed text-slate-500">
             Sistem Informasi Madrasah · 2026
           </p>
         </div>
@@ -239,7 +252,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-[#14211a]/50 backdrop-blur-[2px] lg:hidden"
+          className="fixed inset-0 z-30 bg-slate-900/55 backdrop-blur-[2px] lg:hidden"
         />
       )}
     </>

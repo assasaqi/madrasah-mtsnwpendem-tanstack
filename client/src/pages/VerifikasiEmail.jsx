@@ -105,7 +105,7 @@ export default function VerifikasiEmail() {
               <Link
                 to={loginPath}
                 state={email ? { registeredEmail: email } : undefined}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98]"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98]"
               >
                 Masuk ke Akun Sekarang <ArrowRight size={13} />
               </Link>
@@ -127,14 +127,14 @@ export default function VerifikasiEmail() {
               <Link
                 to="/spmb/konfirmasi-email"
                 search={{ email }}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98]"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98]"
               >
                 Kirim Ulang Email Konfirmasi
               </Link>
 
               <Link
                 to="/spmb/login"
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-line bg-paper text-[12.5px] font-semibold text-ink shadow-xs transition-all hover:border-[#cfc9bc] hover:bg-[#faf8f3] active:scale-[0.98]"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-line bg-paper text-[12.5px] font-semibold text-ink shadow-xs transition-all hover:border-[#cbd5e1] hover:bg-[#f8fafc] active:scale-[0.98]"
               >
                 Ke Halaman Masuk <ArrowRight size={13} />
               </Link>

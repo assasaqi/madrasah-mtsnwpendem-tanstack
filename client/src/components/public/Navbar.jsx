@@ -132,7 +132,7 @@ export default function Navbar() {
                     className={`rounded-md px-3 py-1.5 text-[13.5px] font-medium transition-all duration-150 ${
                       active
                         ? 'bg-brand-soft font-semibold text-brand shadow-xs'
-                        : 'text-ink/75 hover:bg-[#eae6dc]/60 hover:text-ink'
+                        : 'text-ink/75 hover:bg-[#f1f5f9] hover:text-ink'
                     }`}
                   >
                     {item.label}
@@ -157,7 +157,7 @@ export default function Navbar() {
                     className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13.5px] font-medium transition-all duration-150 ${
                       itemActive || isDropdownOpen
                         ? 'bg-brand-soft font-semibold text-brand'
-                        : 'text-ink/75 hover:bg-[#eae6dc]/60 hover:text-ink'
+                        : 'text-ink/75 hover:bg-[#f1f5f9] hover:text-ink'
                     }`}
                   >
                     <span>{item.label}</span>
@@ -185,7 +185,7 @@ export default function Navbar() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={() => setActiveDropdown(null)}
-                                className="flex items-center justify-between rounded-lg px-3 py-2 text-[13.5px] font-medium text-ink/80 transition-all duration-150 hover:bg-[#f6f3eb] hover:text-ink"
+                                className="flex items-center justify-between rounded-lg px-3 py-2 text-[13.5px] font-medium text-ink/80 transition-all duration-150 hover:bg-[#f1f5f9] hover:text-ink"
                               >
                                 <span>{child.label}</span>
                                 <ExternalLink size={12} className="text-muted" />
@@ -202,7 +202,7 @@ export default function Navbar() {
                               className={`block rounded-lg px-3 py-2 text-[13.5px] font-medium transition-all duration-150 ${
                                 isChildActive
                                   ? 'bg-brand-soft font-semibold text-brand'
-                                  : 'text-ink/80 hover:bg-[#f6f3eb] hover:text-ink'
+                                  : 'text-ink/80 hover:bg-[#f1f5f9] hover:text-ink'
                               }`}
                             >
                               {child.label}

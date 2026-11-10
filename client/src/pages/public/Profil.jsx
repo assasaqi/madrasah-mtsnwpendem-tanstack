@@ -53,7 +53,7 @@ function KartuStruktur({ item, isTop = false, compact = false }) {
           className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#f5f2eb] to-[#e6e0d2] text-[#b3ab98]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#f1f5f9] to-[#e2e8f0] text-[#94a3b8]">
           <UserRound size={15} className="sm:w-5 sm:h-5 opacity-60" />
           <span className="mt-0.5 text-[7px] sm:text-[8.5px] font-bold text-ink/40">{inisial}</span>
         </div>
@@ -68,7 +68,7 @@ function KartuStruktur({ item, isTop = false, compact = false }) {
           {item.nama}
         </p>
         <p
-          className="mt-0.5 text-[4.5px] sm:text-[5.5px] font-semibold text-[#8bf0ba] uppercase tracking-wider drop-shadow-xs leading-tight break-words"
+          className="mt-0.5 text-[4.5px] sm:text-[5.5px] font-semibold text-emerald-300 uppercase tracking-wider drop-shadow-xs leading-tight break-words"
           title={item.jabatan}
         >
           {item.jabatan}

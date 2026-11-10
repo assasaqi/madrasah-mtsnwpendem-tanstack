@@ -167,7 +167,7 @@ export default function PendaftarDetailModal({ pendaftar, onClose, onChanged }) 
       }
     >
       <div className="space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-[#faf8f3] px-3.5 py-2.5">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-[#f8fafc] px-3.5 py-2.5">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
               Status saat ini
@@ -273,7 +273,7 @@ export default function PendaftarDetailModal({ pendaftar, onClose, onChanged }) 
               </Table>
             </div>
           ) : (
-            <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/60 px-3.5 py-2.5 text-[11.5px] text-[#8a5a12]">
+            <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/70 px-3.5 py-2.5 text-[11.5px] text-amber-800">
               <AlertCircle size={14} /> Pendaftar belum mengunggah dokumen persyaratan.
             </div>
           )}
@@ -300,7 +300,7 @@ export default function PendaftarDetailModal({ pendaftar, onClose, onChanged }) 
           />
         </Field>
 
-        <div className="rounded-lg border border-line bg-[#faf8f3] p-3.5">
+        <div className="rounded-lg border border-line bg-[#f8fafc] p-3.5">
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div>
               <p className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted">
@@ -318,7 +318,7 @@ export default function PendaftarDetailModal({ pendaftar, onClose, onChanged }) 
           </div>
 
           {ringkasanBerkas.belum > 0 && (
-            <p className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-[#8a5a12]">
+            <p className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-amber-800">
               <AlertCircle size={12} className="mt-0.5 shrink-0" />
               Tombol lulus administrasi baru aktif setelah seluruh berkas ditandai terverifikasi.
             </p>

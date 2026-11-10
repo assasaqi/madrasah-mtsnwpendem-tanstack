@@ -95,7 +95,7 @@ export default function DetailPengumuman() {
         </p>
         <Link
           to="/pengumuman"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs hover:bg-[#0b331c]"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs hover:bg-[#065f46]"
         >
           <ArrowLeft size={14} /> Kembali ke Daftar Pengumuman
         </Link>
@@ -130,7 +130,7 @@ export default function DetailPengumuman() {
         {/* Konten Pengumuman Resmi */}
         <article className="mt-6 rounded-2xl border border-line bg-paper p-6 shadow-xs sm:p-9">
           <header className="border-b border-line pb-6">
-            <span className="inline-flex items-center gap-1.5 rounded-md bg-[#004d26] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-[#047857] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
               <Megaphone size={12} /> Surat Edaran Resmi
             </span>
 
@@ -180,7 +180,7 @@ export default function DetailPengumuman() {
                   href={lampiranUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#0b331c]"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#065f46]"
                 >
                   <Download size={14} /> Unduh Berkas
                 </a>

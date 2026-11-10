@@ -4,7 +4,6 @@ import {
   HelpCircle,
   Loader2,
   Plus,
-  RefreshCw,
   Trash2
 } from 'lucide-react';
 import { faqService } from '../../services/faqService';
@@ -60,12 +59,6 @@ export default function AdminFaq() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Memuat ulang data dengan indikator muat
-  const refreshFaq = () => {
-    setLoading(true);
-    fetchFaq();
   };
 
   useEffect(() => {
@@ -149,14 +142,9 @@ export default function AdminFaq() {
         title="Pertanyaan umum"
         description="Kelola FAQ yang tampil pada halaman bantuan publik. Urutan kecil tampil lebih dahulu."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={refreshFaq}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah FAQ
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah FAQ
+          </Button>
         }
       />
 
@@ -198,7 +186,7 @@ export default function AdminFaq() {
                 <EmptyRow colSpan={5} icon={Loader2} title="Memuat FAQ…" />
               ) : filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
-                  <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                  <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                     <Td>
                       <p className="max-w-[420px] font-semibold text-ink">{item.pertanyaan}</p>
                       <p className="mt-0.5 line-clamp-2 max-w-[420px] text-[10.5px] leading-relaxed text-muted">

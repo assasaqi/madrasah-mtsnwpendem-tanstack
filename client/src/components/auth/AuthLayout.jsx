@@ -24,55 +24,55 @@ export default function AuthLayout({
 
   return (
     <div className="min-h-screen bg-canvas font-sans text-ink lg:grid lg:grid-cols-2">
-      <aside className="hidden flex-col justify-between bg-[#14211a] px-10 py-12 text-[#e9e5d8] lg:flex xl:px-16">
+      <aside className="hidden flex-col justify-between bg-[#0f172a] px-10 py-12 text-slate-200 lg:flex xl:px-16">
         <div className="flex items-center gap-3">
           {logo ? (
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[#f4f1e7] p-1">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-white p-1">
               <img src={logo} alt={`Logo ${namaSekolah}`} className="h-full w-full object-contain" />
             </span>
           ) : (
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-[#3a4b3f] text-[15px] font-semibold text-[#dfe6da]">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-slate-700 bg-emerald-500/10 text-[15px] font-semibold text-[#34d399]">
               {namaSekolah.charAt(0).toUpperCase()}
             </span>
           )}
           <div className="min-w-0">
-            <p className="truncate text-[13.5px] font-semibold leading-tight text-[#f4f1e7]">
+            <p className="truncate text-[13.5px] font-semibold leading-tight text-slate-50">
               {namaSekolah}
             </p>
-            <p className="mt-1 text-[9.5px] uppercase tracking-[0.16em] text-[#93a397]">
+            <p className="mt-1 text-[9.5px] uppercase tracking-[0.16em] text-slate-400">
               {npsn ? `NPSN ${npsn}` : 'Portal resmi madrasah'}
             </p>
           </div>
         </div>
 
         <div className="max-w-lg py-14">
-          <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[#9fb3a5]">
+          <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-[#34d399]">
             Portal resmi madrasah
           </p>
-          <h2 className="mt-3 text-[27px] font-semibold leading-[1.2] tracking-[-0.025em] text-[#f4f1e7]">
+          <h2 className="mt-3 text-[27px] font-semibold leading-[1.2] tracking-[-0.025em] text-slate-50">
             {panelTitle}
           </h2>
-          <p className="mt-3 text-[12.5px] leading-relaxed text-[#b9c6bb]">{panelDescription}</p>
+          <p className="mt-3 text-[12.5px] leading-relaxed text-slate-300">{panelDescription}</p>
 
           {points.length > 0 && (
             <ul className="mt-8 space-y-3.5">
               {points.map((item, index) => (
                 <li key={item} className="flex gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#3a4b3f] text-[9.5px] font-semibold text-[#a9b8ac]">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-emerald-500/10 text-[9.5px] font-semibold text-[#34d399]">
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[12px] leading-relaxed text-[#cfd9cf]">{item}</span>
+                  <span className="text-[12px] leading-relaxed text-slate-300">{item}</span>
                 </li>
               ))}
             </ul>
           )}
         </div>
 
-        <div className="space-y-1.5 text-[11px] leading-relaxed text-[#93a397]">
+        <div className="space-y-1.5 text-[11px] leading-relaxed text-slate-400">
           {kontak.map((item) => (
             <p key={item}>{item}</p>
           ))}
-          <p className="pt-3 text-[10px] text-[#6f8073]">
+          <p className="pt-3 text-[10px] text-slate-500">
             © {tahun} {namaSekolah}
           </p>
         </div>

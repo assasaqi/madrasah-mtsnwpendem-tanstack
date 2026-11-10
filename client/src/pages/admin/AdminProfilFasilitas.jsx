@@ -4,7 +4,6 @@ import {
   Plus,
   Edit2,
   Trash2,
-  RefreshCw,
   Upload
 } from 'lucide-react';
 import {
@@ -172,14 +171,9 @@ export default function AdminProfilFasilitas() {
         title="Fasilitas madrasah"
         description="Kelola sarana dan prasarana yang tampil pada tab Fasilitas di halaman profil publik."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={fetchData}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah fasilitas
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah fasilitas
+          </Button>
         }
       />
 
@@ -223,9 +217,9 @@ export default function AdminProfilFasilitas() {
                     FASILITAS_IKON.find((opsi) => opsi.value === item.ikon)?.label || 'Gedung';
 
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                       <Td>
-                        <div className="flex h-11 w-14 items-center justify-center overflow-hidden rounded-md border border-line bg-[#f3f0e9] text-[#a9a396] sm:h-12 sm:w-16">
+                        <div className="flex h-11 w-14 items-center justify-center overflow-hidden rounded-md border border-line bg-[#f1f5f9] text-[#94a3b8] sm:h-12 sm:w-16">
                           {item.gambar ? (
                             <img
                               src={getFileUrl(item.gambar)}
@@ -357,7 +351,7 @@ export default function AdminProfilFasilitas() {
 
           <Field label="Gambar" hint="Opsional. Rasio lanskap, maksimal 5MB.">
             <div className="flex items-center gap-3">
-              <div className="flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-md border border-line bg-[#f3f0e9] text-[#c2bcae]">
+              <div className="flex h-16 w-24 shrink-0 items-center justify-center overflow-hidden rounded-md border border-line bg-[#f1f5f9] text-[#94a3b8]">
                 {preview ? (
                   <img src={preview} alt="Pratinjau" className="h-full w-full object-cover" />
                 ) : (

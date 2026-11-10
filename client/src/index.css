@@ -3,16 +3,16 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
 
-  --color-canvas: #f5f3ee;
-  --color-paper: #fffefb;
-  --color-line: #e5e1d7;
-  --color-ink: #1c1b17;
-  --color-muted: #726c60;
-  --color-brand: #14532d;
-  --color-brand-soft: #eef3ec;
+  --color-canvas: #f8fafc;
+  --color-paper: #ffffff;
+  --color-line: #e2e8f0;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-brand: #047857;
+  --color-brand-soft: #ecfdf5;
 
-  --shadow-paper: 0 1px 2px rgba(28, 27, 23, 0.04);
-  --shadow-float: 0 24px 60px -24px rgba(28, 27, 23, 0.38);
+  --shadow-paper: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-float: 0 24px 60px -24px rgba(15, 23, 42, 0.28);
 }
 
 @layer base {
@@ -25,7 +25,7 @@
 
   ::selection {
     background-color: var(--color-brand);
-    color: #f7f5ee;
+    color: #ffffff;
   }
 
   input[type="search"]::-webkit-search-cancel-button {
@@ -56,7 +56,7 @@
 @layer utilities {
   .admin-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #cfc9bc transparent;
+    scrollbar-color: #cbd5e1 transparent;
   }
 
   .admin-scroll::-webkit-scrollbar {
@@ -65,7 +65,7 @@
   }
 
   .admin-scroll::-webkit-scrollbar-thumb {
-    background-color: #d6d0c3;
+    background-color: #cbd5e1;
     border-radius: 999px;
   }
 
@@ -85,7 +85,7 @@
 
 @layer components {
   .public-article {
-    color: #3b3932;
+    color: #334155;
     font-size: 13.5px;
     line-height: 1.85;
     overflow-wrap: anywhere;
@@ -208,7 +208,7 @@
   }
 
   .public-article th {
-    background-color: #faf8f3;
+    background-color: #f8fafc;
     color: var(--color-ink);
     font-weight: 600;
   }
@@ -287,7 +287,7 @@
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scrollbar-width: thin;
-    scrollbar-color: #d6d0c3 transparent;
+    scrollbar-color: #cbd5e1 transparent;
     padding-bottom: 0.5rem;
   }
 
@@ -300,7 +300,7 @@
   }
 
   .card-row::-webkit-scrollbar-thumb {
-    background-color: #d6d0c3;
+    background-color: #cbd5e1;
     border-radius: 999px;
   }
 

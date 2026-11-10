@@ -149,7 +149,7 @@ export default function GoogleAuth() {
                 onClick={() =>
                   window.location.assign(authService.getGoogleAuthUrl(scope, mode))
                 }
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98] cursor-pointer"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98] cursor-pointer"
               >
                 <GoogleIcon className="h-4 w-4 rounded-full bg-white p-0.5" />
                 <span>Coba Hubungkan Ulang Google</span>
@@ -202,7 +202,7 @@ export default function GoogleAuth() {
               </div>
             )}
 
-            <div className="rounded-xl border border-line bg-[#faf8f3] p-4 text-left text-xs leading-relaxed text-muted space-y-1.5">
+            <div className="rounded-xl border border-line bg-[#f8fafc] p-4 text-left text-xs leading-relaxed text-muted space-y-1.5">
               <p className="flex items-center gap-1.5 font-semibold text-ink">
                 <ShieldCheck size={15} className="shrink-0 text-brand" />
                 Akun Gmail Aktif Terverifikasi
@@ -218,7 +218,7 @@ export default function GoogleAuth() {
                 type="button"
                 onClick={handleConfirmGoogle}
                 disabled={loading}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98] disabled:opacity-60 cursor-pointer"
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98] disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
                   <>
@@ -266,7 +266,7 @@ export default function GoogleAuth() {
 
             <Link
               to={dashboardPath}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98]"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98]"
             >
               <span>Lanjut ke Dashboard</span>
               <ArrowRight size={14} />

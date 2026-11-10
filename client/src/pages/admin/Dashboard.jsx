@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { RefreshCw, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { spmbService } from '../../services/spmbService';
 import { beritaService } from '../../services/beritaService';
 import { pengumumanService } from '../../services/pengumumanService';
@@ -20,7 +20,6 @@ import {
   Td,
   Tag,
   Alert,
-  Button,
   buttonClass
 } from '../../components/admin/ui';
 
@@ -79,15 +78,6 @@ export default function Dashboard() {
     };
   }, []);
 
-  // Memuat ulang statistik saat tombol "Muat ulang" ditekan
-  const muatUlang = async () => {
-    setLoading(true);
-    const hasil = await ambilStatistik();
-    setData(hasil.data);
-    setGagalMuat(hasil.gagal);
-    setLoading(false);
-  };
-
   // Nilai bantuan agar tabel tetap terbaca saat data belum selesai dimuat
   const daftar = (nilai) => (Array.isArray(nilai) ? nilai : []);
   const hitung = (nilai) => daftar(nilai).length;
@@ -129,9 +119,9 @@ export default function Dashboard() {
   };
 
   const statusRows = [
-    { label: 'Perlu ditinjau', value: ditinjau, bar: 'bg-[#c98a2e]' },
+    { label: 'Perlu ditinjau', value: ditinjau, bar: 'bg-amber-500' },
     { label: 'Lulus administrasi', value: lulusAdmin, bar: 'bg-brand' },
-    { label: 'Lulus final', value: lulusFinal, bar: 'bg-[#3b62a8]' },
+    { label: 'Lulus final', value: lulusFinal, bar: 'bg-blue-600' },
     { label: 'Tidak lulus', value: tidakLulus, bar: 'bg-rose-400' }
   ];
 
@@ -141,20 +131,9 @@ export default function Dashboard() {
         title="Selamat datang kembali"
         description="Ringkasan pendaftaran SPMB dan konten publik madrasah. Angka diperbarui setiap kali halaman ini dibuka."
         actions={
-          <>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={muatUlang}
-              disabled={loading}
-              icon={RefreshCw}
-            >
-              Muat ulang
-            </Button>
-            <Link to="/admin/spmb" className={buttonClass('primary')}>
-              <Users size={15} /> Verifikasi SPMB
-            </Link>
-          </>
+          <Link to="/admin/spmb" className={buttonClass('primary')}>
+            <Users size={15} /> Verifikasi SPMB
+          </Link>
         }
       />
 
@@ -208,14 +187,14 @@ export default function Dashboard() {
               </thead>
               <tbody>
                 {statusRows.map((row) => (
-                  <tr key={row.label} className="transition-colors hover:bg-[#faf8f3]">
+                  <tr key={row.label} className="transition-colors hover:bg-[#f8fafc]">
                     <Td className="font-medium">{row.label}</Td>
                     <Td align="right" className="tabular font-semibold">
                       {angka(row.value)}
                     </Td>
                     <Td>
                       <div className="flex items-center gap-2.5">
-                        <div className="h-1.5 w-full max-w-[200px] overflow-hidden rounded-full bg-[#efece4]">
+                        <div className="h-1.5 w-full max-w-[200px] overflow-hidden rounded-full bg-[#e2e8f0]">
                           <div
                             className={`h-full rounded-full ${row.bar}`}
                             style={{ width: `${persen(row.value)}%` }}

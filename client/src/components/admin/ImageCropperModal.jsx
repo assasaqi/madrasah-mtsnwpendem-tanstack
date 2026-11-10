@@ -109,7 +109,7 @@ export default function ImageCropperModal({
     const gridSize = 16;
     for (let x = 0; x < width; x += gridSize) {
       for (let y = 0; y < height; y += gridSize) {
-        ctx.fillStyle = (Math.floor(x / gridSize) + Math.floor(y / gridSize)) % 2 === 0 ? '#f0eee6' : '#ffffff';
+        ctx.fillStyle = (Math.floor(x / gridSize) + Math.floor(y / gridSize)) % 2 === 0 ? '#f1f5f9' : '#ffffff';
         ctx.fillRect(x, y, gridSize, gridSize);
       }
     }
@@ -136,7 +136,7 @@ export default function ImageCropperModal({
     ctx.fill();
 
     // Garis batas crop box
-    ctx.strokeStyle = '#123a24'; // Hijau Brand Madrasah
+    ctx.strokeStyle = '#047857'; // Hijau Zamrud Madrasah
     ctx.lineWidth = 2;
     ctx.strokeRect(cropX, cropY, cropWidth, cropHeight);
 
@@ -373,7 +373,7 @@ export default function ImageCropperModal({
       }}
     >
       {/* Area Interaktif Canvas (Foto) - Tanpa Bingkai Card */}
-      <div className="relative flex items-center justify-center bg-[#1c1b17] overflow-hidden rounded-2xl shadow-2xl select-none touch-none w-full max-w-lg h-[320px] sm:h-[380px]">
+      <div className="relative flex items-center justify-center bg-[#0f172a] overflow-hidden rounded-2xl shadow-2xl select-none touch-none w-full max-w-lg h-[320px] sm:h-[380px]">
         <canvas
           ref={canvasRef}
           width={500}
@@ -460,7 +460,7 @@ export default function ImageCropperModal({
             type="button"
             onClick={handleApplyCrop}
             disabled={processing || !imageObj}
-            className="pointer-events-auto px-4 sm:px-5 py-2 text-[12.5px] font-bold rounded-full bg-brand text-white hover:bg-[#0f3f23] transition-colors cursor-pointer disabled:opacity-50 shadow-lg border border-white/15 flex items-center gap-1.5"
+            className="pointer-events-auto px-4 sm:px-5 py-2 text-[12.5px] font-bold rounded-full bg-brand text-white hover:bg-[#065f46] transition-colors cursor-pointer disabled:opacity-50 shadow-lg border border-white/15 flex items-center gap-1.5"
           >
             Potong
           </button>

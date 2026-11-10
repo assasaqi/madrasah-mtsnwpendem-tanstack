@@ -350,14 +350,14 @@ export default function SPMBForm() {
                   'flex items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-colors',
                   aktif
                     ? 'border-brand/35 bg-brand-soft'
-                    : 'border-line bg-paper hover:bg-[#faf8f3]'
+                    : 'border-line bg-paper hover:bg-[#f8fafc]'
                 )}
               >
                 <span
                   className={cx(
                     'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10.5px] font-semibold',
                     selesai
-                      ? 'border-brand bg-brand text-[#f8f6ef]'
+                      ? 'border-brand bg-brand text-white'
                       : aktif
                         ? 'border-brand bg-paper text-brand'
                         : 'border-line bg-paper text-muted'
@@ -373,7 +373,7 @@ export default function SPMBForm() {
                       aktif ? 'text-ink' : 'text-ink/80'
                     )}
                   >
-                    <Icon size={12} className={aktif ? 'text-brand' : 'text-[#a8a294]'} />
+                    <Icon size={12} className={aktif ? 'text-brand' : 'text-[#94a3b8]'} />
                     {langkah.judul}
                   </span>
                   <span className="mt-0.5 block text-[10px] text-muted">{langkah.keterangan}</span>
@@ -694,7 +694,7 @@ export default function SPMBForm() {
             )}
           </div>
 
-          <div className="flex flex-col gap-2 border-t border-line bg-[#faf8f3] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 border-t border-line bg-[#f8fafc] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
             <Tag>{`Langkah ${currentStep} dari 3`}</Tag>
 
             <div className="flex flex-col gap-2 sm:flex-row">

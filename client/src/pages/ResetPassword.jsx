@@ -82,7 +82,7 @@ export default function ResetPassword() {
           </div>
           <Link
             to="/lupa-password"
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-brand text-[12.5px] font-semibold text-white hover:bg-[#0f3d22]"
+            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-brand text-[12.5px] font-semibold text-white hover:bg-[#065f46]"
           >
             Minta Tautan Baru
           </Link>
@@ -99,7 +99,7 @@ export default function ResetPassword() {
           <Link
             to={loginPath}
             state={{ resetSuccess: true, registeredEmail: email }}
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-brand text-[12.5px] font-semibold text-white hover:bg-[#0f3d22]"
+            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-brand text-[12.5px] font-semibold text-white hover:bg-[#065f46]"
           >
             Masuk Sekarang
           </Link>
@@ -136,7 +136,7 @@ export default function ResetPassword() {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                    className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f2efe7] hover:text-ink cursor-pointer"
+                    className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink cursor-pointer"
                   >
                     {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
@@ -164,7 +164,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               <KeyRound size={14} />
               <span>{loading ? 'Menyimpan…' : 'Simpan Kata Sandi Baru'}</span>

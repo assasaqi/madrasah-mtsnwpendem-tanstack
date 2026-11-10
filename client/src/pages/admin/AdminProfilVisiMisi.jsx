@@ -177,7 +177,7 @@ export default function AdminProfilVisiMisi() {
           />
 
           <div className="space-y-4 px-4 py-4">
-            <div className="flex items-start gap-2.5 rounded-lg border border-line border-l-2 border-l-[#1d5b3a] bg-[#eaf3ec]/40 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#1d5b3a]">
+            <div className="flex items-start gap-2.5 rounded-lg border border-line border-l-2 border-l-brand bg-brand-soft/60 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#065f46]">
               <Info size={14} className="mt-0.5 shrink-0" />
               <span>
                 Gunakan tombol toolbar pada editor di bawah untuk menyusun daftar bernomor, poin, cetak tebal, atau subjudul pada pokok-pokok misi madrasah.
@@ -194,7 +194,7 @@ export default function AdminProfilVisiMisi() {
             </Field>
           </div>
 
-          <div className="flex justify-end border-t border-line bg-[#faf8f3] px-4 py-3">
+          <div className="flex justify-end border-t border-line bg-[#f8fafc] px-4 py-3">
             <Button type="submit" variant="primary" icon={Save} disabled={loading}>
               {loading ? 'Menyimpan…' : 'Simpan Visi & Misi'}
             </Button>

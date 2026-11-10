@@ -100,7 +100,7 @@ export default function BeritaDetail() {
         </p>
         <Link
           to="/berita"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs hover:bg-[#0b331c]"
+          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs hover:bg-[#065f46]"
         >
           <ArrowLeft size={14} /> Kembali ke Indeks Berita
         </Link>
@@ -135,7 +135,7 @@ export default function BeritaDetail() {
             {/* Header Artikel */}
             <header className="border-b border-line pb-6">
               {berita.kategori?.nama && (
-                <span className="inline-block rounded-md bg-[#004d26] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
+                <span className="inline-block rounded-md bg-[#047857] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-xs">
                   {berita.kategori.nama}
                 </span>
               )}

@@ -167,7 +167,7 @@ export default function Galeri() {
                       </span>
                     </div>
                     {item.kategori && (
-                      <span className="absolute left-1.5 top-1.5 sm:left-3 sm:top-3 rounded sm:rounded-md bg-[#004d26]/90 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider text-white shadow-xs backdrop-blur-xs">
+                      <span className="absolute left-1.5 top-1.5 sm:left-3 sm:top-3 rounded sm:rounded-md bg-[#047857]/90 px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider text-white shadow-xs backdrop-blur-xs">
                         {item.kategori}
                       </span>
                     )}

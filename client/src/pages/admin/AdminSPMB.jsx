@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Download, Eye, Filter, RefreshCw, Settings, Users } from 'lucide-react';
+import { Download, Eye, Filter, Settings, Users } from 'lucide-react';
 import usePendaftarSPMB from '../../hooks/usePendaftarSPMB';
 import { formatDate } from '../../utils/helpers';
 import {
@@ -114,9 +114,6 @@ export default function AdminSPMB() {
             <Button variant="secondary" icon={Settings} onClick={() => setPengaturanOpen(true)}>
               Pengaturan surat
             </Button>
-            <Button variant="secondary" icon={RefreshCw} onClick={fetchPendaftar}>
-              Muat ulang
-            </Button>
             <Button variant="primary" icon={Download} onClick={handleExport} disabled={filtered.length === 0}>
               Ekspor CSV
             </Button>
@@ -182,7 +179,7 @@ export default function AdminSPMB() {
                   const berkas = hitungDokumen(item);
 
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                       <Td className="hidden whitespace-nowrap font-semibold text-brand md:table-cell">
                         {getNomorPendaftar(item)}
                       </Td>

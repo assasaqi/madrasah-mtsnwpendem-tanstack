@@ -228,11 +228,11 @@ export default function SPMBDashboard() {
 
         {pendaftaran?.catatan && (
           <Panel className="overflow-hidden">
-            <div className="flex items-start gap-2.5 border-l-2 border-l-[#c98a2e] bg-[#fdf7ea] px-4 py-3.5">
-              <AlertCircle size={15} className="mt-0.5 shrink-0 text-[#8a5a12]" />
+            <div className="flex items-start gap-2.5 border-l-2 border-l-amber-500 bg-amber-50/70 px-4 py-3.5">
+              <AlertCircle size={15} className="mt-0.5 shrink-0 text-amber-700" />
               <div>
-                <p className="text-[12px] font-semibold text-[#6f4a10]">Catatan dari panitia SPMB</p>
-                <p className="mt-1 text-[12px] leading-relaxed text-[#8a5a12]">
+                <p className="text-[12px] font-semibold text-amber-900">Catatan dari panitia SPMB</p>
+                <p className="mt-1 text-[12px] leading-relaxed text-amber-800">
                   {pendaftaran.catatan}
                 </p>
               </div>
@@ -289,12 +289,12 @@ export default function SPMBDashboard() {
                   {ringkasan.status === 'LULUS_FINAL' ? <Award size={14} /> : <CheckCircle2 size={14} />}
                 </span>
                 <div>
-                  <p className="text-[12.5px] font-semibold text-[#124426]">
+                  <p className="text-[12.5px] font-semibold text-[#065f46]">
                     {ringkasan.status === 'LULUS_FINAL'
                       ? 'Selamat, Anda diterima sebagai siswa baru'
                       : 'Anda lulus verifikasi administrasi'}
                   </p>
-                  <p className="mt-1 text-[11.5px] leading-relaxed text-[#2f5c3f]">
+                  <p className="mt-1 text-[11.5px] leading-relaxed text-[#047857]">
                     {ringkasan.status === 'LULUS_FINAL'
                       ? 'Silakan cetak surat keterangan lulus dan lanjutkan daftar ulang di sekretariat SPMB.'
                       : 'Berkas administrasi Anda sudah lengkap. Surat keterangan lulus dapat dicetak sebagai bukti verifikasi fisik.'}
@@ -326,9 +326,9 @@ export default function SPMBDashboard() {
                       className={cx(
                         'relative z-10 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10.5px] font-semibold',
                         langkah.selesai
-                          ? 'border-brand bg-brand text-[#f8f6ef]'
+                          ? 'border-brand bg-brand text-white'
                           : langkah.aktif
-                            ? 'border-[#c98a2e] bg-[#fdf3e2] text-[#8a5a12]'
+                            ? 'border-amber-500 bg-amber-50 text-amber-800'
                             : 'border-line bg-paper text-muted'
                       )}
                     >
@@ -441,15 +441,15 @@ export default function SPMBDashboard() {
               <SectionTitle icon={ShieldCheck} title="Ketentuan berkas" />
               <ul className="space-y-2 px-4 py-3.5 text-[11.5px] leading-relaxed text-muted sm:px-5">
                 <li className="flex gap-2">
-                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#a8a294]" />
+                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-slate-400" />
                   Kartu keluarga dan akta kelahiran maksimal 2 MB, pas foto maksimal 1 MB.
                 </li>
                 <li className="flex gap-2">
-                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#a8a294]" />
+                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-slate-400" />
                   Mengunggah ulang berkas akan menggantikan berkas sebelumnya.
                 </li>
                 <li className="flex gap-2">
-                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#a8a294]" />
+                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-slate-400" />
                   Verifikasi panitia umumnya selesai dalam 2×24 jam kerja.
                 </li>
               </ul>

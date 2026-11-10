@@ -94,7 +94,7 @@ function ToolbarButton({ active, disabled, label, onClick, children }) {
         'inline-flex h-7 min-w-7 items-center justify-center rounded px-1.5 text-[11.5px] font-medium transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-40',
         active
           ? 'bg-brand text-white shadow-2xs'
-          : 'text-ink/75 hover:bg-[#ede9de] hover:text-ink'
+          : 'text-ink/75 hover:bg-[#e2e8f0] hover:text-ink'
       ].join(' ')}
     >
       {children}
@@ -194,7 +194,7 @@ export default function RichTextEditor({
   return (
     <div className="overflow-hidden rounded-md border border-line bg-paper transition-colors focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/10">
       {/* Toolbar pengaturan penulisan standar */}
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-line bg-[#faf8f3] px-2 py-1.5">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-line bg-[#f8fafc] px-2 py-1.5">
         <ToolbarButton
           label="Urungkan (Ctrl+Z)"
           disabled={disabled || !editor.can().undo()}
@@ -367,7 +367,7 @@ export default function RichTextEditor({
 
       {/* Bar input tautan ringkas */}
       {linkOpen && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#f5f2e9] px-3 py-2">
+        <div className="flex flex-wrap items-center gap-2 border-b border-line bg-[#f1f5f9] px-3 py-2">
           <input
             type="url"
             value={linkUrl}
@@ -386,7 +386,7 @@ export default function RichTextEditor({
           <button
             type="button"
             onClick={applyLink}
-            className="rounded bg-brand px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-[#0f3d22] cursor-pointer"
+            className="rounded bg-brand px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-[#065f46] cursor-pointer"
           >
             Terapkan
           </button>

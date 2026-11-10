@@ -9,7 +9,6 @@ import {
   FolderDown,
   Loader2,
   Plus,
-  RefreshCw,
   Trash2,
   Upload
 } from 'lucide-react';
@@ -86,12 +85,6 @@ export default function AdminUnduhan() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Memuat ulang data dengan indikator muat
-  const refreshUnduhan = () => {
-    setLoading(true);
-    fetchUnduhan();
   };
 
   useEffect(() => {
@@ -186,14 +179,9 @@ export default function AdminUnduhan() {
           title="Pusat unduhan"
         description="Kelola formulir, jadwal, panduan, dan dokumen resmi yang dapat diunduh pengunjung website."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={refreshUnduhan}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah dokumen
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah dokumen
+          </Button>
         }
       />
 
@@ -239,7 +227,7 @@ export default function AdminUnduhan() {
                   const Icon = ikonBerkas(item.tipeFile);
 
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                       <Td>
                         <div className="flex items-center gap-3">
                           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-line bg-brand-soft text-brand">
@@ -283,7 +271,7 @@ export default function AdminUnduhan() {
                             target="_blank"
                             rel="noreferrer"
                             title="Buka berkas di tab baru"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#efece4] hover:text-ink"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink"
                           >
                             <Download size={14} />
                           </a>
@@ -382,7 +370,7 @@ export default function AdminUnduhan() {
           </Field>
 
           {editing && !file && (
-            <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-[#faf8f3] px-3 py-2 text-[11px] text-muted">
+            <div className="flex items-center justify-between gap-2 rounded-lg border border-line bg-[#f8fafc] px-3 py-2 text-[11px] text-muted">
               <span className="truncate">
                 Berkas saat ini: <span className="font-medium text-ink/80">{editing.namaFile}</span>
               </span>

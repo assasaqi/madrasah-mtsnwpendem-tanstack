@@ -15,9 +15,9 @@ import {
 export const cx = (...parts) => parts.filter(Boolean).join(' ');
 
 const BUTTON_VARIANTS = {
-  primary: 'border border-transparent bg-brand text-[#f8f6ef] hover:bg-[#0f3f23]',
-  secondary: 'border border-line bg-paper text-ink hover:border-[#cfc9bc] hover:bg-[#faf8f3]',
-  ghost: 'border border-transparent text-muted hover:bg-[#efece4] hover:text-ink',
+  primary: 'border border-transparent bg-brand text-white hover:bg-[#065f46]',
+  secondary: 'border border-line bg-paper text-ink hover:border-[#cbd5e1] hover:bg-[#f8fafc]',
+  ghost: 'border border-transparent text-muted hover:bg-[#f1f5f9] hover:text-ink',
   danger: 'border border-line bg-paper text-rose-700 hover:border-rose-200 hover:bg-rose-50',
   solidDanger: 'border border-transparent bg-rose-700 text-white hover:bg-rose-800'
 };
@@ -48,7 +48,7 @@ export function Button({ variant = 'secondary', size = 'md', icon: Icon, classNa
 
 export function IconButton({ label, tone = 'default', className, children, ...props }) {
   const tones = {
-    default: 'text-muted hover:bg-[#efece4] hover:text-ink',
+    default: 'text-muted hover:bg-[#f1f5f9] hover:text-ink',
     brand: 'text-brand hover:bg-brand-soft',
     danger: 'text-rose-600 hover:bg-rose-50'
   };
@@ -129,13 +129,13 @@ export function Toolbar({ children, className }) {
 export function SearchInput({ value, onChange, placeholder = 'Cari…', className }) {
   return (
     <div className={cx('relative w-full sm:max-w-sm', className)}>
-      <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#a9a396]" />
+      <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#94a3b8]" />
       <input
         type="search"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="h-9 w-full rounded-lg border border-line bg-paper pl-9 pr-3 text-[12.5px] text-ink placeholder:text-[#a9a396] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
+        className="h-9 w-full rounded-lg border border-line bg-paper pl-9 pr-3 text-[12.5px] text-ink placeholder:text-[#94a3b8] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
       />
     </div>
   );
@@ -158,7 +158,7 @@ export function FilterTabs({ options, value, onChange, className }) {
           >
             {option.label}
             {typeof option.count === 'number' && (
-              <span className="ml-1.5 text-[10.5px] tabular text-[#a9a396]">{option.count}</span>
+              <span className="ml-1.5 text-[10.5px] tabular text-[#94a3b8]">{option.count}</span>
             )}
             {active && <span className="absolute inset-x-1.5 -bottom-px h-[2px] rounded-full bg-brand" />}
           </button>
@@ -176,7 +176,7 @@ export function Th({ children, align = 'left', className }) {
   return (
     <th
       className={cx(
-        'whitespace-nowrap border-b border-line bg-[#faf8f3] px-2.5 py-2 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-muted sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.14em]',
+        'whitespace-nowrap border-b border-line bg-[#f8fafc] px-2.5 py-2 text-[8.5px] font-semibold uppercase tracking-[0.12em] text-muted sm:px-4 sm:py-2.5 sm:text-[10px] sm:tracking-[0.14em]',
         align === 'right' && 'text-right',
         align === 'center' && 'text-center',
         className
@@ -207,7 +207,7 @@ export function EmptyRow({ colSpan, title = 'Info data belum tersedia', descript
     <tr>
       <td colSpan={colSpan} className="px-4 py-14">
         <div className="mx-auto flex max-w-sm flex-col items-center gap-2 text-center">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-[#faf8f3] text-[#b3ac9d]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-[#f8fafc] text-[#94a3b8]">
             <Icon size={18} />
           </span>
           <p className="text-[12.5px] font-semibold text-ink">{title}</p>
@@ -221,7 +221,7 @@ export function EmptyRow({ colSpan, title = 'Info data belum tersedia', descript
 export function EmptyState({ title = 'Info data belum tersedia', description, icon: Icon = Inbox, action }) {
   return (
     <div className="flex flex-col items-center gap-2 px-4 py-16 text-center">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-[#faf8f3] text-[#b3ac9d]">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-[#f8fafc] text-[#94a3b8]">
         <Icon size={20} />
       </span>
       <p className="text-[13px] font-semibold text-ink">{title}</p>
@@ -248,7 +248,7 @@ export function Alert({ tone = 'success', children, onClose }) {
     <div
       className={cx(
         'flex items-start gap-2.5 rounded-lg border border-line border-l-2 px-3.5 py-2.5 text-[12px] leading-relaxed',
-        error ? 'border-l-rose-500 bg-rose-50/70 text-rose-800' : 'border-l-brand bg-brand-soft text-[#124426]'
+        error ? 'border-l-rose-500 bg-rose-50/70 text-rose-800' : 'border-l-brand bg-brand-soft text-[#065f46]'
       )}
     >
       <Icon size={14} className="mt-0.5 shrink-0" />
@@ -263,11 +263,11 @@ export function Alert({ tone = 'success', children, onClose }) {
 }
 
 export const TONES = {
-  amber: { dot: 'bg-[#c98a2e]', text: 'text-[#8a5a12]' },
+  amber: { dot: 'bg-amber-500', text: 'text-amber-700' },
   brand: { dot: 'bg-brand', text: 'text-brand' },
-  blue: { dot: 'bg-[#3b62a8]', text: 'text-[#2f4f88]' },
+  blue: { dot: 'bg-blue-600', text: 'text-blue-700' },
   rose: { dot: 'bg-rose-500', text: 'text-rose-700' },
-  stone: { dot: 'bg-[#a8a294]', text: 'text-muted' }
+  stone: { dot: 'bg-[#94a3b8]', text: 'text-muted' }
 };
 
 export function StatusDot({ tone = 'stone', children }) {
@@ -285,7 +285,7 @@ export function Tag({ children, className }) {
   return (
     <span
       className={cx(
-        'inline-flex items-center rounded border border-line bg-[#f7f5ef] px-1.5 py-0.5 text-[9.5px] font-medium text-muted sm:text-[10.5px]',
+        'inline-flex items-center rounded border border-line bg-[#f8fafc] px-1.5 py-0.5 text-[9.5px] font-medium text-muted sm:text-[10.5px]',
         className
       )}
     >
@@ -311,8 +311,8 @@ export function Stat({ label, value, hint, tone = 'ink' }) {
   const tones = {
     ink: 'text-ink',
     brand: 'text-brand',
-    amber: 'text-[#8a5a12]',
-    blue: 'text-[#2f4f88]',
+    amber: 'text-amber-700',
+    blue: 'text-blue-700',
     rose: 'text-rose-700'
   };
 
@@ -326,7 +326,7 @@ export function Stat({ label, value, hint, tone = 'ink' }) {
 }
 
 export const controlClass =
-  'w-full rounded-lg border border-line bg-paper px-3 py-2 text-[12.5px] text-ink placeholder:text-[#a9a396] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 disabled:bg-[#f5f3ee] disabled:text-muted';
+  'w-full rounded-lg border border-line bg-paper px-3 py-2 text-[12.5px] text-ink placeholder:text-[#94a3b8] transition focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10 disabled:bg-[#f1f5f9] disabled:text-muted';
 
 export function Field({ label, hint, required, htmlFor, children, className }) {
   return (
@@ -365,7 +365,7 @@ export function Textarea({ className, defaultAlign = 'left', showAlign = true, .
 
   return (
     <div className="overflow-hidden rounded-md border border-line bg-paper transition-colors focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/10">
-      <div className="flex items-center justify-between border-b border-line bg-[#faf8f3] px-2 py-1">
+      <div className="flex items-center justify-between border-b border-line bg-[#f8fafc] px-2 py-1">
         <span className="text-[10px] font-medium text-muted">Perataan teks</span>
         <div className="flex items-center gap-0.5">
           {TEXTAREA_ALIGN_OPTIONS.map(({ value, label, icon: Icon }) => {
@@ -383,7 +383,7 @@ export function Textarea({ className, defaultAlign = 'left', showAlign = true, .
                   'inline-flex h-6 w-6 items-center justify-center rounded transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-40',
                   active
                     ? 'bg-brand text-white shadow-2xs'
-                    : 'text-ink/70 hover:bg-[#ede9de] hover:text-ink'
+                    : 'text-ink/70 hover:bg-[#e2e8f0] hover:text-ink'
                 )}
               >
                 <Icon size={13} />
@@ -395,7 +395,7 @@ export function Textarea({ className, defaultAlign = 'left', showAlign = true, .
 
       <textarea
         className={cx(
-          'w-full bg-paper px-3 py-2 text-[12.5px] leading-relaxed text-ink outline-none placeholder:text-muted/65 disabled:cursor-not-allowed disabled:bg-[#f6f4ee] disabled:text-muted',
+          'w-full bg-paper px-3 py-2 text-[12.5px] leading-relaxed text-ink outline-none placeholder:text-muted/65 disabled:cursor-not-allowed disabled:bg-[#f1f5f9] disabled:text-muted',
           activeOption.className,
           className
         )}
@@ -441,7 +441,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-[#1c1b17]/45 backdrop-blur-[2px] sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 backdrop-blur-[2px] sm:items-center sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose?.();
       }}
@@ -460,7 +460,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
           <button
             type="button"
             onClick={onClose}
-            className="-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#efece4] hover:text-ink"
+            className="-mr-1 -mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink"
             aria-label="Tutup"
           >
             <X size={17} />
@@ -470,7 +470,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
         <div className="no-scrollbar flex-1 overflow-y-auto px-4 py-4 sm:px-5">{children}</div>
 
         {footer && (
-          <footer className="flex flex-col-reverse items-stretch gap-2 border-t border-line bg-[#faf8f3] px-4 py-3.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:px-5 [&>*]:w-full sm:[&>*]:w-auto">
+          <footer className="flex flex-col-reverse items-stretch gap-2 border-t border-line bg-[#f8fafc] px-4 py-3.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:px-5 [&>*]:w-full sm:[&>*]:w-auto">
             {footer}
           </footer>
         )}

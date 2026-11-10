@@ -235,7 +235,7 @@ export default function AdminPengumuman() {
                   const fileFullUrl = fileName ? getFileUrl(fileName) : null;
 
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                       <Td>
                         <p className="max-w-[420px] font-semibold text-ink">{item.judul}</p>
                         <p className="mt-0.5 line-clamp-2 max-w-[420px] text-[10.5px] leading-relaxed text-muted">
@@ -284,7 +284,7 @@ export default function AdminPengumuman() {
                             </button>
                           </div>
                         ) : (
-                          <span className="text-[11.5px] text-[#b3ac9d]">—</span>
+                          <span className="text-[11.5px] text-[#94a3b8]">—</span>
                         )}
                       </Td>
                       <Td align="right">
@@ -295,7 +295,7 @@ export default function AdminPengumuman() {
                               target="_blank"
                               rel="noreferrer"
                               title="Buka lampiran di tab baru"
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#efece4] hover:text-ink"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink"
                             >
                               <ExternalLink size={14} />
                             </a>
@@ -414,7 +414,7 @@ export default function AdminPengumuman() {
         }
       >
         {previewFile && (
-          <div className="flex min-h-[50vh] items-center justify-center rounded-lg bg-[#f3f0e9] p-2">
+          <div className="flex min-h-[50vh] items-center justify-center rounded-lg bg-[#f1f5f9] p-2">
             {previewFile.isPdf ? (
               <iframe
                 src={previewFile.url}

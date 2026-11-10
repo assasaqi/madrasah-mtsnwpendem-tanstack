@@ -215,7 +215,7 @@ export default function AdminProfile() {
               </Field>
             </div>
 
-            <div className="flex justify-end border-t border-line bg-[#faf8f3] px-4 py-3">
+            <div className="flex justify-end border-t border-line bg-[#f8fafc] px-4 py-3">
               <Button type="submit" variant="primary" icon={Save} disabled={loading}>
                 {loading ? 'Menyimpan…' : 'Simpan profil'}
               </Button>
@@ -258,7 +258,7 @@ export default function AdminProfile() {
               </Field>
             </div>
 
-            <div className="flex justify-end border-t border-line bg-[#faf8f3] px-4 py-3">
+            <div className="flex justify-end border-t border-line bg-[#f8fafc] px-4 py-3">
               <Button type="submit" variant="secondary" icon={KeyRound} disabled={loading}>
                 {loading ? 'Menyimpan…' : 'Ubah password'}
               </Button>

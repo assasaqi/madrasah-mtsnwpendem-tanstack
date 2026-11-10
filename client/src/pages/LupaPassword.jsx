@@ -68,7 +68,7 @@ export default function LupaPassword() {
 
           <Link
             to={loginPath}
-            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-line bg-paper text-[12.5px] font-semibold text-ink transition-colors hover:bg-[#faf8f3]"
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-line bg-paper text-[12.5px] font-semibold text-ink transition-colors hover:bg-[#f8fafc]"
           >
             <ArrowLeft size={14} /> Kembali ke Halaman Masuk
           </Link>
@@ -102,7 +102,7 @@ export default function LupaPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
             >
               <Send size={14} />
               <span>{loading ? 'Mengirim…' : 'Kirim Tautan Atur Ulang'}</span>

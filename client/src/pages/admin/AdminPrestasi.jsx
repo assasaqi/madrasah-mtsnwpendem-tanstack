@@ -3,7 +3,6 @@ import {
   Edit2,
   Loader2,
   Plus,
-  RefreshCw,
   Trash2,
   Trophy,
   Upload,
@@ -73,12 +72,6 @@ export default function AdminPrestasi() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Memuat ulang data dengan indikator muat
-  const refreshPrestasi = () => {
-    setLoading(true);
-    fetchPrestasi();
   };
 
   useEffect(() => {
@@ -201,14 +194,9 @@ export default function AdminPrestasi() {
         title="Prestasi madrasah"
         description="Katalog capaian siswa, guru, dan madrasah yang tampil pada halaman prestasi publik."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={refreshPrestasi}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah prestasi
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah prestasi
+          </Button>
         }
       />
 
@@ -250,7 +238,7 @@ export default function AdminPrestasi() {
                 <EmptyRow colSpan={5} icon={Loader2} title="Memuat prestasi…" />
               ) : filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
-                  <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                  <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                     <Td>
                       <div className="flex items-center gap-3">
                         {item.gambar ? (
@@ -258,7 +246,7 @@ export default function AdminPrestasi() {
                             href={getFileUrl(item.gambar)}
                             target="_blank"
                             rel="noreferrer"
-                            className="block h-12 w-16 shrink-0 overflow-hidden rounded-md border border-line bg-[#f3f0e9]"
+                            className="block h-12 w-16 shrink-0 overflow-hidden rounded-md border border-line bg-[#f1f5f9]"
                             title="Buka foto"
                           >
                             <img
@@ -423,7 +411,7 @@ export default function AdminPrestasi() {
           </Field>
 
           {preview && (
-            <div className="overflow-hidden rounded-lg border border-line bg-[#f3f0e9]">
+            <div className="overflow-hidden rounded-lg border border-line bg-[#f1f5f9]">
               <img src={preview} alt="Pratinjau" className="h-44 w-full object-cover" />
             </div>
           )}

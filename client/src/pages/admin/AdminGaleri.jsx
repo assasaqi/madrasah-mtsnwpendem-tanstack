@@ -5,7 +5,6 @@ import {
   Trash2,
   Edit2,
   Loader2,
-  RefreshCw,
   Upload
 } from 'lucide-react';
 import { galeriService } from '../../services/galeriService';
@@ -171,14 +170,9 @@ export default function AdminGaleri() {
         title="Galeri madrasah"
         description="Kumpulan foto kegiatan, prestasi, dan fasilitas yang tampil pada halaman galeri publik."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={fetchGaleri}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah foto
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah foto
+          </Button>
         }
       />
 
@@ -216,13 +210,13 @@ export default function AdminGaleri() {
                 <EmptyRow colSpan={5} icon={Loader2} title="Memuat galeri…" />
               ) : filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
-                  <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                  <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                     <Td>
                       <a
                         href={getFileUrl(item.imageUrl)}
                         target="_blank"
                         rel="noreferrer"
-                        className="block h-12 w-16 overflow-hidden rounded-md border border-line bg-[#f3f0e9]"
+                        className="block h-12 w-16 overflow-hidden rounded-md border border-line bg-[#f1f5f9]"
                         title="Buka foto"
                       >
                         <img
@@ -334,7 +328,7 @@ export default function AdminGaleri() {
           </Field>
 
           {preview && (
-            <div className="overflow-hidden rounded-lg border border-line bg-[#f3f0e9]">
+            <div className="overflow-hidden rounded-lg border border-line bg-[#f1f5f9]">
               <img src={preview} alt="Pratinjau" className="h-44 w-full object-cover" />
             </div>
           )}

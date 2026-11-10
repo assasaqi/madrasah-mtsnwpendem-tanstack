@@ -82,7 +82,7 @@ export default function AdminProfilSejarah() {
             />
 
             <div className="space-y-4 px-4 py-4">
-              <div className="flex items-start gap-2.5 rounded-lg border border-line border-l-2 border-l-[#c98a2e] bg-[#fbf7ec] px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#7a5a17]">
+              <div className="flex items-start gap-2.5 rounded-lg border border-line border-l-2 border-l-brand bg-brand-soft/60 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#065f46]">
                 <Info size={14} className="mt-0.5 shrink-0" />
                 <span>
                   Sertakan tahun pendirian, tokoh atau yayasan pendiri, dan tonggak perkembangan yang penting.
@@ -102,7 +102,7 @@ export default function AdminProfilSejarah() {
               </Field>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-[#faf8f3] px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line bg-[#f8fafc] px-4 py-3">
               <p className="text-[11px] text-muted">Perubahan langsung tampil setelah disimpan.</p>
               <Button type="submit" variant="primary" icon={Save} disabled={saving}>
                 {saving ? 'Menyimpan…' : 'Simpan sejarah'}

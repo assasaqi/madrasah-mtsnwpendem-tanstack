@@ -18,16 +18,16 @@ const ikonBerkas = (tipe) => {
   const ekstensi = String(tipe || '').toLowerCase();
 
   if (['xls', 'xlsx', 'csv'].includes(ekstensi)) {
-    return { Icon: FileSpreadsheet, className: 'bg-[#eef4ec] text-[#2f6b3b] border-emerald-200' };
+    return { Icon: FileSpreadsheet, className: 'bg-[#ecfdf5] text-[#047857] border-emerald-200' };
   }
   if (['zip', 'rar', '7z'].includes(ekstensi)) {
-    return { Icon: FileArchive, className: 'bg-[#f7f1e6] text-[#8a5a12] border-amber-200' };
+    return { Icon: FileArchive, className: 'bg-amber-50 text-amber-800 border-amber-200' };
   }
   if (['ppt', 'pptx'].includes(ekstensi)) {
-    return { Icon: Presentation, className: 'bg-[#f8ece8] text-[#a3402a] border-rose-200' };
+    return { Icon: Presentation, className: 'bg-rose-50 text-rose-800 border-rose-200' };
   }
   if (['doc', 'docx'].includes(ekstensi)) {
-    return { Icon: FileType2, className: 'bg-[#eef1f7] text-[#2f4f88] border-blue-200' };
+    return { Icon: FileType2, className: 'bg-blue-50 text-blue-800 border-blue-200' };
   }
   return { Icon: FileText, className: 'bg-brand-soft text-brand border-brand/20' };
 };
@@ -79,7 +79,7 @@ function BarisDokumen({ item }) {
         </span>
         <a
           href={unduhanService.getDownloadUrl(item.id)}
-          className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-[12px] font-semibold text-white shadow-xs transition-colors hover:bg-[#0b331c]"
+          className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-4 text-[12px] font-semibold text-white shadow-xs transition-colors hover:bg-[#065f46]"
         >
           <Download size={14} /> Unduh Berkas
         </a>

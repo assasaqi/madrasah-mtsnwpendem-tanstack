@@ -88,7 +88,7 @@ export default function Home() {
             {barisTagline.map((baris, index) => (
               <span
                 key={index}
-                className="block bg-gradient-to-r from-white via-[#f3e7c4] to-[#d9b26a] bg-clip-text text-transparent"
+                className="block bg-gradient-to-r from-white via-slate-100 to-emerald-200 bg-clip-text text-transparent"
               >
                 {baris}
               </span>
@@ -101,13 +101,13 @@ export default function Home() {
             href={rdmUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-gradient-to-r from-[#d9b26a] to-[#f3e7c4] px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#123a24] shadow-md transition-all duration-150 hover:brightness-105 active:scale-[0.97]"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-brand px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-white shadow-md transition-all duration-150 hover:bg-[#065f46] active:scale-[0.97]"
           >
             Rapor Digital (RDM) <ExternalLink size={13} />
           </a>
           <Link
             to="/profil"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-[#f7f5ee] backdrop-blur-sm transition-all duration-150 hover:bg-white/20 active:scale-[0.97]"
+            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-white backdrop-blur-sm transition-all duration-150 hover:bg-white/20 active:scale-[0.97]"
           >
             Profil Madrasah
           </Link>
@@ -119,7 +119,7 @@ export default function Home() {
   return (
     <div className="pb-4">
       {/* Bagian Banner (Rasio 16:6) */}
-      <section className="relative overflow-hidden border-b border-line bg-[#0b2416]">
+      <section className="relative overflow-hidden border-b border-line bg-slate-900">
         {banner ? (
           <div className="relative w-full aspect-[16/6] overflow-hidden">
             <img
@@ -127,11 +127,11 @@ export default function Home() {
               alt={`Banner ${namaSekolah}`}
               className="h-full w-full object-cover object-top"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#071a10]/85 via-[#0b2416]/45 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/50 to-transparent" />
             {kontenBanner}
           </div>
         ) : (
-          <div className="relative w-full aspect-[16/6] bg-gradient-to-r from-[#071a10] via-[#0b2416] to-[#123a24]">
+          <div className="relative w-full aspect-[16/6] bg-gradient-to-r from-slate-950 via-slate-900 to-[#064e3b]">
             {kontenBanner}
           </div>
         )}
@@ -179,7 +179,7 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-3 border-t border-line pt-8">
+        <div className="flex flex-wrap items-end justify-between gap-3 pt-8">
           <div>
             <h2 className="mt-2 text-[18px] font-semibold tracking-[-0.02em] text-ink sm:text-[26px]">
               Pengumuman

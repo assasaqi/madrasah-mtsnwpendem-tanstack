@@ -114,7 +114,7 @@ export default function LoginForm({ scope = 'spmb' }) {
               <Link
                 to={confirmPath}
                 search={{ email: unverifiedEmail, scope: isAdmin ? 'admin' : 'spmb' }}
-                className="inline-flex items-center gap-1 font-semibold text-brand underline hover:text-[#0f3d22]"
+                className="inline-flex items-center gap-1 font-semibold text-brand underline hover:text-[#065f46]"
               >
                 Verifikasi kode OTP sekarang <ArrowRight size={12} />
               </Link>
@@ -162,7 +162,7 @@ export default function LoginForm({ scope = 'spmb' }) {
               type="button"
               onClick={() => setShowPassword((open) => !open)}
               aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f2efe7] hover:text-ink cursor-pointer"
+              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink cursor-pointer"
             >
               {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
@@ -172,7 +172,7 @@ export default function LoginForm({ scope = 'spmb' }) {
         <button
           type="submit"
           disabled={loading}
-          className="mt-1 inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-[#f7f5ee] transition-colors hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+          className="mt-1 inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
         >
           <LogIn size={14} />
           {loading ? 'Memproses…' : 'Masuk'}

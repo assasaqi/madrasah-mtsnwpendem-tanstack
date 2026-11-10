@@ -221,7 +221,7 @@ export default function Kontak() {
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#0b331c] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Send size={14} /> {loading ? 'Sedang Mengirim...' : 'Kirim Pesan'}
               </button>

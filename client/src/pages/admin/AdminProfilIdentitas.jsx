@@ -6,6 +6,7 @@ import {
   Upload
 } from 'lucide-react';
 import { getAdminSchoolProfile, updateAdminSchoolProfile } from '../../services/profileService';
+import { queryClient } from '../../lib/queryClient';
 import { getErrorMessage, getFileUrl } from '../../utils/helpers';
 import {
   PageHeader,
@@ -161,6 +162,7 @@ export default function AdminProfilIdentitas() {
       if (files.banner instanceof File) formData.append('banner', files.banner);
 
       const data = await updateAdminSchoolProfile(formData);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
 
       setStatusMsg({ type: 'success', text: 'Identitas madrasah berhasil disimpan.' });
       setFiles({ logo: null, banner: null });
@@ -207,7 +209,7 @@ export default function AdminProfilIdentitas() {
             <div>
               <p className="mb-2 text-[11.5px] font-semibold text-ink/80">Logo madrasah</p>
               <div className="flex items-center gap-3.5">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#faf8f3] p-2 text-[#c2bcae]">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#f8fafc] p-2 text-[#94a3b8]">
                   {logoPreview ? (
                     <img src={logoPreview} alt="Logo Madrasah" className="h-full w-full object-contain" />
                   ) : (
@@ -230,7 +232,7 @@ export default function AdminProfilIdentitas() {
             <div>
               <p className="mb-2 text-[11.5px] font-semibold text-ink/80">Banner halaman depan</p>
               <div className="flex items-center gap-3.5">
-                <div className="flex w-36 aspect-[16/6] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#faf8f3] text-[10.5px] text-[#a9a396]">
+                <div className="flex w-36 aspect-[16/6] shrink-0 items-center justify-center overflow-hidden rounded-lg border border-line bg-[#f8fafc] text-[10.5px] text-[#94a3b8]">
                   {bannerPreview ? (
                     <img src={bannerPreview} alt="Banner Depan" className="h-full w-full object-cover" />
                   ) : (
@@ -309,7 +311,7 @@ export default function AdminProfilIdentitas() {
             </Field>
           </div>
 
-          <div className="flex justify-end border-t border-line bg-[#faf8f3] px-4 py-3">
+          <div className="flex justify-end border-t border-line bg-[#f8fafc] px-4 py-3">
             <Button type="submit" variant="primary" icon={Save} disabled={loading}>
               {loading ? 'Menyimpan…' : 'Simpan Identitas'}
             </Button>

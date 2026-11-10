@@ -37,7 +37,7 @@ function PrestasiCard({ item }) {
         )}
 
         {item.tingkat && (
-          <span className="absolute left-3 top-3 rounded-md bg-[#004d26] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
+          <span className="absolute left-3 top-3 rounded-md bg-[#047857] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
             {item.tingkat}
           </span>
         )}

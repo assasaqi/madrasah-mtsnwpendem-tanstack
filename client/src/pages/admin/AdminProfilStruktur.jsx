@@ -55,7 +55,7 @@ function SlotCard({ item, onEdit, onDelete, isTop = false, compact = false }) {
           className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#f5f2eb] to-[#e6e0d2] text-[#b3ab98]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#f1f5f9] to-[#e2e8f0] text-[#94a3b8]">
           <UserRound size={15} className="sm:w-5 sm:h-5 opacity-60" />
           <span className="mt-0.5 text-[7px] sm:text-[8.5px] font-bold text-ink/40">{inisial}</span>
         </div>
@@ -90,7 +90,7 @@ function SlotCard({ item, onEdit, onDelete, isTop = false, compact = false }) {
           {item.nama}
         </p>
         <p
-          className="mt-0.5 text-[4.5px] sm:text-[5.5px] font-semibold text-[#8bf0ba] uppercase tracking-wider drop-shadow-xs leading-tight break-words"
+          className="mt-0.5 text-[4.5px] sm:text-[5.5px] font-semibold text-emerald-300 uppercase tracking-wider drop-shadow-xs leading-tight break-words"
           title={item.jabatan}
         >
           {item.jabatan}
@@ -107,7 +107,7 @@ function EmptySlot({ title, defaultJabatan, onAdd, isTop = false }) {
       type="button"
       onClick={() => onAdd(null, defaultJabatan)}
       className={cx(
-        'group flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-md sm:rounded-lg border-2 border-dashed border-line bg-[#faf8f3]/60 p-0.5 sm:p-1 text-center transition-all duration-150 hover:border-brand hover:bg-[#faf8f3] w-full aspect-[3/4]',
+        'group flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-md sm:rounded-lg border-2 border-dashed border-line bg-[#f8fafc]/75 p-0.5 sm:p-1 text-center transition-all duration-150 hover:border-brand hover:bg-[#f8fafc] w-full aspect-[3/4]',
         isTop ? 'max-w-[91px] sm:max-w-[105px] mx-auto' : 'max-w-[77px] sm:max-w-[91px] mx-auto'
       )}
     >
@@ -729,11 +729,11 @@ export default function AdminProfilStruktur() {
 
           <Field label="FOTO" hint="OPSIONAL. FORMAT GAMBAR POTRET VERTIKAL, MAKSIMAL 5MB.">
             <div className="flex items-center gap-3">
-              <div className="h-16 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-[#f3f0e9]">
+              <div className="h-16 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-[#f1f5f9]">
                 {preview ? (
                   <img src={preview} alt="PRATINJAU" className="h-full w-full object-cover object-top" />
                 ) : (
-                  <span className="flex h-full w-full items-center justify-center text-[#c2bcae]">
+                  <span className="flex h-full w-full items-center justify-center text-[#94a3b8]">
                     <UserRound size={18} />
                   </span>
                 )}

@@ -223,7 +223,7 @@ export default function KonfirmasiEmail() {
           <Link
             to={loginPath}
             state={{ registeredEmail: email.trim().toLowerCase() }}
-            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98]"
+            className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98]"
           >
             Masuk ke Akun Sekarang <ArrowRight size={14} />
           </Link>
@@ -315,7 +315,7 @@ export default function KonfirmasiEmail() {
             <button
               type="submit"
               disabled={verifying || otpCode.length !== 6}
-              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-55 cursor-pointer"
+              className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] disabled:cursor-not-allowed disabled:opacity-55 cursor-pointer"
             >
               <ShieldCheck size={15} />
               <span>{verifying ? 'Memverifikasi…' : 'Verifikasi Kode OTP'}</span>
@@ -329,7 +329,7 @@ export default function KonfirmasiEmail() {
                 href={webmail.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-line bg-paper text-[12px] font-semibold text-ink transition-colors hover:border-[#cfc9bc] hover:bg-[#faf8f3]"
+                className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-line bg-paper text-[12px] font-semibold text-ink transition-colors hover:border-[#cbd5e1] hover:bg-[#f8fafc]"
               >
                 {webmail.name} <ExternalLink size={13} />
               </a>

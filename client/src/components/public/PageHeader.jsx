@@ -15,7 +15,7 @@ export default function PageHeader({
   children
 }) {
   return (
-    <div className={`border-b border-line bg-gradient-to-b from-[#eaf3ec]/40 via-transparent to-transparent pt-5 sm:pt-6 ${title ? 'pb-7 sm:pb-9' : 'pb-5 sm:pb-6'}`}>
+    <div className={`border-b border-line bg-gradient-to-b from-[#ecfdf5]/70 via-transparent to-transparent pt-5 sm:pt-6 ${title ? 'pb-7 sm:pb-9' : 'pb-5 sm:pb-6'}`}>
       <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         {/* Breadcrumbs Navigation */}
         <nav aria-label="Jalur navigasi" className="flex flex-wrap items-center gap-1.5 text-[11.5px] text-muted">

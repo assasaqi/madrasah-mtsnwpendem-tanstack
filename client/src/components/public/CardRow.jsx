@@ -44,7 +44,7 @@ export default function CardRow({ children, ariaLabel, className = '' }) {
   };
 
   const tombolClass =
-    'pointer-events-auto flex h-8 w-8 items-center justify-center rounded-full border border-line bg-paper text-ink/70 shadow-paper transition-colors hover:bg-[#faf8f3] hover:text-ink';
+    'pointer-events-auto flex h-8 w-8 items-center justify-center rounded-full border border-line bg-paper text-ink/70 shadow-paper transition-colors hover:bg-[#f8fafc] hover:text-ink';
 
   return (
     <div className="relative">

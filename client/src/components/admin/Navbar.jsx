@@ -45,7 +45,7 @@ export default function Navbar({ setSidebarOpen, getPageTitle }) {
       <div className="flex min-w-0 items-center gap-2.5">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="-ml-1 rounded-md p-1.5 text-muted transition-colors hover:bg-[#efece4] hover:text-ink lg:hidden"
+          className="-ml-1 rounded-md p-1.5 text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink lg:hidden"
           aria-label="Buka menu"
         >
           <Menu size={18} />
@@ -54,7 +54,7 @@ export default function Navbar({ setSidebarOpen, getPageTitle }) {
         <span className="hidden text-[10px] font-semibold uppercase tracking-[0.2em] text-muted sm:inline">
           Panel Admin
         </span>
-        <span className="hidden text-[#c9c3b6] sm:inline">/</span>
+        <span className="hidden text-[#cbd5e1] sm:inline">/</span>
         <h2 className="truncate text-[15px] font-semibold leading-none tracking-[-0.01em] text-ink">{getPageTitle()}</h2>
       </div>
 
@@ -99,7 +99,7 @@ export default function Navbar({ setSidebarOpen, getPageTitle }) {
                 <Link
                   to="/admin/pengaturan-profil"
                   onClick={() => setProfileDropdownOpen(false)}
-                  className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[11.5px] font-medium text-muted transition-colors hover:bg-[#f3f0e9] hover:text-ink"
+                  className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-[11.5px] font-medium text-muted transition-colors hover:bg-[#f1f5f9] hover:text-ink"
                 >
                   <Settings size={14} /> Pengaturan profil
                 </Link>

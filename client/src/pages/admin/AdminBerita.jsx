@@ -5,7 +5,6 @@ import {
   Trash2,
   Edit2,
   Loader2,
-  RefreshCw,
   ImagePlus,
   User,
   Clock,
@@ -262,14 +261,9 @@ export default function AdminBerita() {
         title="Berita & artikel"
         description="Tulis kabar terbaru madrasah. Artikel yang diterbitkan langsung tampil pada halaman berita publik."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={fetchBerita}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => handleOpenModal(null)}>
-              Tulis artikel
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => handleOpenModal(null)}>
+            Tulis artikel
+          </Button>
         }
       />
 
@@ -322,10 +316,10 @@ export default function AdminBerita() {
                   const kategori = item.kategori?.nama || item.kategori?.name || item.category || 'Umum';
 
                   return (
-                    <tr key={item.id || idx} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id || idx} className="transition-colors hover:bg-[#f8fafc]">
                       <Td>
                         <div className="flex items-center gap-2.5 sm:gap-3">
-                          <div className="h-10 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-[#f3f0e9] sm:w-14">
+                          <div className="h-10 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-[#f1f5f9] sm:w-14">
                             {rawGambar ? (
                               <img
                                 src={getFileUrl(rawGambar)}
@@ -333,7 +327,7 @@ export default function AdminBerita() {
                                 className="h-full w-full object-cover"
                               />
                             ) : (
-                              <span className="flex h-full w-full items-center justify-center text-[#c2bcae]">
+                              <span className="flex h-full w-full items-center justify-center text-[#94a3b8]">
                                 <FileText size={16} />
                               </span>
                             )}
@@ -486,7 +480,7 @@ export default function AdminBerita() {
           </Field>
 
           {imagePreview && (
-            <div className="flex items-center gap-3 rounded-lg border border-line bg-[#faf8f3] p-2.5">
+            <div className="flex items-center gap-3 rounded-lg border border-line bg-[#f8fafc] p-2.5">
               <img
                 src={imagePreview}
                 alt="Pratinjau"

@@ -177,7 +177,7 @@ export default function Faq() {
                   </button>
 
                   {aktif && (
-                    <div className="border-t border-line/70 bg-[#faf8f3]/60 p-4 sm:p-5">
+                    <div className="border-t border-line/70 bg-[#f8fafc]/75 p-4 sm:p-5">
                       <div
                         className="public-article text-[14px] leading-relaxed text-ink/85"
                         dangerouslySetInnerHTML={{ __html: formatArticleHtml(item.jawaban) }}
@@ -214,7 +214,7 @@ export default function Faq() {
               href={contactHref}
               target={waNumber ? '_blank' : undefined}
               rel={waNumber ? 'noopener noreferrer' : undefined}
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#0b331c]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-xs transition-colors hover:bg-[#065f46]"
             >
               Hubungi Madrasah <ArrowRight size={14} />
             </a>

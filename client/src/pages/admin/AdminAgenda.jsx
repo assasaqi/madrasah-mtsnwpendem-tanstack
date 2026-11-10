@@ -6,7 +6,6 @@ import {
   Loader2,
   MapPin,
   Plus,
-  RefreshCw,
   Trash2
 } from 'lucide-react';
 import { agendaService } from '../../services/agendaService';
@@ -80,12 +79,6 @@ export default function AdminAgenda() {
     } finally {
       setLoading(false);
     }
-  };
-
-  // Memuat ulang data dengan indikator muat
-  const refreshAgenda = () => {
-    setLoading(true);
-    fetchAgenda();
   };
 
   useEffect(() => {
@@ -182,14 +175,9 @@ export default function AdminAgenda() {
         title="Agenda kegiatan"
         description="Jadwal kegiatan madrasah yang tampil pada halaman agenda publik. Pengunjung dapat menyimpan agenda ke kalender pribadi."
         actions={
-          <>
-            <Button variant="secondary" icon={RefreshCw} onClick={refreshAgenda}>
-              Muat ulang
-            </Button>
-            <Button variant="primary" icon={Plus} onClick={() => openModal()}>
-              Tambah agenda
-            </Button>
-          </>
+          <Button variant="primary" icon={Plus} onClick={() => openModal()}>
+            Tambah agenda
+          </Button>
         }
       />
 
@@ -234,7 +222,7 @@ export default function AdminAgenda() {
                   const lewat = sudahLewat(item);
 
                   return (
-                    <tr key={item.id} className="transition-colors hover:bg-[#faf8f3]">
+                    <tr key={item.id} className="transition-colors hover:bg-[#f8fafc]">
                       <Td>
                         <p className="max-w-[360px] font-semibold text-ink">{item.judul}</p>
                         <p className="mt-0.5 line-clamp-2 max-w-[360px] text-[10.5px] leading-relaxed text-muted">
@@ -265,7 +253,7 @@ export default function AdminAgenda() {
                             <span className="line-clamp-2">{item.lokasi}</span>
                           </span>
                         ) : (
-                          <span className="text-[11.5px] text-[#b3ac9d]">—</span>
+                          <span className="text-[11.5px] text-[#94a3b8]">—</span>
                         )}
                       </Td>
                       <Td>

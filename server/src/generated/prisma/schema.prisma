@@ -10,6 +10,7 @@ generator client {
 
 enum Role {
   ADMIN
+  OPERATOR
   GURU
   SISWA
   ORANG_TUA
@@ -45,6 +46,7 @@ model User {
   role              Role             @default(CALON_PENDAFTAR)
   foto              String?
   isVerified        Boolean          @default(false)
+  isActive          Boolean          @default(true)
   emailToken        String?
   emailOtp          String?
   emailOtpExpires   DateTime?

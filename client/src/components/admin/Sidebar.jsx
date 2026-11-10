@@ -22,7 +22,8 @@ import {
   HelpCircle,
   Info,
   Layers,
-  BookOpenCheck
+  BookOpenCheck,
+  ShieldCheck
 } from 'lucide-react';
 import { AuthContext } from '../../context/authContextObject';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
@@ -32,8 +33,9 @@ import { cx } from './uiStyles';
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const { profil } = useSchoolProfile();
+  const isMainAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
   const namaSekolah = profil?.namaSekolah || 'Madrasah';
   const logo = profil?.logo ? getFileUrl(profil.logo) : '';
 
@@ -53,19 +55,23 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   const menuItems = [
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    {
-      path: '/admin/profil-sekolah',
-      label: 'Profil',
-      icon: School,
-      children: [
-        { path: '/admin/profil-sekolah', label: 'Identitas Madrasah', icon: IdCard },
-        { path: '/admin/profil-sekolah/kontak', label: 'Kontak Madrasah', icon: MapPin },
-        { path: '/admin/profil-sekolah/visi-misi', label: 'Visi & Misi', icon: Target },
-        { path: '/admin/profil-sekolah/sejarah', label: 'Sejarah Singkat', icon: History },
-        { path: '/admin/profil-sekolah/struktur', label: 'Struktur Organisasi', icon: Network },
-        { path: '/admin/profil-sekolah/fasilitas', label: 'Fasilitas', icon: Landmark }
-      ]
-    },
+    ...(isMainAdmin
+      ? [
+          {
+            path: '/admin/profil-sekolah',
+            label: 'Profil',
+            icon: School,
+            children: [
+              { path: '/admin/profil-sekolah', label: 'Identitas Madrasah', icon: IdCard },
+              { path: '/admin/profil-sekolah/kontak', label: 'Kontak Madrasah', icon: MapPin },
+              { path: '/admin/profil-sekolah/visi-misi', label: 'Visi & Misi', icon: Target },
+              { path: '/admin/profil-sekolah/sejarah', label: 'Sejarah Singkat', icon: History },
+              { path: '/admin/profil-sekolah/struktur', label: 'Struktur Organisasi', icon: Network },
+              { path: '/admin/profil-sekolah/fasilitas', label: 'Fasilitas', icon: Landmark }
+            ]
+          }
+        ]
+      : []),
     { path: '/admin/berita', label: 'Berita', icon: FileText },
     {
       path: '/admin/layanan',
@@ -73,7 +79,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
       icon: Layers,
       children: [
         { path: '/admin/spmb', label: 'Pendaftaran SPMB', icon: Users },
-        { path: '/admin/rdm', label: 'Rapor Digital (RDM)', icon: BookOpenCheck },
+        ...(isMainAdmin ? [{ path: '/admin/rdm', label: 'Rapor Digital (RDM)', icon: BookOpenCheck }] : []),
         { path: '/admin/unduhan', label: 'Pusat Unduhan', icon: FolderDown },
         { path: '/admin/faq', label: 'Tanya Jawab (FAQ)', icon: HelpCircle }
       ]
@@ -88,7 +94,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
         { path: '/admin/prestasi', label: 'Prestasi', icon: Trophy }
       ]
     },
-    { path: '/admin/galeri', label: 'Galeri', icon: Images }
+    { path: '/admin/galeri', label: 'Galeri', icon: Images },
+    ...(isMainAdmin ? [{ path: '/admin/pengelola', label: 'Kelola Pengelola', icon: ShieldCheck }] : [])
   ];
 
   return (
@@ -115,7 +122,9 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 <p className="truncate text-[13.5px] font-semibold leading-tight tracking-[-0.01em] text-slate-50">
                   {namaSekolah}
                 </p>
-                <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">Panel Admin</p>
+                <p className="mt-0.5 text-[10px] uppercase tracking-[0.18em] text-slate-400">
+                  {isMainAdmin ? 'Admin Utama' : 'Operator'}
+                </p>
               </div>
             </div>
             <button

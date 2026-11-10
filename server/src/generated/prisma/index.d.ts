@@ -110,6 +110,7 @@ export type PengaturanPPDB = $Result.DefaultSelection<Prisma.$PengaturanPPDBPayl
 export namespace $Enums {
   export const Role: {
   ADMIN: 'ADMIN',
+  OPERATOR: 'OPERATOR',
   GURU: 'GURU',
   SISWA: 'SISWA',
   ORANG_TUA: 'ORANG_TUA',
@@ -2479,6 +2480,7 @@ export namespace Prisma {
     role: $Enums.Role | null
     foto: string | null
     isVerified: boolean | null
+    isActive: boolean | null
     emailToken: string | null
     emailOtp: string | null
     emailOtpExpires: Date | null
@@ -2497,6 +2499,7 @@ export namespace Prisma {
     role: $Enums.Role | null
     foto: string | null
     isVerified: boolean | null
+    isActive: boolean | null
     emailToken: string | null
     emailOtp: string | null
     emailOtpExpires: Date | null
@@ -2515,6 +2518,7 @@ export namespace Prisma {
     role: number
     foto: number
     isVerified: number
+    isActive: number
     emailToken: number
     emailOtp: number
     emailOtpExpires: number
@@ -2543,6 +2547,7 @@ export namespace Prisma {
     role?: true
     foto?: true
     isVerified?: true
+    isActive?: true
     emailToken?: true
     emailOtp?: true
     emailOtpExpires?: true
@@ -2561,6 +2566,7 @@ export namespace Prisma {
     role?: true
     foto?: true
     isVerified?: true
+    isActive?: true
     emailToken?: true
     emailOtp?: true
     emailOtpExpires?: true
@@ -2579,6 +2585,7 @@ export namespace Prisma {
     role?: true
     foto?: true
     isVerified?: true
+    isActive?: true
     emailToken?: true
     emailOtp?: true
     emailOtpExpires?: true
@@ -2684,6 +2691,7 @@ export namespace Prisma {
     role: $Enums.Role
     foto: string | null
     isVerified: boolean
+    isActive: boolean
     emailToken: string | null
     emailOtp: string | null
     emailOtpExpires: Date | null
@@ -2721,6 +2729,7 @@ export namespace Prisma {
     role?: boolean
     foto?: boolean
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: boolean
     emailOtp?: boolean
     emailOtpExpires?: boolean
@@ -2744,6 +2753,7 @@ export namespace Prisma {
     role?: boolean
     foto?: boolean
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: boolean
     emailOtp?: boolean
     emailOtpExpires?: boolean
@@ -2754,7 +2764,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nama" | "email" | "password" | "role" | "foto" | "isVerified" | "emailToken" | "emailOtp" | "emailOtpExpires" | "emailOtpAttempts" | "resetToken" | "resetTokenExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nama" | "email" | "password" | "role" | "foto" | "isVerified" | "isActive" | "emailToken" | "emailOtp" | "emailOtpExpires" | "emailOtpAttempts" | "resetToken" | "resetTokenExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pendaftaran?: boolean | User$pendaftaranArgs<ExtArgs>
     berita?: boolean | User$beritaArgs<ExtArgs>
@@ -2775,6 +2785,7 @@ export namespace Prisma {
       role: $Enums.Role
       foto: string | null
       isVerified: boolean
+      isActive: boolean
       emailToken: string | null
       emailOtp: string | null
       emailOtpExpires: Date | null
@@ -3161,6 +3172,7 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'Role'>
     readonly foto: FieldRef<"User", 'String'>
     readonly isVerified: FieldRef<"User", 'Boolean'>
+    readonly isActive: FieldRef<"User", 'Boolean'>
     readonly emailToken: FieldRef<"User", 'String'>
     readonly emailOtp: FieldRef<"User", 'String'>
     readonly emailOtpExpires: FieldRef<"User", 'DateTime'>
@@ -20026,6 +20038,7 @@ export namespace Prisma {
     role: 'role',
     foto: 'foto',
     isVerified: 'isVerified',
+    isActive: 'isActive',
     emailToken: 'emailToken',
     emailOtp: 'emailOtp',
     emailOtpExpires: 'emailOtpExpires',
@@ -20658,6 +20671,7 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     foto?: StringNullableFilter<"User"> | string | null
     isVerified?: BoolFilter<"User"> | boolean
+    isActive?: BoolFilter<"User"> | boolean
     emailToken?: StringNullableFilter<"User"> | string | null
     emailOtp?: StringNullableFilter<"User"> | string | null
     emailOtpExpires?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -20678,6 +20692,7 @@ export namespace Prisma {
     role?: SortOrder
     foto?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    isActive?: SortOrder
     emailToken?: SortOrderInput | SortOrder
     emailOtp?: SortOrderInput | SortOrder
     emailOtpExpires?: SortOrderInput | SortOrder
@@ -20702,6 +20717,7 @@ export namespace Prisma {
     role?: EnumRoleFilter<"User"> | $Enums.Role
     foto?: StringNullableFilter<"User"> | string | null
     isVerified?: BoolFilter<"User"> | boolean
+    isActive?: BoolFilter<"User"> | boolean
     emailToken?: StringNullableFilter<"User"> | string | null
     emailOtp?: StringNullableFilter<"User"> | string | null
     emailOtpExpires?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -20722,6 +20738,7 @@ export namespace Prisma {
     role?: SortOrder
     foto?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    isActive?: SortOrder
     emailToken?: SortOrderInput | SortOrder
     emailOtp?: SortOrderInput | SortOrder
     emailOtpExpires?: SortOrderInput | SortOrder
@@ -20748,6 +20765,7 @@ export namespace Prisma {
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     foto?: StringNullableWithAggregatesFilter<"User"> | string | null
     isVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    isActive?: BoolWithAggregatesFilter<"User"> | boolean
     emailToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailOtp?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailOtpExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -22058,6 +22076,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -22078,6 +22097,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -22098,6 +22118,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22118,6 +22139,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22138,6 +22160,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -22156,6 +22179,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22174,6 +22198,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23745,6 +23770,7 @@ export namespace Prisma {
     role?: SortOrder
     foto?: SortOrder
     isVerified?: SortOrder
+    isActive?: SortOrder
     emailToken?: SortOrder
     emailOtp?: SortOrder
     emailOtpExpires?: SortOrder
@@ -23767,6 +23793,7 @@ export namespace Prisma {
     role?: SortOrder
     foto?: SortOrder
     isVerified?: SortOrder
+    isActive?: SortOrder
     emailToken?: SortOrder
     emailOtp?: SortOrder
     emailOtpExpires?: SortOrder
@@ -23785,6 +23812,7 @@ export namespace Prisma {
     role?: SortOrder
     foto?: SortOrder
     isVerified?: SortOrder
+    isActive?: SortOrder
     emailToken?: SortOrder
     emailOtp?: SortOrder
     emailOtpExpires?: SortOrder
@@ -25672,6 +25700,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -25691,6 +25720,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -25743,6 +25773,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25762,6 +25793,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25804,6 +25836,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -25823,6 +25856,7 @@ export namespace Prisma {
     role?: $Enums.Role
     foto?: string | null
     isVerified?: boolean
+    isActive?: boolean
     emailToken?: string | null
     emailOtp?: string | null
     emailOtpExpires?: Date | string | null
@@ -25940,6 +25974,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25959,6 +25994,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     foto?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    isActive?: BoolFieldUpdateOperationsInput | boolean
     emailToken?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtp?: NullableStringFieldUpdateOperationsInput | string | null
     emailOtpExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

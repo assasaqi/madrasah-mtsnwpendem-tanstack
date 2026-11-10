@@ -1,6 +1,7 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 import { rootRoute } from './rootRoute';
 import AdminGuard from '../components/auth/AdminGuard';
+import MainAdminGuard from '../components/auth/MainAdminGuard';
 import AdminLayout from '../layouts/AdminLayout';
 
 import AdminDashboard from '../pages/admin/Dashboard';
@@ -19,6 +20,7 @@ import AdminPrestasi from '../pages/admin/AdminPrestasi';
 import AdminUnduhan from '../pages/admin/AdminUnduhan';
 import AdminFaq from '../pages/admin/AdminFaq';
 import AdminRdm from '../pages/admin/AdminRdm';
+import AdminPengelola from '../pages/admin/AdminPengelola';
 import AdminProfile from '../pages/admin/AdminProfile';
 
 export const adminGuardRoute = createRoute({
@@ -31,6 +33,12 @@ export const adminLayoutRoute = createRoute({
   getParentRoute: () => adminGuardRoute,
   id: 'admin-layout',
   component: AdminLayout
+});
+
+export const mainAdminGuardRoute = createRoute({
+  getParentRoute: () => adminLayoutRoute,
+  id: 'main-admin-guard',
+  component: MainAdminGuard
 });
 
 export const adminIndexRoute = createRoute({
@@ -48,38 +56,38 @@ export const adminDashboardRoute = createRoute({
 });
 
 export const adminProfilIdentitasRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah',
   component: AdminProfilIdentitas
 });
 export const adminPublicProfileRoute = adminProfilIdentitasRoute;
 
 export const adminProfilKontakRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah/kontak',
   component: AdminProfilKontak
 });
 
 export const adminProfilVisiMisiRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah/visi-misi',
   component: AdminProfilVisiMisi
 });
 
 export const adminProfilSejarahRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah/sejarah',
   component: AdminProfilSejarah
 });
 
 export const adminProfilStrukturRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah/struktur',
   component: AdminProfilStruktur
 });
 
 export const adminProfilFasilitasRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/profil-sekolah/fasilitas',
   component: AdminProfilFasilitas
 });
@@ -133,9 +141,15 @@ export const adminFaqRoute = createRoute({
 });
 
 export const adminRdmRoute = createRoute({
-  getParentRoute: () => adminLayoutRoute,
+  getParentRoute: () => mainAdminGuardRoute,
   path: '/admin/rdm',
   component: AdminRdm
+});
+
+export const adminPengelolaRoute = createRoute({
+  getParentRoute: () => mainAdminGuardRoute,
+  path: '/admin/pengelola',
+  component: AdminPengelola
 });
 
 export const adminPesanKontakRoute = createRoute({
@@ -156,12 +170,16 @@ export const adminRouteTree = adminGuardRoute.addChildren([
   adminLayoutRoute.addChildren([
     adminIndexRoute,
     adminDashboardRoute,
-    adminProfilIdentitasRoute,
-    adminProfilKontakRoute,
-    adminProfilVisiMisiRoute,
-    adminProfilSejarahRoute,
-    adminProfilStrukturRoute,
-    adminProfilFasilitasRoute,
+    mainAdminGuardRoute.addChildren([
+      adminProfilIdentitasRoute,
+      adminProfilKontakRoute,
+      adminProfilVisiMisiRoute,
+      adminProfilSejarahRoute,
+      adminProfilStrukturRoute,
+      adminProfilFasilitasRoute,
+      adminRdmRoute,
+      adminPengelolaRoute
+    ]),
     adminSPMBRoute,
     adminBeritaRoute,
     adminPengumumanRoute,
@@ -170,7 +188,6 @@ export const adminRouteTree = adminGuardRoute.addChildren([
     adminPrestasiRoute,
     adminUnduhanRoute,
     adminFaqRoute,
-    adminRdmRoute,
     adminPesanKontakRoute,
     adminProfileRoute
   ])

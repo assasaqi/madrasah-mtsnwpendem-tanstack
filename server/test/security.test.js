@@ -81,6 +81,27 @@ describe('Keamanan API & Autentikasi', () => {
     expect(forbidden.status).toBe(403);
   });
 
+  it('membatasi role OPERATOR agar tidak dapat mengakses manajemen pengelola dan profil lembaga', async () => {
+    const operatorToken = jwt.sign(
+      { id: 'op-1', role: 'OPERATOR' },
+      env.JWT_ACCESS_SECRET,
+      { expiresIn: '5m' }
+    );
+    const cookie = [`accessToken=${operatorToken}`];
+
+    const usersRes = await request(app).get('/api/admin/users').set('Cookie', cookie);
+    expect(usersRes.status).toBe(403);
+
+    const schoolRes = await request(app).get('/api/admin/profile/school').set('Cookie', cookie);
+    expect(schoolRes.status).toBe(403);
+
+    const letterRes = await request(app)
+      .put('/api/admin/ppdb/pengaturan')
+      .set('Cookie', cookie)
+      .send({ tahunAjaran: '2026/2027', kodeSurat: 'SPMB' });
+    expect(letterRes.status).toBe(403);
+  });
+
   it('menolak registrasi admin bila kode undangan salah', async () => {
     const res = await request(app)
       .post('/api/auth/register-admin')

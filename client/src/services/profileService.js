@@ -127,3 +127,27 @@ export const updateRdmSettings = async (payload) => {
   const response = await api.put('/admin/profile/rdm', payload);
   return unwrap(response);
 };
+
+// Mengambil daftar akun pengelola (Admin Utama & Operator)
+export const getStaffUsers = async () => {
+  const response = await api.get('/admin/users');
+  return unwrap(response) || [];
+};
+
+// Menambahkan akun pengelola baru
+export const createStaffUser = async (payload) => {
+  const response = await api.post('/admin/users', payload);
+  return unwrap(response);
+};
+
+// Memperbarui peran atau status aktif akun pengelola
+export const updateStaffUser = async (id, payload) => {
+  const response = await api.patch(`/admin/users/${id}`, payload);
+  return unwrap(response);
+};
+
+// Menghapus akun pengelola
+export const deleteStaffUser = async (id) => {
+  const response = await api.delete(`/admin/users/${id}`);
+  return response.data;
+};

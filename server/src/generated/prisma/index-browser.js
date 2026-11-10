@@ -128,6 +128,7 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   foto: 'foto',
   isVerified: 'isVerified',
+  isActive: 'isActive',
   emailToken: 'emailToken',
   emailOtp: 'emailOtp',
   emailOtpExpires: 'emailOtpExpires',
@@ -542,6 +543,7 @@ exports.Prisma.PengaturanPPDBOrderByRelevanceFieldEnum = {
 };
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
+  OPERATOR: 'OPERATOR',
   GURU: 'GURU',
   SISWA: 'SISWA',
   ORANG_TUA: 'ORANG_TUA',

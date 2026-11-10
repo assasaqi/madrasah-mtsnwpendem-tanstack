@@ -7,13 +7,16 @@ const fasilitasController = require('../controllers/fasilitasController');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { single, fields } = require('../middleware/upload');
 
-// Seluruh rute profil admin hanya untuk role ADMIN
-router.use(authenticateToken, authorizeRoles('ADMIN'));
+// Akun admin/operator dapat melihat dan mengubah profilnya sendiri
+router.use(authenticateToken, authorizeRoles('ADMIN', 'OPERATOR'));
 
-// Profil akun admin
+// Profil akun admin/operator
 router.get('/me', profileController.getAdminProfile);
 router.put('/me', ...single('foto'), profileController.updateAdminProfile);
 router.put('/change-password', profileController.changePassword);
+
+// Profil lembaga, RDM, sejarah, struktur, dan fasilitas khusus Admin Utama
+router.use(authorizeRoles('ADMIN'));
 
 // Profil sekolah yang tampil di halaman publik
 router.get('/school', profileController.getSchoolProfile);

@@ -466,6 +466,10 @@ exports.login = async (req, res, next) => {
       });
     }
 
+    if (user.isActive === false) {
+      throw new AppError('Akun Anda telah dinonaktifkan oleh administrator.', 403);
+    }
+
     issueTokens(res, user);
 
     res.status(200).json({
@@ -492,6 +496,7 @@ exports.refresh = async (req, res, next) => {
     const payload = jwt.verify(token, env.JWT_REFRESH_SECRET);
     const user = await prisma.user.findUnique({ where: { id: payload.id } });
     if (!user) throw new AppError('Pengguna tidak ditemukan.', 401);
+    if (user.isActive === false) throw new AppError('Akun Anda telah dinonaktifkan oleh administrator.', 403);
 
     issueTokens(res, user);
     res.status(200).json({ success: true, message: 'Sesi berhasil diperbarui.' });
@@ -512,6 +517,7 @@ exports.getMe = async (req, res, next) => {
         nama: true,
         email: true,
         role: true,
+        isActive: true,
         foto: true,
         createdAt: true,
         pendaftaran: { include: { biodata: true, orangTua: true, dokumen: true } }
@@ -519,6 +525,7 @@ exports.getMe = async (req, res, next) => {
     });
 
     if (!user) throw new AppError('Pengguna tidak ditemukan.', 404);
+    if (user.isActive === false) throw new AppError('Akun Anda telah dinonaktifkan oleh administrator.', 403);
 
     res.json({ success: true, user: { ...user, nama: buildDisplayName(user) } });
   } catch (error) {
@@ -748,10 +755,13 @@ exports.googleAuthComplete = async (req, res, next) => {
         }
       });
     } else {
-      if (scope === 'admin' && user.role !== 'ADMIN') {
+      if (user.isActive === false) {
+        throw new AppError('Akun Anda telah dinonaktifkan oleh administrator.', 403);
+      }
+      if (scope === 'admin' && !['ADMIN', 'OPERATOR'].includes(user.role)) {
         throw new AppError('Akun ini bukan akun pengelola. Silakan masuk melalui portal SPMB.', 403);
       }
-      if (scope !== 'admin' && user.role === 'ADMIN') {
+      if (scope !== 'admin' && ['ADMIN', 'OPERATOR'].includes(user.role)) {
         throw new AppError('Akun pengelola tidak dapat masuk melalui portal SPMB.', 403);
       }
 

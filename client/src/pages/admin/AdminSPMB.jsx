@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Download, Eye, Filter, Settings, Users } from 'lucide-react';
+import { AuthContext } from '../../context/authContextObject';
 import usePendaftarSPMB from '../../hooks/usePendaftarSPMB';
 import { formatDate } from '../../utils/helpers';
 import {
@@ -36,6 +37,8 @@ import PengaturanSuratModal from '../../components/admin/spmb/PengaturanSuratMod
 
 // Menampilkan seluruh pendaftar SPMB beserta ringkasan status dan aksi verifikasinya
 export default function AdminSPMB() {
+  const { user } = useContext(AuthContext);
+  const isMainAdmin = String(user?.role || '').toUpperCase() === 'ADMIN';
   const { pendaftarList, loading, errorMsg, fetchPendaftar, stats } = usePendaftarSPMB();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -111,9 +114,11 @@ export default function AdminSPMB() {
         description="Tinjau data calon siswa, periksa berkas persyaratan, lalu tetapkan status kelulusannya."
         actions={
           <>
-            <Button variant="secondary" icon={Settings} onClick={() => setPengaturanOpen(true)}>
-              Pengaturan surat
-            </Button>
+            {isMainAdmin && (
+              <Button variant="secondary" icon={Settings} onClick={() => setPengaturanOpen(true)}>
+                Pengaturan surat
+              </Button>
+            )}
             <Button variant="primary" icon={Download} onClick={handleExport} disabled={filtered.length === 0}>
               Ekspor CSV
             </Button>

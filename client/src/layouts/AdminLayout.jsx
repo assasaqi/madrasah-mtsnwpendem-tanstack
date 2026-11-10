@@ -26,6 +26,7 @@ export default function AdminLayout() {
       case '/admin/agenda': return 'Agenda Kegiatan';
       case '/admin/prestasi': return 'Prestasi Madrasah';
       case '/admin/galeri': return 'Galeri Madrasah';
+      case '/admin/pengelola': return 'Kelola Pengelola';
       case '/admin/pengaturan-profil': return 'Pengaturan Profil';
       default: return 'Panel Administrator';
     }

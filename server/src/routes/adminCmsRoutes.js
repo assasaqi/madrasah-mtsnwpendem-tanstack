@@ -4,8 +4,8 @@ const adminCmsController = require('../controllers/adminCmsController');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { single } = require('../middleware/upload');
 
-// Seluruh rute CMS hanya untuk admin terautentikasi
-router.use(authenticateToken, authorizeRoles('ADMIN'));
+// Seluruh rute CMS untuk Admin Utama dan Operator terautentikasi
+router.use(authenticateToken, authorizeRoles('ADMIN', 'OPERATOR'));
 
 // Manajemen berita
 router.get('/berita', adminCmsController.getAllBerita);

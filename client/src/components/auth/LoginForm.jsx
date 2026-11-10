@@ -6,7 +6,7 @@ import { AuthContext } from '../../context/authContextObject';
 import { getErrorMessage } from '../../utils/helpers';
 import AuthField from './AuthField';
 
-const ADMIN_ROLES = ['ADMIN'];
+const ADMIN_ROLES = ['ADMIN', 'OPERATOR'];
 const SPMB_ROLES = ['CALON_PENDAFTAR'];
 
 // Menampilkan formulir masuk untuk pengelola madrasah atau pendaftar SPMB

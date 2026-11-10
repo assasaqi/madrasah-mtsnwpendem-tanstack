@@ -8,6 +8,8 @@ import SpmbRegister from '../pages/spmb/Register';
 import KonfirmasiEmail from '../pages/KonfirmasiEmail';
 import VerifikasiEmail from '../pages/VerifikasiEmail';
 import GoogleAuth from '../pages/GoogleAuth';
+import LupaPassword from '../pages/LupaPassword';
+import ResetPassword from '../pages/ResetPassword';
 
 export const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -57,6 +59,18 @@ export const googleAuthRoute = createRoute({
   component: GoogleAuth
 });
 
+export const lupaPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/lupa-password',
+  component: LupaPassword
+});
+
+export const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reset-password',
+  component: ResetPassword
+});
+
 export const authRoutesList = [
   loginRoute,
   registerRoute,
@@ -65,5 +79,7 @@ export const authRoutesList = [
   konfirmasiEmailRoute,
   spmbKonfirmasiEmailRoute,
   verifikasiEmailRoute,
-  googleAuthRoute
+  googleAuthRoute,
+  lupaPasswordRoute,
+  resetPasswordRoute
 ];

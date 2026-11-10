@@ -83,3 +83,12 @@ DROP TABLE IF EXISTS `guru`;
 DROP TABLE IF EXISTS `orangtua`;
 DROP TABLE IF EXISTS `matapelajaran`;
 DROP TABLE IF EXISTS `tahunajaran`;
+
+-- 7. Tambah kolom nama, verifikasi OTP, dan reset kata sandi pada tabel users
+ALTER TABLE `users`
+    ADD COLUMN IF NOT EXISTS `nama` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `emailOtp` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `emailOtpExpires` DATETIME(3) NULL,
+    ADD COLUMN IF NOT EXISTS `emailOtpAttempts` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS `resetToken` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `resetTokenExpires` DATETIME(3) NULL;

@@ -104,6 +104,7 @@ export default function VerifikasiEmail() {
             <div className="pt-2">
               <Link
                 to={loginPath}
+                state={email ? { registeredEmail: email } : undefined}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand text-[12.5px] font-semibold text-white shadow-xs transition-all hover:bg-[#0f3f23] active:scale-[0.98]"
               >
                 Masuk ke Akun Sekarang <ArrowRight size={13} />
@@ -112,13 +113,13 @@ export default function VerifikasiEmail() {
           </div>
         ) : (
           <div className="space-y-5">
-            <div className="flex items-center gap-3 rounded-xl border border-rose-500/30 bg-rose-50/70 p-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white shadow-xs">
+            <div className="flex items-center gap-3 rounded-xl border border-red-300 bg-red-50 p-4">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-red-600 text-white shadow-xs">
                 <AlertCircle size={22} />
               </span>
               <div className="min-w-0">
-                <p className="text-[13.5px] font-bold text-rose-950">Konfirmasi Gagal</p>
-                <p className="mt-0.5 text-[11.5px] text-rose-800">{errorMsg}</p>
+                <p className="text-[13.5px] font-bold text-red-950">Konfirmasi Gagal</p>
+                <p className="mt-0.5 text-[11.5px] font-medium text-red-900">{errorMsg}</p>
               </div>
             </div>
 

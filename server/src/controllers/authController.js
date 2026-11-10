@@ -5,7 +5,11 @@ const { z } = require('zod');
 const prisma = require('../config/prisma');
 const env = require('../config/env');
 const AppError = require('../utils/appError');
-const { sendVerificationEmail } = require('../utils/mailer');
+const { sendVerificationEmail, sendPasswordResetEmail } = require('../utils/mailer');
+
+const OTP_EXPIRY_MS = 10 * 60 * 1000;
+const MAX_OTP_ATTEMPTS = 5;
+const RESET_EXPIRY_MS = 30 * 60 * 1000;
 
 const registerSchema = z.object({
   nama: z.string().trim().min(3, 'Nama lengkap minimal 3 karakter.').max(100).optional(),
@@ -13,9 +17,27 @@ const registerSchema = z.object({
   password: z.string().min(6, 'Kata sandi minimal 6 karakter.').max(72)
 });
 
+const registerAdminSchema = registerSchema.extend({
+  inviteCode: z.string().trim().min(1, 'Kode undangan pengelola wajib diisi.')
+});
+
 const loginSchema = z.object({
   email: z.string().trim().toLowerCase().email('Format email tidak valid.'),
   password: z.string().min(1, 'Kata sandi wajib diisi.')
+});
+
+const verifyOtpSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Format email tidak valid.'),
+  otp: z.string().trim().regex(/^\d{6}$/, 'Kode OTP harus berupa 6 digit angka.')
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Format email tidak valid.')
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string().trim().min(10, 'Token atur ulang kata sandi tidak valid.'),
+  password: z.string().min(6, 'Kata sandi baru minimal 6 karakter.').max(72)
 });
 
 const cookieOptions = {
@@ -25,8 +47,40 @@ const cookieOptions = {
   path: '/'
 };
 
+const hashToken = (value) => crypto.createHash('sha256').update(String(value)).digest('hex');
+
+const hashOtp = (email, otp) =>
+  crypto.createHmac('sha256', env.JWT_ACCESS_SECRET).update(`${email}:${otp}`).digest('hex');
+
+const safeEqualHex = (a, b) => {
+  if (!a || !b || a.length !== b.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
+};
+
+const generateOtpAndToken = (email) => {
+  const otp = String(crypto.randomInt(100000, 1000000));
+  const otpHash = hashOtp(email, otp);
+  const emailToken = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS);
+  return { otp, otpHash, emailToken, expiresAt };
+};
+
+const validateAdminInviteCode = (inviteCode) => {
+  const configuredCode = String(process.env.ADMIN_INVITE_CODE || '').trim();
+  if (!configuredCode) {
+    throw new AppError(
+      'Pendaftaran akun pengelola saat ini ditutup. Hubungi administrator madrasah.',
+      403
+    );
+  }
+  if (!safeEqualHex(hashToken(String(inviteCode || '').trim()), hashToken(configuredCode))) {
+    throw new AppError('Kode undangan pengelola tidak valid.', 403);
+  }
+};
+
 const buildDisplayName = (user) =>
   user.pendaftaran?.biodata?.namaLengkap ||
+  user.nama ||
   user.email.split('@')[0];
 
 const issueTokens = (res, user) => {
@@ -37,28 +91,53 @@ const issueTokens = (res, user) => {
   res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
 };
 
-const createUser = async ({ nama, email, password, role }) => {
+const createOrRefreshUser = async ({ nama, email, password, role }) => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
-  if (existingUser) throw new AppError('Email sudah terdaftar.', 400);
 
-  const emailToken = crypto.randomBytes(32).toString('hex');
+  if (existingUser && existingUser.isVerified) {
+    throw new AppError('Email sudah terdaftar. Silakan masuk atau gunakan fitur lupa kata sandi.', 400);
+  }
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: await bcrypt.hash(password, 10),
-      role,
-      isVerified: false,
-      emailToken
-    },
-    select: { id: true, email: true, role: true, foto: true, isVerified: true, createdAt: true }
-  });
+  if (existingUser && existingUser.role !== role) {
+    throw new AppError('Email sudah digunakan pada portal lain.', 400);
+  }
 
-  // Kirim email konfirmasi (atau simulasi bila SMTP belum diisi)
+  const { otp, otpHash, emailToken, expiresAt } = generateOtpAndToken(email);
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = existingUser
+    ? await prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          nama: nama || null,
+          password: hashedPassword,
+          emailToken,
+          emailOtp: otpHash,
+          emailOtpExpires: expiresAt,
+          emailOtpAttempts: 0
+        },
+        select: { id: true, nama: true, email: true, role: true, foto: true, isVerified: true, createdAt: true }
+      })
+    : await prisma.user.create({
+        data: {
+          nama: nama || null,
+          email,
+          password: hashedPassword,
+          role,
+          isVerified: false,
+          emailToken,
+          emailOtp: otpHash,
+          emailOtpExpires: expiresAt,
+          emailOtpAttempts: 0
+        },
+        select: { id: true, nama: true, email: true, role: true, foto: true, isVerified: true, createdAt: true }
+      });
+
+  // Kirim kode OTP 6 digit & tautan cadangan ke email pendaftar
   try {
-    await sendVerificationEmail({ email, token: emailToken, nama });
+    await sendVerificationEmail({ email, otp, token: emailToken, nama: nama || email.split('@')[0] });
   } catch (mailError) {
-    console.error('Gagal mengirim email konfirmasi:', mailError);
+    console.error('Gagal mengirim email verifikasi:', mailError);
   }
 
   return user;
@@ -70,42 +149,46 @@ exports.register = async (req, res, next) => {
     if (!parsed.success) throw new AppError(parsed.error.issues[0].message, 400);
 
     const { nama, email, password } = parsed.data;
-    const user = await createUser({ nama, email, password, role: 'CALON_PENDAFTAR' });
+    const user = await createOrRefreshUser({ nama, email, password, role: 'CALON_PENDAFTAR' });
 
     res.status(201).json({
       success: true,
       requiresConfirmation: true,
       email,
-      message: 'Registrasi berhasil. Silakan periksa email Anda untuk melakukan konfirmasi.',
-      user: { ...user, nama: nama || email.split('@')[0] }
+      expiresInSeconds: OTP_EXPIRY_MS / 1000,
+      message: 'Kode verifikasi 6 digit telah dikirim ke email Anda.',
+      user: { ...user, nama: buildDisplayName(user) }
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Mendaftarkan akun pengelola (admin) madrasah
+// Mendaftarkan akun pengelola (admin) madrasah dengan kode undangan
 exports.registerAdmin = async (req, res, next) => {
   try {
-    const parsed = registerSchema.safeParse(req.body);
+    const parsed = registerAdminSchema.safeParse(req.body);
     if (!parsed.success) throw new AppError(parsed.error.issues[0].message, 400);
 
-    const { nama, email, password } = parsed.data;
-    const user = await createUser({ nama, email, password, role: 'ADMIN' });
+    const { nama, email, password, inviteCode } = parsed.data;
+    validateAdminInviteCode(inviteCode);
+
+    const user = await createOrRefreshUser({ nama, email, password, role: 'ADMIN' });
 
     res.status(201).json({
       success: true,
       requiresConfirmation: true,
       email,
-      message: 'Registrasi akun pengelola berhasil. Silakan periksa email Anda untuk melakukan konfirmasi.',
-      user: { ...user, nama: nama || email.split('@')[0] }
+      expiresInSeconds: OTP_EXPIRY_MS / 1000,
+      message: 'Kode verifikasi 6 digit telah dikirim ke email pengelola Anda.',
+      user: { ...user, nama: buildDisplayName(user) }
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Mengirim ulang email konfirmasi pendaftaran
+// Mengirim ulang kode OTP & tautan verifikasi pendaftaran
 exports.resendConfirmation = async (req, res, next) => {
   try {
     const email = String(req.body?.email || '').trim().toLowerCase();
@@ -117,10 +200,10 @@ exports.resendConfirmation = async (req, res, next) => {
     });
 
     if (!user) {
-      // Menghindari email enumeration
       return res.status(200).json({
         success: true,
-        message: 'Jika alamat email terdaftar, tautan konfirmasi telah dikirim.'
+        expiresInSeconds: OTP_EXPIRY_MS / 1000,
+        message: 'Jika alamat email terdaftar, kode verifikasi baru telah dikirim.'
       });
     }
 
@@ -128,33 +211,113 @@ exports.resendConfirmation = async (req, res, next) => {
       return res.status(200).json({
         success: true,
         alreadyVerified: true,
-        message: 'Akun ini sudah terverifikasi sebelumnya. Silakan langsung login.'
+        message: 'Akun ini sudah terverifikasi sebelumnya. Silakan langsung masuk.'
       });
     }
 
-    const emailToken = crypto.randomBytes(32).toString('hex');
+    const { otp, otpHash, emailToken, expiresAt } = generateOtpAndToken(email);
     await prisma.user.update({
       where: { id: user.id },
-      data: { emailToken }
+      data: {
+        emailToken,
+        emailOtp: otpHash,
+        emailOtpExpires: expiresAt,
+        emailOtpAttempts: 0
+      }
     });
 
     const nama = buildDisplayName(user);
     try {
-      await sendVerificationEmail({ email: user.email, token: emailToken, nama });
+      await sendVerificationEmail({ email: user.email, otp, token: emailToken, nama });
     } catch (mailError) {
       console.error('Gagal mengirim ulang email konfirmasi:', mailError);
     }
 
     res.status(200).json({
       success: true,
-      message: 'Tautan konfirmasi baru berhasil dikirim ke alamat email Anda.'
+      expiresInSeconds: OTP_EXPIRY_MS / 1000,
+      message: 'Kode OTP 6 digit baru berhasil dikirim ke alamat email Anda.'
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Memverifikasi token email pendaftar
+// Memverifikasi kode OTP 6 digit yang dimasukkan pendaftar
+exports.verifyOtp = async (req, res, next) => {
+  try {
+    const parsed = verifyOtpSchema.safeParse(req.body || {});
+    if (!parsed.success) throw new AppError(parsed.error.issues[0].message, 400);
+
+    const { email, otp } = parsed.data;
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      throw new AppError('Kode verifikasi tidak valid atau akun tidak ditemukan.', 400);
+    }
+
+    if (user.isVerified) {
+      return res.status(200).json({
+        success: true,
+        alreadyVerified: true,
+        role: user.role,
+        message: 'Email sudah terverifikasi sebelumnya. Silakan langsung masuk.'
+      });
+    }
+
+    if (!user.emailOtp || !user.emailOtpExpires) {
+      throw new AppError('Kode verifikasi belum dibuat. Silakan minta kirim ulang kode.', 400);
+    }
+
+    if (user.emailOtpAttempts >= MAX_OTP_ATTEMPTS) {
+      throw new AppError(
+        'Terlalu banyak percobaan kode yang salah. Silakan klik "Kirim ulang kode OTP".',
+        429
+      );
+    }
+
+    if (user.emailOtpExpires < new Date()) {
+      throw new AppError('Kode OTP telah kedaluwarsa. Silakan kirim ulang kode OTP baru.', 400);
+    }
+
+    const isMatch = safeEqualHex(hashOtp(email, otp), user.emailOtp);
+    if (!isMatch) {
+      const nextAttempts = user.emailOtpAttempts + 1;
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailOtpAttempts: nextAttempts }
+      });
+      const remaining = MAX_OTP_ATTEMPTS - nextAttempts;
+      throw new AppError(
+        remaining > 0
+          ? `Kode OTP tidak sesuai. Sisa percobaan: ${remaining} kali.`
+          : 'Batas percobaan tercapai. Silakan kirim ulang kode OTP baru.',
+        400
+      );
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isVerified: true,
+        emailToken: null,
+        emailOtp: null,
+        emailOtpExpires: null,
+        emailOtpAttempts: 0
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      role: user.role,
+      message: 'Alamat email berhasil diverifikasi! Akun Anda kini telah aktif.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Memverifikasi token tautan email cadangan pendaftar
 exports.verifyEmail = async (req, res, next) => {
   try {
     const token = String(req.query.token || req.body?.token || '').trim();
@@ -165,14 +328,21 @@ exports.verifyEmail = async (req, res, next) => {
     });
 
     if (!user) {
-      throw new AppError('Tautan konfirmasi tidak valid atau sudah kedaluwarsa.', 400);
+      throw new AppError('Tautan konfirmasi tidak valid atau sudah digunakan.', 400);
+    }
+
+    if (user.emailOtpExpires && user.emailOtpExpires < new Date()) {
+      throw new AppError('Tautan konfirmasi telah kedaluwarsa. Silakan kirim ulang kode verifikasi.', 400);
     }
 
     await prisma.user.update({
       where: { id: user.id },
       data: {
         isVerified: true,
-        emailToken: null
+        emailToken: null,
+        emailOtp: null,
+        emailOtpExpires: null,
+        emailOtpAttempts: 0
       }
     });
 
@@ -180,6 +350,91 @@ exports.verifyEmail = async (req, res, next) => {
       success: true,
       role: user.role,
       message: 'Alamat email berhasil dikonfirmasi! Akun Anda kini telah aktif.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Mengirimkan tautan atur ulang kata sandi ke email terdaftar
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const parsed = forgotPasswordSchema.safeParse(req.body || {});
+    if (!parsed.success) throw new AppError(parsed.error.issues[0].message, 400);
+
+    const { email } = parsed.data;
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: { pendaftaran: { include: { biodata: { select: { namaLengkap: true } } } } }
+    });
+
+    if (user) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken: hashToken(rawToken),
+          resetTokenExpires: new Date(Date.now() + RESET_EXPIRY_MS)
+        }
+      });
+
+      try {
+        await sendPasswordResetEmail({
+          email: user.email,
+          token: rawToken,
+          nama: buildDisplayName(user)
+        });
+      } catch (mailError) {
+        console.error('Gagal mengirim email reset kata sandi:', mailError);
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Jika alamat email terdaftar, tautan atur ulang kata sandi telah dikirim.'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Menyimpan kata sandi baru menggunakan token reset
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const parsed = resetPasswordSchema.safeParse(req.body || {});
+    if (!parsed.success) throw new AppError(parsed.error.issues[0].message, 400);
+
+    const { token, password } = parsed.data;
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: hashToken(token),
+        resetTokenExpires: { gt: new Date() }
+      }
+    });
+
+    if (!user) {
+      throw new AppError('Tautan atur ulang kata sandi tidak valid atau telah kedaluwarsa.', 400);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpires: null,
+        isVerified: true,
+        emailToken: null,
+        emailOtp: null,
+        emailOtpExpires: null,
+        emailOtpAttempts: 0
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      role: user.role,
+      message: 'Kata sandi berhasil diperbarui. Silakan masuk menggunakan kata sandi baru.'
     });
   } catch (error) {
     next(error);
@@ -203,10 +458,12 @@ exports.login = async (req, res, next) => {
     }
 
     if (!user.isVerified) {
-      throw new AppError(
-        'Akun Anda belum diverifikasi. Silakan periksa kotak masuk atau spam email Anda untuk melakukan verifikasi sebelum masuk.',
-        403
-      );
+      return res.status(403).json({
+        success: false,
+        code: 'EMAIL_NOT_VERIFIED',
+        email: user.email,
+        message: 'Akun Anda belum diverifikasi. Masukkan kode OTP dari email Anda sebelum masuk.'
+      });
     }
 
     issueTokens(res, user);
@@ -252,6 +509,7 @@ exports.getMe = async (req, res, next) => {
       where: { id: req.user.id },
       select: {
         id: true,
+        nama: true,
         email: true,
         role: true,
         foto: true,
@@ -443,12 +701,16 @@ exports.googleAuthComplete = async (req, res, next) => {
 
       user = await prisma.user.create({
         data: {
+          nama: nama || null,
           email,
           password: hashedPassword,
           role: targetRole,
           foto,
           isVerified: true,
-          emailToken: null
+          emailToken: null,
+          emailOtp: null,
+          emailOtpExpires: null,
+          emailOtpAttempts: 0
         },
         include: {
           pendaftaran: { include: { biodata: { select: { namaLengkap: true } } } }
@@ -460,6 +722,10 @@ exports.googleAuthComplete = async (req, res, next) => {
         data: {
           isVerified: true,
           emailToken: null,
+          emailOtp: null,
+          emailOtpExpires: null,
+          emailOtpAttempts: 0,
+          ...(nama && !user.nama ? { nama } : {}),
           ...(foto && !user.foto ? { foto } : {})
         },
         include: {

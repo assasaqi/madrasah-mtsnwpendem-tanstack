@@ -32,7 +32,7 @@ exports.getAdminProfile = catchAsync(async (req, res) => {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, email: true, role: true, foto: true, createdAt: true }
+    select: { id: true, nama: true, email: true, role: true, foto: true, createdAt: true }
   });
   if (!user) throw new AppError('User tidak ditemukan.', 404);
 

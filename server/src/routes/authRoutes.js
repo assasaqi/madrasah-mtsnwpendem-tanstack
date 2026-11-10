@@ -12,11 +12,16 @@ router.post('/register-admin', authLimiter, authController.registerAdmin);
 router.get('/google', authController.googleAuthRedirect);
 router.get('/google/callback', authController.googleAuthCallback);
 router.post('/google/complete', authLimiter, authController.googleAuthComplete);
-// Kirim ulang email konfirmasi pendaftaran
+// Kirim ulang email konfirmasi / OTP pendaftaran
 router.post('/resend-confirmation', authLimiter, authController.resendConfirmation);
-// Verifikasi token email pendaftar
+// Verifikasi kode OTP 6 digit pendaftar
+router.post('/verify-otp', authLimiter, authController.verifyOtp);
+// Verifikasi token tautan email cadangan pendaftar
 router.get('/verify-email', authController.verifyEmail);
 router.post('/verify-email', authController.verifyEmail);
+// Permintaan dan eksekusi atur ulang kata sandi
+router.post('/forgot-password', authLimiter, authController.forgotPassword);
+router.post('/reset-password', authLimiter, authController.resetPassword);
 // Login dan penerbitan cookie akses
 router.post('/login', authLimiter, authController.login);
 // Perbarui access token dari refresh token

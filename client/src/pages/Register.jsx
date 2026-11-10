@@ -10,8 +10,8 @@ export default function Register() {
       panelTitle="Tambahkan pengelola madrasah."
       panelDescription="Gunakan akun pengelola untuk mengurus konten publik dan proses penerimaan peserta didik baru."
       points={[
-        'Gunakan email resmi madrasah bila tersedia.',
-        'Kata sandi minimal 6 karakter.',
+        'Memerlukan kode undangan resmi dari administrator madrasah.',
+        'Gunakan email resmi yang aktif untuk menerima kode OTP.',
         'Setiap pengelola memiliki akses panel admin.'
       ]}
     >

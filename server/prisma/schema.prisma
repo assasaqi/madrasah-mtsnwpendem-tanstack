@@ -40,12 +40,18 @@ enum JenisKelamin {
 
 model User {
   id           String           @id @default(uuid())
+  nama              String?
   email        String           @unique
   password     String
   role         Role             @default(CALON_PENDAFTAR)
   foto         String?
   isVerified   Boolean          @default(false)
-  emailToken   String?
+  emailToken        String?
+  emailOtp          String?
+  emailOtpExpires   DateTime?
+  emailOtpAttempts  Int              @default(0)
+  resetToken        String?
+  resetTokenExpires DateTime?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   pendaftaran  PendaftaranPPDB?

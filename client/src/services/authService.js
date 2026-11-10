@@ -35,9 +35,27 @@ export const authService = {
     return response.data;
   },
 
+  // Memverifikasi kode OTP 6 digit pendaftar
+  verifyOtp: async ({ email, otp }) => {
+    const response = await api.post('/auth/verify-otp', { email, otp });
+    return response.data;
+  },
+
   // Memverifikasi token email pendaftar
   verifyEmail: async (token) => {
     const response = await api.post('/auth/verify-email', { token });
+    return response.data;
+  },
+
+  // Mengirim permintaan atur ulang kata sandi ke email terdaftar
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  // Menyimpan kata sandi baru menggunakan token reset
+  resetPassword: async ({ token, password }) => {
+    const response = await api.post('/auth/reset-password', { token, password });
     return response.data;
   },
 

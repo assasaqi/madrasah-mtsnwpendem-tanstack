@@ -1,19 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { AlertCircle, Eye, EyeOff, Lock, Mail, User, UserPlus } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, KeyRound, Lock, Mail, UserPlus } from 'lucide-react';
 import { authService } from '../../services/authService';
 import { getErrorMessage } from '../../utils/helpers';
 import AuthField from './AuthField';
 
-// Menampilkan formulir pembuatan akun pengelola madrasah atau pendaftar SPMB
+// Menampilkan formulir pendaftaran ringkas (email & kata sandi) dengan verifikasi OTP
 export default function RegisterForm({ scope = 'spmb' }) {
   const navigate = useNavigate();
   const isAdmin = scope === 'admin';
   const [formData, setFormData] = useState({
-    namaLengkap: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    inviteCode: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -26,18 +25,13 @@ export default function RegisterForm({ scope = 'spmb' }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Memvalidasi data lalu mendaftarkan akun sesuai cakupan halaman
+  // Memvalidasi email & kata sandi lalu mengirim kode OTP ke email pendaftar
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
 
-    const namaClean = formData.namaLengkap.trim();
     const emailClean = formData.email.trim().toLowerCase();
-
-    if (namaClean.length < 3) {
-      setError('Nama lengkap minimal 3 karakter.');
-      return;
-    }
+    const inviteClean = formData.inviteCode.trim();
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailClean)) {
@@ -50,17 +44,17 @@ export default function RegisterForm({ scope = 'spmb' }) {
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Konfirmasi kata sandi tidak sesuai.');
+    if (isAdmin && !inviteClean) {
+      setError('Kode undangan pengelola wajib diisi.');
       return;
     }
 
     try {
       setLoading(true);
       const payload = {
-        nama: namaClean,
         email: emailClean,
-        password: formData.password
+        password: formData.password,
+        ...(isAdmin ? { inviteCode: inviteClean } : {})
       };
 
       if (isAdmin) {
@@ -70,7 +64,7 @@ export default function RegisterForm({ scope = 'spmb' }) {
       }
 
       navigate({
-        to: '/konfirmasi-email',
+        to: isAdmin ? '/konfirmasi-email' : '/spmb/konfirmasi-email',
         search: { email: emailClean, scope: isAdmin ? 'admin' : 'spmb' }
       });
     } catch (err) {
@@ -86,7 +80,6 @@ export default function RegisterForm({ scope = 'spmb' }) {
     }
   };
 
-  const togglePassword = () => setShowPassword((open) => !open);
   const loginPath = isAdmin ? '/login' : '/spmb/login';
   const alternate = isAdmin
     ? { to: '/spmb/register', label: 'Daftar sebagai pendaftar SPMB' }
@@ -95,27 +88,13 @@ export default function RegisterForm({ scope = 'spmb' }) {
   return (
     <>
       {error && (
-        <div className="mb-4 flex items-start gap-2 rounded-md border border-line border-l-2 border-l-rose-500 bg-rose-50/70 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-rose-800">
-          <AlertCircle size={14} className="mt-0.5 shrink-0" />
+        <div className="mb-4 flex items-start gap-2.5 rounded-md border border-red-300 border-l-2 border-l-red-600 bg-red-50 px-3.5 py-2.5 text-[12px] font-medium leading-relaxed text-red-900">
+          <AlertCircle size={15} className="mt-0.5 shrink-0 text-red-600" />
           <span>{error}</span>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <AuthField
-          id="namaLengkap"
-          name="namaLengkap"
-          type="text"
-          label="Nama lengkap"
-          icon={User}
-          required
-          minLength={3}
-          autoComplete="name"
-          value={formData.namaLengkap}
-          onChange={handleChange}
-          placeholder="Nama sesuai dokumen"
-        />
-
         <AuthField
           id="email"
           name="email"
@@ -129,51 +108,52 @@ export default function RegisterForm({ scope = 'spmb' }) {
           placeholder="nama@email.com"
         />
 
+        {isAdmin && (
+          <AuthField
+            id="inviteCode"
+            name="inviteCode"
+            type="text"
+            label="Kode undangan pengelola"
+            icon={KeyRound}
+            required
+            autoComplete="off"
+            value={formData.inviteCode}
+            onChange={handleChange}
+            placeholder="Masukkan kode undangan madrasah"
+          />
+        )}
+
         <AuthField
           id="password"
           name="password"
           type={showPassword ? 'text' : 'password'}
           label="Kata sandi"
-          hint="Minimal 6 karakter"
           icon={Lock}
           required
           minLength={6}
           autoComplete="new-password"
           value={formData.password}
           onChange={handleChange}
-          placeholder="••••••••"
+          placeholder="Minimal 6 karakter"
           trailing={
             <button
               type="button"
-              onClick={togglePassword}
+              onClick={() => setShowPassword((open) => !open)}
               aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f2efe7] hover:text-ink"
+              className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded text-muted transition-colors hover:bg-[#f2efe7] hover:text-ink cursor-pointer"
             >
               {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
           }
         />
 
-        <AuthField
-          id="confirmPassword"
-          name="confirmPassword"
-          type={showPassword ? 'text' : 'password'}
-          label="Konfirmasi kata sandi"
-          icon={Lock}
-          required
-          autoComplete="new-password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Ulangi kata sandi"
-        />
-
         <button
           type="submit"
           disabled={loading}
-          className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-[#f7f5ee] transition-colors hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-1 inline-flex h-10 w-full items-center justify-center gap-2 rounded-md bg-brand px-4 py-2.5 text-[12.5px] font-semibold text-[#f7f5ee] transition-colors hover:bg-[#0f3d22] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
         >
           <UserPlus size={14} />
-          {loading ? 'Memproses…' : isAdmin ? 'Buat akun pengelola' : 'Buat akun SPMB'}
+          {loading ? 'Memproses…' : isAdmin ? 'Daftar akun pengelola' : 'Daftar akun SPMB'}
         </button>
       </form>
 

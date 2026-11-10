@@ -44,11 +44,18 @@ exports.updateStruktur = catchAsync(async (req, res) => {
 
   const data = parseBody(req.body);
   if (req.file) {
-    if (existing.foto) deleteFile(existing.foto);
     data.foto = req.file.filename;
   }
 
-  const struktur = await prisma.strukturOrganisasi.update({ where: { id }, data });
+  let struktur;
+  try {
+    struktur = await prisma.strukturOrganisasi.update({ where: { id }, data });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.foto) deleteFile(existing.foto);
   res.status(200).json({ success: true, message: 'Data struktur berhasil diperbarui.', data: struktur });
 });
 
@@ -58,8 +65,8 @@ exports.deleteStruktur = catchAsync(async (req, res) => {
   const existing = await prisma.strukturOrganisasi.findUnique({ where: { id } });
   if (!existing) throw new AppError('Data struktur tidak ditemukan.', 404);
 
-  if (existing.foto) deleteFile(existing.foto);
   await prisma.strukturOrganisasi.delete({ where: { id } });
+  if (existing.foto) deleteFile(existing.foto);
 
   res.status(200).json({ success: true, message: 'Data struktur berhasil dihapus.' });
 });

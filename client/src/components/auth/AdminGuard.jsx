@@ -1,6 +1,6 @@
 import ProtectedRoute from './ProtectedRoute';
 
-const ADMIN_ROLES = ['ADMIN', 'SUPERADMIN', 'OPERATOR'];
+const ADMIN_ROLES = ['ADMIN'];
 
 export default function AdminGuard() {
   return (

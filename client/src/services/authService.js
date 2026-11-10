@@ -11,8 +11,14 @@ export const authService = {
   getGoogleAuthUrl: (scope = 'spmb', mode = 'register') =>
     `${API_BASE_URL}/auth/google?scope=${encodeURIComponent(scope)}&mode=${encodeURIComponent(mode)}`,
 
+  // Mengambil data akun Google tertunda dari cookie httpOnly
+  getPendingGoogleAuth: async () => {
+    const response = await api.get('/auth/google/pending', { skipAuthRedirect: true });
+    return response.data?.data || null;
+  },
+
   // Menyelesaikan konfirmasi akun Google dan mendaftarkan/masuk ke sistem
-  completeGoogleAuth: async (payload) => {
+  completeGoogleAuth: async (payload = {}) => {
     const response = await api.post('/auth/google/complete', payload);
     return response.data;
   },

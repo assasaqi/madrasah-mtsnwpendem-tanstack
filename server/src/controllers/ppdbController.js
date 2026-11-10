@@ -120,22 +120,36 @@ exports.submitPendaftaran = catchAsync(async (req, res) => {
   const biodata = buildBiodata(data, parsedDate);
   const orangTua = buildOrangTua(data);
 
-  const pendaftaran = await prisma.pendaftaranPPDB.upsert({
-    where: { userId },
-    update: {
-      status: 'DITINJAU',
-      biodata: { upsert: { create: biodata, update: biodata } },
-      orangTua: { upsert: { create: orangTua, update: orangTua } }
-    },
-    create: {
-      userId,
-      nomorPendaftaran: await generateNomorPendaftaran(),
-      status: 'DITINJAU',
-      biodata: { create: biodata },
-      orangTua: { create: orangTua }
-    },
-    include: { biodata: true, orangTua: true, dokumen: true }
-  });
+  let pendaftaran;
+  if (existing) {
+    pendaftaran = await prisma.pendaftaranPPDB.update({
+      where: { userId },
+      data: {
+        status: 'DITINJAU',
+        biodata: { upsert: { create: biodata, update: biodata } },
+        orangTua: { upsert: { create: orangTua, update: orangTua } }
+      },
+      include: { biodata: true, orangTua: true, dokumen: true }
+    });
+  } else {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        pendaftaran = await prisma.pendaftaranPPDB.create({
+          data: {
+            userId,
+            nomorPendaftaran: await generateNomorPendaftaran(),
+            status: 'DITINJAU',
+            biodata: { create: biodata },
+            orangTua: { create: orangTua }
+          },
+          include: { biodata: true, orangTua: true, dokumen: true }
+        });
+        break;
+      } catch (err) {
+        if (err.code !== 'P2002' || attempt === 2) throw err;
+      }
+    }
+  }
 
   res.status(200).json({ success: true, message: 'Data pendaftaran berhasil disimpan.', data: pendaftaran });
 });
@@ -144,15 +158,22 @@ exports.submitPendaftaran = catchAsync(async (req, res) => {
 exports.uploadDokumen = catchAsync(async (req, res) => {
   const userId = req.user?.id || req.user?.userId;
   const jenisDokumen = DOKUMEN_MAP[req.body?.jenisDokumen];
+  const uploadedPath = req.file ? (req.file.fileUrl || `/uploads/${req.file.filename}`) : null;
 
   if (!req.file) throw new AppError('Tidak ada berkas yang diunggah.', 400);
-  if (!jenisDokumen) throw new AppError('Jenis dokumen tidak valid.', 400);
+  if (!jenisDokumen) {
+    deleteFile(uploadedPath);
+    throw new AppError('Jenis dokumen tidak valid.', 400);
+  }
 
   const pendaftaran = await prisma.pendaftaranPPDB.findUnique({ where: { userId } });
-  if (!pendaftaran) throw new AppError('Data pendaftaran tidak ditemukan. Isi biodata terlebih dahulu.', 400);
+  if (!pendaftaran) {
+    deleteFile(uploadedPath);
+    throw new AppError('Data pendaftaran tidak ditemukan. Isi biodata terlebih dahulu.', 400);
+  }
 
   if (isTerkunci(pendaftaran.status)) {
-    deleteFile(req.file.fileUrl || `/uploads/${req.file.filename}`);
+    deleteFile(uploadedPath);
     throw new AppError('Berkas sudah diverifikasi panitia dan tidak dapat diganti lagi.', 403);
   }
 
@@ -160,14 +181,21 @@ exports.uploadDokumen = catchAsync(async (req, res) => {
     where: { pendaftaranId_jenisDokumen: { pendaftaranId: pendaftaran.id, jenisDokumen } }
   });
 
-  const fileUrl = req.file.fileUrl || `/uploads/${req.file.filename}`;
-  if (existing?.fileUrl) deleteFile(existing.fileUrl);
+  let dokumen;
+  try {
+    dokumen = await prisma.dokumenPPDB.upsert({
+      where: { pendaftaranId_jenisDokumen: { pendaftaranId: pendaftaran.id, jenisDokumen } },
+      update: { fileUrl: uploadedPath, isVerified: false },
+      create: { pendaftaranId: pendaftaran.id, jenisDokumen, fileUrl: uploadedPath }
+    });
+  } catch (err) {
+    deleteFile(uploadedPath);
+    throw err;
+  }
 
-  const dokumen = await prisma.dokumenPPDB.upsert({
-    where: { pendaftaranId_jenisDokumen: { pendaftaranId: pendaftaran.id, jenisDokumen } },
-    update: { fileUrl, isVerified: false },
-    create: { pendaftaranId: pendaftaran.id, jenisDokumen, fileUrl }
-  });
+  if (existing?.fileUrl && existing.fileUrl !== uploadedPath) {
+    deleteFile(existing.fileUrl);
+  }
 
   res.status(200).json({ success: true, message: 'Dokumen berhasil diunggah.', data: dokumen });
 });

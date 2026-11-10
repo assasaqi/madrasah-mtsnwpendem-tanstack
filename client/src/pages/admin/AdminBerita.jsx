@@ -6,9 +6,7 @@ import {
   Edit2,
   Loader2,
   ImagePlus,
-  User,
-  Clock,
-  CalendarDays
+  User
 } from 'lucide-react';
 import { beritaService } from '../../services/beritaService';
 import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl, stripHtml } from '../../utils/helpers';
@@ -31,10 +29,10 @@ import {
   Field,
   Input,
   Select,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 export default function AdminBerita() {
   const [beritaList, setBeritaList] = useState([]);
@@ -57,12 +55,6 @@ export default function AdminBerita() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
-
-  // Ambil data berita dan kategori saat komponen pertama kali dimuat
-  useEffect(() => {
-    fetchBerita();
-    fetchKategori();
-  }, []);
 
   // Memuat seluruh data berita dari server
   const fetchBerita = async () => {
@@ -90,6 +82,43 @@ export default function AdminBerita() {
       setKategoriList([]);
     }
   };
+
+  // Ambil data berita dan kategori saat komponen pertama kali dimuat
+  useEffect(() => {
+    let ignore = false;
+    beritaService
+      .getAllBerita()
+      .then((data) => {
+        if (!ignore) {
+          setErrorMsg('');
+          setBeritaList(Array.isArray(data) ? data : []);
+        }
+      })
+      .catch((err) => {
+        console.error('Gagal memuat berita:', err);
+        if (!ignore) {
+          setErrorMsg(getErrorMessage(err, 'Gagal terhubung ke layanan API server.'));
+          setBeritaList([]);
+        }
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    beritaService
+      .getKategoriList()
+      .then((data) => {
+        if (!ignore) setKategoriList(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error('Gagal memuat kategori berita:', err);
+        if (!ignore) setKategoriList([]);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Menambahkan kategori berita baru melalui dialog
   const handleAddKategori = async () => {

@@ -55,10 +55,6 @@ export default function KonfirmasiEmail() {
 
   const inputRefs = useRef([]);
 
-  useEffect(() => {
-    if (emailParam) setEmail(emailParam);
-  }, [emailParam]);
-
   // Hitung mundur masa berlaku OTP (10 menit) dan cooldown kirim ulang
   useEffect(() => {
     if (verified) return undefined;

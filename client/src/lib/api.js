@@ -25,38 +25,29 @@ const isDataMutation = (config) => {
   return isMutationMethod && !isBackgroundAuth && !config.skipSavingLoading;
 };
 
-// Interceptor request: aktifkan loading dan catat waktu mulai untuk operasi simpan data
+// Interceptor request: aktifkan indikator loading untuk operasi mutasi data
 api.interceptors.request.use(
   (config) => {
     if (isDataMutation(config)) {
-      config._saveStartTime = Date.now();
+      config._isSavingTracked = true;
       setGlobalSaving(true);
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Helper untuk memastikan durasi loading paling cepat 1 detik (1000ms)
-const ensureMinDuration = async (startTime) => {
-  if (!startTime) return;
-  const elapsed = Date.now() - startTime;
-  const remaining = 1000 - elapsed;
-  if (remaining > 0) {
-    await new Promise((resolve) => setTimeout(resolve, remaining));
+const clearSavingIfTracked = (config) => {
+  if (config?._isSavingTracked) {
+    setGlobalSaving(false);
+    delete config._isSavingTracked;
   }
 };
 
-// Interceptor response: pastikan durasi minimal 1 detik dan matikan indikator loading
+// Interceptor response: matikan indikator loading segera setelah respons diterima
 api.interceptors.response.use(
-  async (response) => {
-    if (response.config?._saveStartTime) {
-      await ensureMinDuration(response.config._saveStartTime);
-      setGlobalSaving(false);
-      delete response.config._saveStartTime;
-    }
+  (response) => {
+    clearSavingIfTracked(response.config);
     isRedirecting = false;
     return response;
   },
@@ -69,15 +60,8 @@ api.interceptors.response.use(
 
     const canRetry = error.response?.status === 401 && !original?._retry && !isAuthRoute && !isPublicRoute && !original?.skipAuthRefresh;
 
-    // Jika tidak akan di-retry, pastikan durasi minimal 1 detik dan matikan loading
-    if (!canRetry && original?._saveStartTime) {
-      await ensureMinDuration(original._saveStartTime);
-      setGlobalSaving(false);
-      delete original._saveStartTime;
-    }
-
-    // Jangan lakukan refresh auth atau redirect jika rute publik atau sudah ditandai skip
     if (!canRetry) {
+      clearSavingIfTracked(original);
       return Promise.reject(error);
     }
 
@@ -94,12 +78,7 @@ api.interceptors.response.use(
       return api(original);
     } catch (refreshError) {
       refreshRequest = null;
-
-      if (original?._saveStartTime) {
-        await ensureMinDuration(original._saveStartTime);
-        setGlobalSaving(false);
-        delete original._saveStartTime;
-      }
+      clearSavingIfTracked(original);
 
       const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
       const isAdminRoute = currentPath.startsWith('/admin');

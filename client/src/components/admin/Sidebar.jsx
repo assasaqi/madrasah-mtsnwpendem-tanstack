@@ -24,10 +24,10 @@ import {
   Layers,
   BookOpenCheck
 } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
 import { getFileUrl } from '../../utils/helpers';
-import { cx } from './ui';
+import { cx } from './uiStyles';
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();

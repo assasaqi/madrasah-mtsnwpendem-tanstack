@@ -13,6 +13,7 @@ import {
   deleteFasilitas
 } from '../../services/profileService';
 import { getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { queryClient } from '../../lib/queryClient';
 import { FASILITAS_IKON, getFasilitasIcon } from '../../utils/fasilitasIcons';
 import {
   PageHeader,
@@ -31,10 +32,10 @@ import {
   Input,
   Textarea,
   Select,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 const emptyForm = { nama: '', deskripsi: '', ikon: 'building', urutan: 0 };
 
@@ -50,14 +51,9 @@ export default function AdminProfilFasilitas() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   // Memuat daftar fasilitas madrasah dari API
   const fetchData = async () => {
     try {
-      setLoading(true);
       const data = await getFasilitas();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -66,6 +62,23 @@ export default function AdminProfilFasilitas() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let ignore = false;
+    getFasilitas()
+      .then((data) => {
+        if (!ignore) setItems(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat data fasilitas.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Membuka modal tambah atau edit fasilitas
   const openModal = (item = null) => {
@@ -141,6 +154,7 @@ export default function AdminProfilFasilitas() {
       else await createFasilitas(payload);
 
       closeModal();
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       await fetchData();
       setAlert({ type: 'success', message: editing ? 'Data fasilitas diperbarui.' : 'Fasilitas baru ditambahkan.' });
     } catch (error) {
@@ -156,6 +170,7 @@ export default function AdminProfilFasilitas() {
 
     try {
       await deleteFasilitas(item.id);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       await fetchData();
       setAlert({ type: 'success', message: 'Fasilitas dihapus.' });
     } catch (error) {

@@ -2,12 +2,12 @@ import { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { AlertCircle, ArrowRight, CheckCircle2, Eye, EyeOff, Lock, LogIn, Mail } from 'lucide-react';
 import { authService } from '../../services/authService';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import { getErrorMessage } from '../../utils/helpers';
 import AuthField from './AuthField';
 
-const ADMIN_ROLES = ['ADMIN', 'SUPERADMIN', 'OPERATOR'];
-const SPMB_ROLES = ['CALON_PENDAFTAR', 'PENDAFTAR'];
+const ADMIN_ROLES = ['ADMIN'];
+const SPMB_ROLES = ['CALON_PENDAFTAR'];
 
 // Menampilkan formulir masuk untuk pengelola madrasah atau pendaftar SPMB
 export default function LoginForm({ scope = 'spmb' }) {

@@ -27,10 +27,10 @@ import {
   Input,
   Select,
   Textarea,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 const KATEGORI = ['Kegiatan', 'Prestasi', 'Fasilitas', 'Ekstrakurikuler'];
 
@@ -49,10 +49,6 @@ export default function AdminGaleri() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
-  useEffect(() => {
-    fetchGaleri();
-  }, []);
-
   // Memuat seluruh foto galeri dari API
   const fetchGaleri = async () => {
     try {
@@ -66,6 +62,27 @@ export default function AdminGaleri() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let ignore = false;
+    galeriService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          setItems(Array.isArray(data) ? data : []);
+          setAlert({ type: '', message: '' });
+        }
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat galeri.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Membuka modal untuk menambah atau mengedit foto
   const openModal = (item = null) => {

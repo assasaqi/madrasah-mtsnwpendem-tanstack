@@ -5,9 +5,7 @@ import {
   Plus,
   Trash2,
   Trophy,
-  Upload,
-  Clock,
-  CalendarDays
+  Upload
 } from 'lucide-react';
 import { prestasiService } from '../../services/prestasiService';
 import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
@@ -30,10 +28,10 @@ import {
   Input,
   Select,
   Textarea,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 const TINGKAT = ['Sekolah', 'Kecamatan', 'Kabupaten/Kota', 'Provinsi', 'Nasional', 'Internasional'];
 
@@ -75,7 +73,24 @@ export default function AdminPrestasi() {
   };
 
   useEffect(() => {
-    fetchPrestasi();
+    let ignore = false;
+    prestasiService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          setItems(Array.isArray(data) ? data : []);
+          setAlert({ type: '', message: '' });
+        }
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat prestasi.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Membuka modal tambah atau edit prestasi

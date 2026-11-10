@@ -47,11 +47,18 @@ exports.updateFasilitas = catchAsync(async (req, res) => {
 
   const data = parseBody(req.body);
   if (req.file) {
-    if (existing.gambar) deleteFile(existing.gambar);
     data.gambar = req.file.filename;
   }
 
-  const fasilitas = await prisma.fasilitas.update({ where: { id }, data });
+  let fasilitas;
+  try {
+    fasilitas = await prisma.fasilitas.update({ where: { id }, data });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.gambar) deleteFile(existing.gambar);
   res.status(200).json({ success: true, message: 'Fasilitas berhasil diperbarui.', data: fasilitas });
 });
 
@@ -61,8 +68,8 @@ exports.deleteFasilitas = catchAsync(async (req, res) => {
   const existing = await prisma.fasilitas.findUnique({ where: { id } });
   if (!existing) throw new AppError('Data fasilitas tidak ditemukan.', 404);
 
-  if (existing.gambar) deleteFile(existing.gambar);
   await prisma.fasilitas.delete({ where: { id } });
+  if (existing.gambar) deleteFile(existing.gambar);
 
   res.status(200).json({ success: true, message: 'Fasilitas berhasil dihapus.' });
 });

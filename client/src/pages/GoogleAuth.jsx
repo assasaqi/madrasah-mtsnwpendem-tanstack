@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { AlertCircle, ArrowRight, CheckCircle2, Loader2, ShieldCheck } from 'lucide-react';
 import { authService } from '../services/authService';
-import { AuthContext } from '../context/AuthContext';
-import { getErrorMessage } from '../utils/helpers';
+import { AuthContext } from '../context/authContextObject';
+import { API_ORIGIN, getErrorMessage } from '../utils/helpers';
 import useSchoolProfile from '../hooks/useSchoolProfile';
 
 export function GoogleIcon({ className = 'h-5 w-5' }) {
@@ -44,6 +44,11 @@ export default function GoogleAuth() {
 
   const [step, setStep] = useState('confirm');
   const [loading, setLoading] = useState(false);
+  const [fetchingPending, setFetchingPending] = useState(
+    !isMissingOAuth && search.step === 'confirm'
+  );
+  const [pendingAccount, setPendingAccount] = useState(null);
+  const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState(
     search.error && !isMissingOAuth
       ? 'Gagal memverifikasi sesi Google. Silakan coba kembali.'
@@ -61,6 +66,32 @@ export default function GoogleAuth() {
         ? '/register'
         : '/spmb/register';
 
+  // Muat metadata akun Google tertunda dari cookie httpOnly
+  useEffect(() => {
+    if (isMissingOAuth || search.step !== 'confirm') return undefined;
+    let ignore = false;
+
+    authService
+      .getPendingGoogleAuth()
+      .then((data) => {
+        if (!ignore) setPendingAccount(data);
+      })
+      .catch((err) => {
+        if (!ignore) {
+          setError(
+            getErrorMessage(err, 'Sesi konfirmasi Google telah berakhir. Silakan ulangi.')
+          );
+        }
+      })
+      .finally(() => {
+        if (!ignore) setFetchingPending(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [isMissingOAuth, search.step]);
+
   // Otomatis alihkan ke dashboard setelah berhasil
   useEffect(() => {
     if (step !== 'success') return;
@@ -77,12 +108,7 @@ export default function GoogleAuth() {
 
     try {
       const response = await authService.completeGoogleAuth({
-        email: search.email,
-        nama: search.nama,
-        foto: search.foto,
-        scope,
-        mode,
-        gtoken: search.gtoken
+        ...(isAdmin && mode === 'register' ? { inviteCode: inviteCode.trim() } : {})
       });
 
       const user = response?.user;
@@ -102,7 +128,10 @@ export default function GoogleAuth() {
     }
   };
 
-  const inisial = String(search.nama || search.email || 'G')
+  const displayEmail = pendingAccount?.email || '';
+  const displayName = pendingAccount?.nama || (displayEmail ? displayEmail.split('@')[0] : '');
+  const displayFoto = pendingAccount?.foto || '';
+  const inisial = String(displayName || displayEmail || 'G')
     .trim()
     .charAt(0)
     .toUpperCase();
@@ -139,7 +168,7 @@ export default function GoogleAuth() {
               <p>GOOGLE_CLIENT_ID=&quot;...&quot;</p>
               <p>GOOGLE_CLIENT_SECRET=&quot;...&quot;</p>
               <p className="mt-1.5 text-muted">
-                Redirect URI: http://localhost:5000/api/auth/google/callback
+                Redirect URI: {API_ORIGIN}/api/auth/google/callback
               </p>
             </div>
 
@@ -167,10 +196,10 @@ export default function GoogleAuth() {
           /* TAHAP KONFIRMASI AKUN GMAIL AKTIF DARI GOOGLE OAUTH */
           <div className="space-y-6 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-line bg-white shadow-xs overflow-hidden">
-              {search.foto ? (
+              {displayFoto ? (
                 <img
-                  src={search.foto}
-                  alt={search.nama || search.email}
+                  src={displayFoto}
+                  alt={displayName || displayEmail}
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -187,18 +216,39 @@ export default function GoogleAuth() {
               </p>
             </div>
 
-            {search.email && (
+            {fetchingPending ? (
+              <div className="flex items-center justify-center gap-2 rounded-xl border border-line bg-canvas/70 p-4 text-xs text-muted">
+                <Loader2 size={15} className="animate-spin text-brand" />
+                <span>Memuat akun Google…</span>
+              </div>
+            ) : displayEmail ? (
               <div className="flex items-center gap-3 rounded-xl border border-line bg-canvas/70 p-3.5 text-left">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">
                   {inisial}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-ink">
-                    {search.nama || search.email.split('@')[0]}
+                    {displayName}
                   </p>
-                  <p className="truncate text-xs text-muted">{search.email}</p>
+                  <p className="truncate text-xs text-muted">{displayEmail}</p>
                 </div>
                 <CheckCircle2 size={17} className="shrink-0 text-emerald-600" />
+              </div>
+            ) : null}
+
+            {isAdmin && mode === 'register' && (
+              <div className="text-left">
+                <label htmlFor="googleInviteCode" className="mb-1.5 block text-xs font-semibold text-ink">
+                  Kode undangan pengelola
+                </label>
+                <input
+                  id="googleInviteCode"
+                  type="text"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                  placeholder="Masukkan kode undangan madrasah"
+                  className="h-10 w-full rounded-lg border border-line bg-paper px-3 text-sm text-ink outline-none focus:border-brand"
+                />
               </div>
             )}
 
@@ -217,7 +267,7 @@ export default function GoogleAuth() {
               <button
                 type="button"
                 onClick={handleConfirmGoogle}
-                disabled={loading}
+                disabled={loading || fetchingPending || !displayEmail}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white shadow-xs transition-all hover:bg-[#065f46] active:scale-[0.98] disabled:opacity-60 cursor-pointer"
               >
                 {loading ? (
@@ -259,7 +309,7 @@ export default function GoogleAuth() {
               <p className="text-sm text-muted">
                 Terhubung sebagai{' '}
                 <strong className="font-semibold text-ink">
-                  {registeredUser?.email || search.email}
+                  {registeredUser?.email || displayEmail}
                 </strong>
               </p>
             </div>

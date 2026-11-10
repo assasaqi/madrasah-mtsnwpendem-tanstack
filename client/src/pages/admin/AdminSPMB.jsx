@@ -27,9 +27,9 @@ import {
   Stat,
   Button,
   Loader,
-  Alert,
-  buttonClass
+  Alert
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 import PendaftarStatus from '../../components/admin/spmb/PendaftarStatus';
 import PendaftarDetailModal from '../../components/admin/spmb/PendaftarDetailModal';
 import PengaturanSuratModal from '../../components/admin/spmb/PengaturanSuratModal';

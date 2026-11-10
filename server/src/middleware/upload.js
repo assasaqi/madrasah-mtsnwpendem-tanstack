@@ -59,7 +59,7 @@ const saveFile = async (file, prefix = 'file') => {
   if (!String(file.mimetype || '').startsWith('image/')) {
     const extension = documentExtensions[file.mimetype] || '.bin';
     const filename = `${prefix}-${unique}${extension}`;
-    fs.writeFileSync(path.join(uploadDir, filename), file.buffer);
+    await fs.promises.writeFile(path.join(uploadDir, filename), file.buffer);
     return { filename, fileUrl: `/uploads/${filename}` };
   }
 
@@ -105,7 +105,8 @@ const processImage = async (req, res, next) => {
 // Menghapus berkas fisik berdasarkan nama atau path tersimpan
 const deleteFile = (filename) => {
   if (!filename) return;
-  const cleanFilename = filename.replace(/^\/?uploads\//, '');
+  const cleanFilename = path.basename(String(filename).replace(/^\/?uploads\//, ''));
+  if (!cleanFilename) return;
   const filePath = path.join(uploadDir, cleanFilename);
 
   fs.unlink(filePath, (err) => {

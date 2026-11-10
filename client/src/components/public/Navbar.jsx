@@ -9,7 +9,7 @@ import { getFileUrl } from '../../utils/helpers';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
 import MobileNavbar from './MobileNavbar';
 
-export const MENU = [
+const MENU = [
   { label: 'Beranda', to: '/' },
   {
     label: 'Profil',

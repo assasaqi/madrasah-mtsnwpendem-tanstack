@@ -82,7 +82,24 @@ export default function AdminAgenda() {
   };
 
   useEffect(() => {
-    fetchAgenda();
+    let ignore = false;
+    agendaService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          setItems(Array.isArray(data) ? data : []);
+          setAlert({ type: '', message: '' });
+        }
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat agenda.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Membuka modal tambah atau edit agenda

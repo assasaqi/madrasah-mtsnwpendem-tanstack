@@ -3,7 +3,8 @@ import { AlertCircle, Award, Check, CheckCircle2, Circle, FileCheck2, RotateCcw,
 import { spmbService } from '../../../services/spmbService';
 import { getErrorMessage, getField, getFileUrl } from '../../../utils/helpers';
 import { SPMB_DOKUMEN_LABEL, normalizeStatus } from '../../../utils/spmb';
-import { Modal, Button, Tag, StatusDot, Table, Th, Td, Field, Textarea, cx } from '../ui';
+import { Modal, Button, Tag, StatusDot, Table, Th, Td, Field, Textarea } from '../ui';
+import { cx } from '../uiStyles';
 import PendaftarStatus from './PendaftarStatus';
 
 // Menampilkan biodata, pemeriksaan dokumen, catatan, dan keputusan satu pendaftar

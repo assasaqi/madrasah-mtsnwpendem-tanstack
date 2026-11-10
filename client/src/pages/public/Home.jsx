@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import { publicService } from '../../services/publicService';
@@ -60,20 +60,6 @@ export default function Home() {
   const berita = Array.isArray(data?.latestNews) ? data.latestNews.slice(0, 6) : [];
   const pengumuman = Array.isArray(data?.announcements) ? data.announcements.slice(0, 6) : [];
 
-  // Fakta singkat hanya ditampilkan bila datanya benar-benar tersedia
-  const fakta = useMemo(() => {
-    const daftar = [];
-    if (profil?.akreditasi) daftar.push({ label: 'Akreditasi', value: profil.akreditasi });
-    if (profil?.npsn) daftar.push({ label: 'NPSN', value: profil.npsn });
-    if (data?.stats?.totalGuru > 0) {
-      daftar.push({ label: 'Guru & staf', value: `${data.stats.totalGuru} orang` });
-    }
-    if (data?.stats?.totalSiswa > 0) {
-      daftar.push({ label: 'Siswa aktif', value: `${data.stats.totalSiswa} orang` });
-    }
-    return daftar;
-  }, [profil, data]);
-
   const namaSekolah = profil?.namaSekolah || 'Madrasah';
   const banner = profil?.banner ? getFileUrl(profil.banner) : '';
   const tagline = String(profil?.tagline || '').trim() || 'Info data belum tersedia';
@@ -82,32 +68,29 @@ export default function Home() {
 
   const kontenBanner = (
     <div className="absolute inset-0 flex items-center">
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-8">
         {tagline && (
-          <h1 className="max-w-[75%] sm:max-w-2xl text-[16px] sm:text-[28px] md:text-[36px] lg:text-[42px] font-extrabold leading-[1.15] tracking-[-0.02em] [filter:drop-shadow(0_2px_6px_rgba(0,0,0,0.45))]">
+          <h1 className="max-w-[92%] sm:max-w-2xl text-[22px] sm:text-[28px] md:text-[36px] lg:text-[42px] font-extrabold leading-[1.15] tracking-[-0.02em] text-white [filter:drop-shadow(0_2px_6px_rgba(0,0,0,0.45))]">
             {barisTagline.map((baris, index) => (
-              <span
-                key={index}
-                className="block bg-gradient-to-r from-white via-slate-100 to-emerald-200 bg-clip-text text-transparent"
-              >
+              <span key={index} className="block">
                 {baris}
               </span>
             ))}
           </h1>
         )}
 
-        <div className={`${tagline ? 'mt-2 sm:mt-5' : ''} flex flex-wrap items-center gap-1.5 sm:gap-2.5`}>
+        <div className={`${tagline ? 'mt-4 sm:mt-5' : ''} flex flex-wrap items-center gap-2 sm:gap-2.5`}>
           <a
             href={rdmUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md bg-brand px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-white shadow-md transition-all duration-150 hover:bg-[#065f46] active:scale-[0.97]"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md bg-brand px-3.5 py-2 sm:px-4 sm:py-2 text-[12px] sm:text-[12.5px] font-semibold text-white shadow-md transition-all duration-150 hover:bg-[#065f46] active:scale-[0.97]"
           >
             Rapor Digital (RDM) <ExternalLink size={13} />
           </a>
           <Link
             to="/profil"
-            className="inline-flex items-center gap-1 sm:gap-1.5 rounded-md border border-white/40 bg-white/10 px-2.5 py-1 sm:px-4 sm:py-2 text-[10px] sm:text-[12.5px] font-semibold text-white backdrop-blur-sm transition-all duration-150 hover:bg-white/20 active:scale-[0.97]"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-md border border-white/40 bg-white/10 px-3.5 py-2 sm:px-4 sm:py-2 text-[12px] sm:text-[12.5px] font-semibold text-white backdrop-blur-sm transition-all duration-150 hover:bg-white/20 active:scale-[0.97]"
           >
             Profil Madrasah
           </Link>
@@ -118,20 +101,20 @@ export default function Home() {
 
   return (
     <div className="pb-4">
-      {/* Bagian Banner (Rasio 16:6) */}
+      {/* Bagian Banner (Min-height nyaman di ponsel, rasio 16:6 di layar lebih besar) */}
       <section className="relative overflow-hidden border-b border-line bg-slate-900">
         {banner ? (
-          <div className="relative w-full aspect-[16/6] overflow-hidden">
+          <div className="relative w-full min-h-[240px] sm:min-h-0 sm:aspect-[16/6] overflow-hidden">
             <img
               src={banner}
               alt={`Banner ${namaSekolah}`}
-              className="h-full w-full object-cover object-top"
+              className="absolute inset-0 h-full w-full object-cover object-top"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/65 to-slate-950/30 sm:from-slate-950/85 sm:via-slate-900/50 sm:to-transparent" />
             {kontenBanner}
           </div>
         ) : (
-          <div className="relative w-full aspect-[16/6] bg-gradient-to-r from-slate-950 via-slate-900 to-[#064e3b]">
+          <div className="relative w-full min-h-[240px] sm:min-h-0 sm:aspect-[16/6] bg-gradient-to-r from-slate-950 via-slate-900 to-[#064e3b]">
             {kontenBanner}
           </div>
         )}

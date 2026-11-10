@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { Outlet, useNavigate } from '@tanstack/react-router';
 import { Loader2 } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 
 // Membatasi akses rute sesuai peran dan mengarahkan ke halaman masuk yang tepat
 export default function ProtectedRoute({

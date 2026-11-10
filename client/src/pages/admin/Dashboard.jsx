@@ -19,9 +19,9 @@ import {
   Th,
   Td,
   Tag,
-  Alert,
-  buttonClass
+  Alert
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 // Daftar sumber data dashboard, satu entri untuk setiap menu dan submenu sidebar
 const SUMBER_DATA = {

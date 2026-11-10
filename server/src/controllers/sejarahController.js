@@ -24,7 +24,7 @@ exports.updateSejarah = catchAsync(async (req, res) => {
   const profil = existing
     ? await prisma.profilSekolah.update({ where: { id: existing.id }, data })
     : await prisma.profilSekolah.create({
-        data: { namaSekolah: 'MA Negeri 1', npsn: '-', akreditasi: 'A', ...data }
+        data: { namaSekolah: 'MTs NW Pendem', npsn: '50222811', akreditasi: 'B', ...data }
       });
 
   res.status(200).json({

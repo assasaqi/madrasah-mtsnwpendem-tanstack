@@ -6,20 +6,19 @@ import {
   Loader2,
   RefreshCw
 } from 'lucide-react';
-import { cx } from './ui';
+import { cx } from './uiStyles';
 
 export default function ImageCropperModal({
   open,
   imageSrc,
   aspectRatio = 16 / 9,
-  title = 'Potong & Sesuaikan Gambar',
   fileName = 'gambar.jpg',
   onCrop,
-  onClose,
-  onUseOriginal
+  onClose
 }) {
   const canvasRef = useRef(null);
-  const [imageObj, setImageObj] = useState(null);
+  const [loadedState, setLoadedState] = useState({ src: '', img: null });
+  const imageObj = open && imageSrc && loadedState.src === imageSrc ? loadedState.img : null;
   const [zoom, setZoom] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -41,26 +40,29 @@ export default function ImageCropperModal({
 
   // Muat gambar ke objek Image HTML saat URL berubah
   useEffect(() => {
-    if (!open || !imageSrc) {
-      setImageObj(null);
-      return;
-    }
+    if (!open || !imageSrc) return undefined;
 
+    let ignore = false;
     const img = new Image();
     // Gunakan crossOrigin jika bukan blob: atau data: URL
     if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
       img.crossOrigin = 'anonymous';
     }
     img.onload = () => {
-      setImageObj(img);
+      if (ignore) return;
+      setLoadedState({ src: imageSrc, img });
       setZoom(1);
       setOffset({ x: 0, y: 0 });
     };
     img.onerror = (err) => {
       console.error('Gagal memuat gambar untuk di-crop:', err);
-      setImageObj(null);
+      if (!ignore) setLoadedState({ src: imageSrc, img: null });
     };
     img.src = imageSrc;
+
+    return () => {
+      ignore = true;
+    };
   }, [open, imageSrc]);
 
   // Render canvas secara real-time berdasarkan posisi drag, zoom, dan aspect ratio

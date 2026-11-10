@@ -4,6 +4,7 @@ import {
   Save
 } from 'lucide-react';
 import { getAdminSchoolProfile, updateAdminSchoolProfile } from '../../services/profileService';
+import { queryClient } from '../../lib/queryClient';
 import { getErrorMessage } from '../../utils/helpers';
 import {
   PageHeader,
@@ -87,6 +88,7 @@ export default function AdminProfilKontak() {
       formData.append('mapsUrl', contactData.mapsUrl || '');
 
       await updateAdminSchoolProfile(formData);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
 
       setStatusMsg({ type: 'success', text: 'Informasi kontak berhasil disimpan.' });
     } catch (err) {

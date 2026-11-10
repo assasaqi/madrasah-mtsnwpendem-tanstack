@@ -11,6 +11,7 @@ router.post('/register-admin', authLimiter, authController.registerAdmin);
 // Autentikasi dan registrasi menggunakan akun Google (OAuth 2.0)
 router.get('/google', authController.googleAuthRedirect);
 router.get('/google/callback', authController.googleAuthCallback);
+router.get('/google/pending', authController.getGooglePending);
 router.post('/google/complete', authLimiter, authController.googleAuthComplete);
 // Kirim ulang email konfirmasi / OTP pendaftaran
 router.post('/resend-confirmation', authLimiter, authController.resendConfirmation);

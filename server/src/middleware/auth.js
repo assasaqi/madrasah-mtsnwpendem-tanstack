@@ -15,7 +15,7 @@ const authenticateToken = (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({ success: false, message: 'Sesi Anda telah berakhir. Silakan login kembali.' });
+      return res.status(401).json({ success: false, message: 'Sesi Anda telah berakhir. Silakan masuk kembali.' });
     }
     return res.status(401).json({ success: false, message: 'Token tidak valid.' });
   }

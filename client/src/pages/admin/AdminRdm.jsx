@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ExternalLink, Save, Globe } from 'lucide-react';
 import { getRdmSettings, updateRdmSettings } from '../../services/profileService';
+import { queryClient } from '../../lib/queryClient';
 import { setGlobalSaving } from '../../lib/savingState';
 import { getErrorMessage } from '../../utils/helpers';
 import {
@@ -72,6 +73,7 @@ export default function AdminRdm() {
     try {
       const cleanUrl = formatUrl(rdmUrl);
       const result = await updateRdmSettings({ rdmUrl: cleanUrl });
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       setRdmUrl(result.rdmUrl || '');
       setStatusMsg({
         type: 'success',

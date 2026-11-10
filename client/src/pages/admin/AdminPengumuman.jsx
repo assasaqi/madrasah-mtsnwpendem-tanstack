@@ -7,9 +7,7 @@ import {
   Loader2,
   Download,
   Paperclip,
-  ExternalLink,
-  Clock,
-  CalendarDays
+  ExternalLink
 } from 'lucide-react';
 import { pengumumanService } from '../../services/pengumumanService';
 import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl, stripHtml } from '../../utils/helpers';
@@ -31,10 +29,10 @@ import {
   Modal,
   Field,
   Input,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 export default function AdminPengumuman() {
   const [pengumumanList, setPengumumanList] = useState([]);
@@ -49,10 +47,6 @@ export default function AdminPengumuman() {
   const [searchQuery, setSearchQuery] = useState('');
   const [cropModal, setCropModal] = useState({ open: false, src: '', fileName: '' });
 
-  useEffect(() => {
-    fetchPengumuman();
-  }, []);
-
   // Memuat daftar pengumuman resmi dari API
   const fetchPengumuman = async () => {
     try {
@@ -66,6 +60,25 @@ export default function AdminPengumuman() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let ignore = false;
+    pengumumanService
+      .getAdminAll()
+      .then((data) => {
+        if (!ignore) setPengumumanList(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error('Gagal memuat pengumuman:', error);
+        if (!ignore) setNotice({ type: 'error', message: getErrorMessage(error, 'Gagal memuat pengumuman.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Mengosongkan formulir pengumuman
   const resetForm = () => {

@@ -19,8 +19,9 @@ const errorHandler = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
+app.set('trust proxy', 1);
 
-// Middleware keamanan, parser request, dan CORS berkredensial fleksibel (mendukung http/https dan localhost)
+// Middleware keamanan, parser request, dan CORS berkredensial untuk origin tepercaya
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cookieParser());
 app.use(cors({
@@ -28,11 +29,15 @@ app.use(cors({
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
     const cleanFrontend = String(env.FRONTEND_URL).replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+    const hostOnly = cleanOrigin.split(':')[0];
 
-    if (cleanOrigin === cleanFrontend || cleanOrigin.endsWith(cleanFrontend) || origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      return callback(null, true);
-    }
-    return callback(null, true);
+    const isAllowed =
+      cleanOrigin === cleanFrontend ||
+      cleanOrigin.endsWith(`.${cleanFrontend}`) ||
+      hostOnly === 'localhost' ||
+      hostOnly === '127.0.0.1';
+
+    return callback(null, isAllowed);
   },
   credentials: true
 }));

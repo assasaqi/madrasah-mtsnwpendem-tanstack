@@ -1,14 +1,12 @@
-import { createContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { authService } from '../services/authService';
 import { queryClient } from '../lib/queryClient';
-
-export const AuthContext = createContext();
+import { AuthContext } from './authContextObject';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Memuat ulang profil pengguna dari cookie sesi
   const refreshUser = useCallback(async () => {
     try {
       const currentUser = await authService.getMe();
@@ -23,15 +21,27 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    refreshUser();
-  }, [refreshUser]);
-
-  // Menyimpan data pengguna setelah login berhasil
-  const login = useCallback((userData) => {
-    setUser(userData || null);
+    let ignore = false;
+    authService
+      .getMe()
+      .then((currentUser) => {
+        if (!ignore) setUser(currentUser);
+      })
+      .catch(() => {
+        if (!ignore) setUser(null);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
-  // Mengakhiri sesi pengguna seketika, membersihkan cache query, dan membatalkan cookie di server
+  const login = useCallback((userData) => {
+    setUser((prev) => (typeof userData === 'function' ? userData(prev) : userData || null));
+  }, []);
+
   const logout = useCallback(async () => {
     setUser(null);
     queryClient.clear();
@@ -42,14 +52,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const value = useMemo(() => ({
-    user,
-    isAuthenticated: Boolean(user),
-    loading,
-    login,
-    logout,
-    refreshUser
-  }), [user, loading, login, logout, refreshUser]);
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated: Boolean(user),
+      loading,
+      login,
+      logout,
+      refreshUser
+    }),
+    [user, loading, login, logout, refreshUser]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

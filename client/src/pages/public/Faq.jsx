@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, ChevronDown, HelpCircle, MessageSquare, Search } from 'lucide-react';
+import { ArrowRight, ChevronDown, MessageSquare, Search } from 'lucide-react';
 import { faqService } from '../../services/faqService';
 import { formatArticleHtml, stripHtml } from '../../utils/helpers';
 import useSchoolProfile from '../../hooks/useSchoolProfile';

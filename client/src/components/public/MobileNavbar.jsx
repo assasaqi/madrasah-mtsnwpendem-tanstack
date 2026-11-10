@@ -35,10 +35,7 @@ export default function MobileNavbar({
 
   // Kunci scroll halaman saat drawer mobile terbuka & tangani tombol Escape
   useEffect(() => {
-    if (!isOpen) {
-      setActiveSubmenu(null);
-      return undefined;
-    }
+    if (!isOpen) return undefined;
 
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose();
@@ -133,7 +130,7 @@ export default function MobileNavbar({
                 );
               }
 
-              const isSubmenuOpen = activeSubmenu === item.label;
+              const isSubmenuOpen = isOpen && activeSubmenu === item.label;
               const parentActive = isParentActive(item) || isSubmenuOpen;
 
               return (

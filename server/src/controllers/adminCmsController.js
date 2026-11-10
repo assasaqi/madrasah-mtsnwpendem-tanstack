@@ -174,18 +174,25 @@ exports.updateBerita = catchAsync(async (req, res) => {
     payload.slug = await buildUniqueSlug(prisma.berita, payload.judul, id);
   }
   if (req.file) {
-    if (existing.gambar) deleteFile(existing.gambar);
     payload.gambar = req.file.filename;
   }
 
-  const berita = await prisma.berita.update({
-    where: { id },
-    data: payload,
-    include: {
-      kategori: true,
-      author: { select: { id: true, email: true } }
-    }
-  });
+  let berita;
+  try {
+    berita = await prisma.berita.update({
+      where: { id },
+      data: payload,
+      include: {
+        kategori: true,
+        author: { select: { id: true, email: true } }
+      }
+    });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.gambar) deleteFile(existing.gambar);
 
   res.status(200).json({ success: true, message: 'Berita berhasil diperbarui.', data: berita });
 });
@@ -196,8 +203,8 @@ exports.deleteBerita = catchAsync(async (req, res) => {
   const existing = await prisma.berita.findUnique({ where: { id } });
   if (!existing) throw new AppError('Berita tidak ditemukan.', 404);
 
-  if (existing.gambar) deleteFile(existing.gambar);
   await prisma.berita.delete({ where: { id } });
+  if (existing.gambar) deleteFile(existing.gambar);
 
   res.status(200).json({ success: true, message: 'Berita berhasil dihapus.' });
 });
@@ -294,11 +301,18 @@ exports.updatePengumuman = catchAsync(async (req, res) => {
     payload.slug = await buildUniqueSlug(prisma.pengumuman, payload.judul, id);
   }
   if (req.file) {
-    if (existing.fileUrl) deleteFile(existing.fileUrl);
     payload.fileUrl = req.file.filename;
   }
 
-  const pengumuman = await prisma.pengumuman.update({ where: { id }, data: payload });
+  let pengumuman;
+  try {
+    pengumuman = await prisma.pengumuman.update({ where: { id }, data: payload });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.fileUrl) deleteFile(existing.fileUrl);
   res.status(200).json({ success: true, message: 'Pengumuman berhasil diperbarui.', data: pengumuman });
 });
 
@@ -308,8 +322,8 @@ exports.deletePengumuman = catchAsync(async (req, res) => {
   const existing = await prisma.pengumuman.findUnique({ where: { id } });
   if (!existing) throw new AppError('Pengumuman tidak ditemukan.', 404);
 
-  if (existing.fileUrl) deleteFile(existing.fileUrl);
   await prisma.pengumuman.delete({ where: { id } });
+  if (existing.fileUrl) deleteFile(existing.fileUrl);
 
   res.status(200).json({ success: true, message: 'Pengumuman berhasil dihapus.' });
 });
@@ -350,11 +364,18 @@ exports.updateGaleri = catchAsync(async (req, res) => {
   };
 
   if (req.file) {
-    if (existing.imageUrl) deleteFile(existing.imageUrl);
     payload.imageUrl = req.file.filename;
   }
 
-  const galeri = await prisma.galeri.update({ where: { id }, data: payload });
+  let galeri;
+  try {
+    galeri = await prisma.galeri.update({ where: { id }, data: payload });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.imageUrl) deleteFile(existing.imageUrl);
   res.status(200).json({ success: true, message: 'Foto galeri berhasil diperbarui.', data: galeri });
 });
 
@@ -364,8 +385,8 @@ exports.deleteGaleri = catchAsync(async (req, res) => {
   const existing = await prisma.galeri.findUnique({ where: { id } });
   if (!existing) throw new AppError('Foto galeri tidak ditemukan.', 404);
 
-  if (existing.imageUrl) deleteFile(existing.imageUrl);
   await prisma.galeri.delete({ where: { id } });
+  if (existing.imageUrl) deleteFile(existing.imageUrl);
 
   res.status(200).json({ success: true, message: 'Foto galeri berhasil dihapus.' });
 });
@@ -498,11 +519,18 @@ exports.updatePrestasi = catchAsync(async (req, res) => {
   if (payload.deskripsi !== undefined) payload.deskripsi = payload.deskripsi || null;
 
   if (req.file) {
-    if (existing.gambar) deleteFile(existing.gambar);
     payload.gambar = req.file.filename;
   }
 
-  const prestasi = await prisma.prestasi.update({ where: { id }, data: payload });
+  let prestasi;
+  try {
+    prestasi = await prisma.prestasi.update({ where: { id }, data: payload });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.gambar) deleteFile(existing.gambar);
   res.status(200).json({ success: true, message: 'Prestasi berhasil diperbarui.', data: prestasi });
 });
 
@@ -512,8 +540,8 @@ exports.deletePrestasi = catchAsync(async (req, res) => {
   const existing = await prisma.prestasi.findUnique({ where: { id } });
   if (!existing) throw new AppError('Prestasi tidak ditemukan.', 404);
 
-  if (existing.gambar) deleteFile(existing.gambar);
   await prisma.prestasi.delete({ where: { id } });
+  if (existing.gambar) deleteFile(existing.gambar);
 
   res.status(200).json({ success: true, message: 'Prestasi berhasil dihapus.' });
 });
@@ -559,14 +587,21 @@ exports.updateUnduhan = catchAsync(async (req, res) => {
   if (body.isPublished !== undefined) payload.isPublished = toBoolean(body.isPublished);
 
   if (req.file) {
-    if (existing.fileUrl) deleteFile(existing.fileUrl);
     payload.fileUrl = req.file.filename;
     payload.namaFile = req.file.originalname;
     payload.tipeFile = getFileExtension(req.file.originalname || req.file.filename);
     payload.ukuran = req.file.size || null;
   }
 
-  const unduhan = await prisma.unduhan.update({ where: { id }, data: payload });
+  let unduhan;
+  try {
+    unduhan = await prisma.unduhan.update({ where: { id }, data: payload });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && existing.fileUrl) deleteFile(existing.fileUrl);
   res.status(200).json({ success: true, message: 'Dokumen berhasil diperbarui.', data: unduhan });
 });
 
@@ -576,8 +611,8 @@ exports.deleteUnduhan = catchAsync(async (req, res) => {
   const existing = await prisma.unduhan.findUnique({ where: { id } });
   if (!existing) throw new AppError('Dokumen tidak ditemukan.', 404);
 
-  if (existing.fileUrl) deleteFile(existing.fileUrl);
   await prisma.unduhan.delete({ where: { id } });
+  if (existing.fileUrl) deleteFile(existing.fileUrl);
 
   res.status(200).json({ success: true, message: 'Dokumen berhasil dihapus.' });
 });

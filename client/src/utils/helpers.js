@@ -75,7 +75,67 @@ export const stripHtml = (html) => String(html || '')
   .replace(/\s+/g, ' ')
   .trim();
 
-// Mengubah teks artikel menjadi HTML rapi dengan paragraf dan baris baru
+const ALLOWED_HTML_TAGS = new Set([
+  'p', 'br', 'div', 'span', 'strong', 'b', 'em', 'i', 'u', 's',
+  'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'blockquote', 'img', 'a', 'figure', 'figcaption',
+  'table', 'thead', 'tbody', 'tr', 'th', 'td', 'hr'
+]);
+
+const ALLOWED_HTML_ATTRS = new Set(['href', 'target', 'rel', 'src', 'alt', 'title', 'class', 'colspan', 'rowspan', 'style']);
+const SAFE_URI_REGEX = /^(https?:|mailto:|tel:|\/|#)/i;
+
+// Membersihkan tag/atribut berbahaya dari HTML artikel agar aman untuk dangerouslySetInnerHTML
+export const sanitizeHtml = (html) => {
+  const input = String(html || '');
+  if (!input || typeof DOMParser === 'undefined') return '';
+
+  const doc = new DOMParser().parseFromString(input, 'text/html');
+  const cleanNode = (node) => {
+    Array.from(node.children).forEach((el) => {
+      const tag = el.tagName.toLowerCase();
+      if (!ALLOWED_HTML_TAGS.has(tag)) {
+        if (['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math'].includes(tag)) {
+          el.remove();
+        } else {
+          cleanNode(el);
+          el.replaceWith(...el.childNodes);
+        }
+        return;
+      }
+
+      Array.from(el.attributes).forEach((attr) => {
+        const name = attr.name.toLowerCase();
+        const val = attr.value.trim();
+
+        if (!ALLOWED_HTML_ATTRS.has(name) || name.startsWith('on')) {
+          el.removeAttribute(attr.name);
+          return;
+        }
+        if ((name === 'href' || name === 'src') && !SAFE_URI_REGEX.test(val)) {
+          el.removeAttribute(attr.name);
+          return;
+        }
+        if (name === 'style') {
+          const alignMatch = val.match(/(?:^|;)\s*text-align\s*:\s*(left|center|right|justify)\s*(?:;|$)/i);
+          if (alignMatch) el.setAttribute('style', `text-align: ${alignMatch[1].toLowerCase()}`);
+          else el.removeAttribute('style');
+        }
+      });
+
+      if (tag === 'a' && el.getAttribute('target') === '_blank') {
+        el.setAttribute('rel', 'noopener noreferrer');
+      }
+
+      cleanNode(el);
+    });
+  };
+
+  cleanNode(doc.body);
+  return doc.body.innerHTML;
+};
+
+// Mengubah teks artikel menjadi HTML rapi dengan paragraf, baris baru, dan sanitasi XSS
 export const formatArticleHtml = (value) => {
   const teks = String(value || '')
     .replace(/\r\n?/g, '\n')
@@ -84,9 +144,8 @@ export const formatArticleHtml = (value) => {
 
   if (!teks) return '';
 
-  // Konten yang sudah berupa HTML dibiarkan apa adanya
   if (/<\/?(p|br|div|span|strong|em|b|i|u|ul|ol|li|h[1-6]|blockquote|img|a|figure|figcaption|table|thead|tbody|tr|th|td)\b[^>]*>/i.test(teks)) {
-    return teks;
+    return sanitizeHtml(teks);
   }
 
   const escapeHtml = (text) => text

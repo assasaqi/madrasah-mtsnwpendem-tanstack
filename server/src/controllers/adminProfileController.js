@@ -61,17 +61,24 @@ exports.updateAdminProfile = catchAsync(async (req, res) => {
   }
 
   if (req.file) {
-    if (current.foto) deleteFile(current.foto);
     payload.foto = req.file.filename;
   }
 
   if (Object.keys(payload).length === 0) throw new AppError('Tidak ada data profil yang diperbarui.', 400);
 
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data: payload,
-    select: { id: true, email: true, role: true, foto: true }
-  });
+  let user;
+  try {
+    user = await prisma.user.update({
+      where: { id: userId },
+      data: payload,
+      select: { id: true, email: true, role: true, foto: true }
+    });
+  } catch (err) {
+    if (req.file) deleteFile(req.file.filename);
+    throw err;
+  }
+
+  if (req.file && current.foto) deleteFile(current.foto);
 
   res.status(200).json({ success: true, message: 'Profil berhasil diperbarui.', data: user });
 });
@@ -101,7 +108,7 @@ exports.getSchoolProfile = catchAsync(async (req, res) => {
   let profil = await prisma.profilSekolah.findFirst();
   if (!profil) {
     profil = await prisma.profilSekolah.create({
-      data: { namaSekolah: 'MA Negeri 1', npsn: '-', akreditasi: 'A' }
+      data: { namaSekolah: 'MTs NW Pendem', npsn: '50222811', akreditasi: 'B' }
     });
   }
   res.status(200).json({ success: true, data: profil });
@@ -131,19 +138,27 @@ exports.updateSchoolProfile = catchAsync(async (req, res) => {
   };
 
   if (req.files?.logo) {
-    if (existing?.logo) deleteFile(existing.logo);
     payload.logo = req.files.logo[0].filename;
   }
   if (req.files?.banner) {
-    if (existing?.banner) deleteFile(existing.banner);
     payload.banner = req.files.banner[0].filename;
   }
 
   if (!existing) payload.npsn = payload.npsn || '-';
 
-  const result = existing
-    ? await prisma.profilSekolah.update({ where: { id: existing.id }, data: payload })
-    : await prisma.profilSekolah.create({ data: payload });
+  let result;
+  try {
+    result = existing
+      ? await prisma.profilSekolah.update({ where: { id: existing.id }, data: payload })
+      : await prisma.profilSekolah.create({ data: payload });
+  } catch (err) {
+    if (req.files?.logo) deleteFile(req.files.logo[0].filename);
+    if (req.files?.banner) deleteFile(req.files.banner[0].filename);
+    throw err;
+  }
+
+  if (req.files?.logo && existing?.logo) deleteFile(existing.logo);
+  if (req.files?.banner && existing?.banner) deleteFile(existing.banner);
 
   res.status(200).json({ success: true, message: 'Profil sekolah berhasil diperbarui.', data: result });
 });

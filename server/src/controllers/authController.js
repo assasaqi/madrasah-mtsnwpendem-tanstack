@@ -529,6 +529,7 @@ exports.getMe = async (req, res, next) => {
 exports.logout = (req, res) => {
   res.clearCookie('accessToken', cookieOptions);
   res.clearCookie('refreshToken', cookieOptions);
+  res.clearCookie('googlePending', cookieOptions);
   res.status(200).json({ success: true, message: 'Logout berhasil.' });
 };
 
@@ -630,20 +631,19 @@ exports.googleAuthCallback = async (req, res) => {
         nama: profile.name || profile.email.split('@')[0],
         foto: profile.picture || null,
         scope,
-        mode
+        mode,
+        purpose: 'google-oauth-confirm'
       },
       env.JWT_ACCESS_SECRET,
       { expiresIn: '15m' }
     );
 
+    res.cookie('googlePending', gtoken, { ...cookieOptions, maxAge: 15 * 60 * 1000 });
+
     const confirmParams = new URLSearchParams({
       step: 'confirm',
       scope,
-      mode,
-      email: String(profile.email).toLowerCase().trim(),
-      nama: profile.name || profile.email.split('@')[0],
-      ...(profile.picture ? { foto: profile.picture } : {}),
-      gtoken
+      mode
     });
 
     return res.redirect(`${env.FRONTEND_URL}/auth/google?${confirmParams.toString()}`);
@@ -653,37 +653,65 @@ exports.googleAuthCallback = async (req, res) => {
   }
 };
 
+// Mengambil metadata sesi Google OAuth tertunda dari cookie httpOnly
+exports.getGooglePending = (req, res, next) => {
+  try {
+    const token = req.cookies?.googlePending;
+    if (!token) {
+      throw new AppError('Sesi konfirmasi Google tidak ditemukan atau telah berakhir.', 401);
+    }
+
+    const verified = jwt.verify(String(token), env.JWT_ACCESS_SECRET);
+    if (verified.purpose !== 'google-oauth-confirm' || !verified.email) {
+      throw new AppError('Sesi konfirmasi Google tidak valid.', 401);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        email: verified.email,
+        nama: verified.nama || verified.email.split('@')[0],
+        foto: verified.foto || null,
+        scope: verified.scope === 'admin' ? 'admin' : 'spmb',
+        mode: verified.mode === 'login' ? 'login' : 'register'
+      }
+    });
+  } catch (error) {
+    if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+      return next(new AppError('Sesi konfirmasi Google telah berakhir. Silakan ulangi masuk dengan Google.', 401));
+    }
+    return next(error);
+  }
+};
+
 // Menyelesaikan konfirmasi akun Google, mendaftarkan pengguna ke DB, dan menerbitkan sesi login
 exports.googleAuthComplete = async (req, res, next) => {
   try {
-    let email = String(req.body?.email || '').trim().toLowerCase();
-    let nama = String(req.body?.nama || '').trim();
-    let foto = req.body?.foto ? String(req.body.foto).trim() : null;
-    let scope = req.body?.scope === 'admin' ? 'admin' : 'spmb';
-    const passwordInput = req.body?.password ? String(req.body.password) : '';
-    const gtoken = req.body?.gtoken;
-
-    // Jika berasal dari callback Google OAuth resmi, gunakan data terverifikasi dari gtoken
-    if (gtoken) {
-      try {
-        const verified = jwt.verify(String(gtoken), env.JWT_ACCESS_SECRET);
-        email = verified.email || email;
-        nama = verified.nama || nama;
-        foto = verified.foto || foto;
-        scope = verified.scope || scope;
-      } catch {
-        throw new AppError('Sesi konfirmasi Google telah berakhir. Silakan ulangi login Google.', 400);
-      }
+    const gtoken = req.cookies?.googlePending || req.body?.gtoken;
+    if (!gtoken) {
+      throw new AppError('Sesi konfirmasi Google tidak valid atau telah berakhir. Silakan ulangi proses autentikasi Google.', 401);
     }
 
+    let verified;
+    try {
+      verified = jwt.verify(String(gtoken), env.JWT_ACCESS_SECRET);
+    } catch {
+      throw new AppError('Sesi konfirmasi Google telah berakhir. Silakan ulangi login Google.', 401);
+    }
+
+    if (verified.purpose !== 'google-oauth-confirm') {
+      throw new AppError('Token konfirmasi Google tidak valid.', 401);
+    }
+
+    const email = String(verified.email || '').trim().toLowerCase();
+    const nama = String(verified.nama || '').trim();
+    const foto = verified.foto ? String(verified.foto).trim() : null;
+    const scope = verified.scope === 'admin' ? 'admin' : 'spmb';
     const targetRole = scope === 'admin' ? 'ADMIN' : 'CALON_PENDAFTAR';
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new AppError(
-        'Akun Gmail aktif belum terdeteksi. Pastikan GOOGLE_CLIENT_ID dan GOOGLE_CLIENT_SECRET telah diisi pada server/.env.',
-        400
-      );
+      throw new AppError('Alamat email Google tidak valid.', 400);
     }
 
     let user = await prisma.user.findUnique({
@@ -696,7 +724,10 @@ exports.googleAuthComplete = async (req, res, next) => {
     const isNewUser = !user;
 
     if (!user) {
-      const rawPassword = passwordInput.length >= 6 ? passwordInput : crypto.randomBytes(16).toString('hex');
+      if (scope === 'admin') {
+        validateAdminInviteCode(req.body?.inviteCode);
+      }
+      const rawPassword = crypto.randomBytes(16).toString('hex');
       const hashedPassword = await bcrypt.hash(rawPassword, 10);
 
       user = await prisma.user.create({
@@ -717,6 +748,13 @@ exports.googleAuthComplete = async (req, res, next) => {
         }
       });
     } else {
+      if (scope === 'admin' && user.role !== 'ADMIN') {
+        throw new AppError('Akun ini bukan akun pengelola. Silakan masuk melalui portal SPMB.', 403);
+      }
+      if (scope !== 'admin' && user.role === 'ADMIN') {
+        throw new AppError('Akun pengelola tidak dapat masuk melalui portal SPMB.', 403);
+      }
+
       user = await prisma.user.update({
         where: { id: user.id },
         data: {
@@ -734,6 +772,7 @@ exports.googleAuthComplete = async (req, res, next) => {
       });
     }
 
+    res.clearCookie('googlePending', cookieOptions);
     issueTokens(res, user);
 
     const displayName = nama || buildDisplayName(user);

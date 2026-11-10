@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { ChevronDown, FileEdit, LogOut, Menu, User } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import { cx } from '../ui';
 
 // Menampilkan bilah atas portal pendaftar berisi judul halaman dan menu akun

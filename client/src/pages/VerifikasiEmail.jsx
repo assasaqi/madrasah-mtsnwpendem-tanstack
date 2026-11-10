@@ -4,9 +4,7 @@ import {
   AlertCircle,
   ArrowRight,
   CheckCircle2,
-  Loader2,
-  MailCheck,
-  ShieldCheck
+  Loader2
 } from 'lucide-react';
 import AuthLayout from '../components/auth/AuthLayout';
 import { authService } from '../services/authService';

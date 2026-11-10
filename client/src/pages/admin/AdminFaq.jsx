@@ -62,7 +62,24 @@ export default function AdminFaq() {
   };
 
   useEffect(() => {
-    fetchFaq();
+    let ignore = false;
+    faqService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          setItems(Array.isArray(data) ? data : []);
+          setAlert({ type: '', message: '' });
+        }
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat FAQ.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Membuka modal tambah atau edit FAQ

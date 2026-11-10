@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { User, Lock, Upload, Save, KeyRound } from 'lucide-react';
 import { getAdminProfile, updateAdminProfile, changeAdminPassword } from '../../services/profileService';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import { getErrorMessage, getFileUrl } from '../../utils/helpers';
 import {
   PageHeader,
@@ -12,10 +12,10 @@ import {
   Button,
   Alert,
   Loader,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 export default function AdminProfile() {
   const { user, login: setAuthContext } = useContext(AuthContext);
@@ -39,36 +39,34 @@ export default function AdminProfile() {
 
   // Memuat data profil admin dari API saat komponen pertama kali dimuat
   useEffect(() => {
-    fetchProfileData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Memuat data profil admin dari API backend
-  const fetchProfileData = async () => {
-    try {
-      setFetching(true);
-      const data = await getAdminProfile();
-
-      if (data) {
-        setProfile({
-          email: data.email || '',
-          foto: null
-        });
-
-        if (data.foto) setPreviewFoto(getFileUrl(data.foto));
-
-        setAuthContext({ ...user, ...data });
-      }
-    } catch (err) {
-      console.error('Gagal mengambil data profil:', err);
-      setStatusMsg({
-        type: 'error',
-        text: getErrorMessage(err, 'Gagal memuat data profil admin.')
+    let ignore = false;
+    getAdminProfile()
+      .then((data) => {
+        if (!ignore && data) {
+          setProfile({
+            email: data.email || '',
+            foto: null
+          });
+          if (data.foto) setPreviewFoto(getFileUrl(data.foto));
+          setAuthContext((prev) => ({ ...prev, ...data }));
+        }
+      })
+      .catch((err) => {
+        console.error('Gagal mengambil data profil:', err);
+        if (!ignore) {
+          setStatusMsg({
+            type: 'error',
+            text: getErrorMessage(err, 'Gagal memuat data profil admin.')
+          });
+        }
+      })
+      .finally(() => {
+        if (!ignore) setFetching(false);
       });
-    } finally {
-      setFetching(false);
-    }
-  };
+    return () => {
+      ignore = true;
+    };
+  }, [setAuthContext]);
 
   // Memproses unggahan foto profil dan membuka modal cropper
   const handleFotoChange = (e) => {

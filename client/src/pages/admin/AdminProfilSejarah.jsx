@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { History, Save, Info } from 'lucide-react';
 import { getSejarah, updateSejarah } from '../../services/profileService';
+import { queryClient } from '../../lib/queryClient';
 import { getErrorMessage, stripHtml } from '../../utils/helpers';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
@@ -20,21 +21,22 @@ export default function AdminProfilSejarah() {
   const [status, setStatus] = useState({ type: '', message: '' });
 
   useEffect(() => {
-    fetchSejarah();
-  }, []);
-
-  // Memuat narasi sejarah singkat dari API
-  const fetchSejarah = async () => {
-    try {
-      setFetching(true);
-      const data = await getSejarah();
-      setSejarah(data?.sejarah || '');
-    } catch (error) {
-      setStatus({ type: 'error', message: getErrorMessage(error, 'Gagal memuat sejarah singkat.') });
-    } finally {
-      setFetching(false);
+    let ignore = false;
+    async function loadSejarah() {
+      try {
+        const data = await getSejarah();
+        if (!ignore) setSejarah(data?.sejarah || '');
+      } catch (error) {
+        if (!ignore) setStatus({ type: 'error', message: getErrorMessage(error, 'Gagal memuat sejarah singkat.') });
+      } finally {
+        if (!ignore) setFetching(false);
+      }
     }
-  };
+    loadSejarah();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Menyimpan narasi sejarah singkat ke server
   const handleSubmit = async (e) => {
@@ -49,6 +51,7 @@ export default function AdminProfilSejarah() {
       setSaving(true);
       setStatus({ type: '', message: '' });
       await updateSejarah(sejarah);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       setStatus({ type: 'success', message: 'Sejarah singkat berhasil disimpan.' });
     } catch (error) {
       setStatus({ type: 'error', message: getErrorMessage(error, 'Gagal menyimpan sejarah singkat.') });

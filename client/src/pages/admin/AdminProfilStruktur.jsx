@@ -14,6 +14,8 @@ import {
   deleteStruktur
 } from '../../services/profileService';
 import { getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { susunBaganStruktur } from '../../utils/struktur';
+import { queryClient } from '../../lib/queryClient';
 import {
   PageHeader,
   Panel,
@@ -23,11 +25,10 @@ import {
   Modal,
   Field,
   Input,
-  cx,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { cx, buttonClass } from '../../components/admin/uiStyles';
 
 const emptyForm = { nama: '', jabatan: '' };
 
@@ -244,6 +245,7 @@ export default function AdminProfilStruktur() {
       else await createStruktur(payload);
 
       closeModal();
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       await fetchData();
       setAlert({
         type: 'success',
@@ -262,6 +264,7 @@ export default function AdminProfilStruktur() {
 
     try {
       await deleteStruktur(item.id);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
       await fetchData();
       setAlert({ type: 'success', message: 'Data pengurus berhasil dihapus.' });
     } catch (error) {
@@ -269,178 +272,15 @@ export default function AdminProfilStruktur() {
     }
   };
 
-  // PENETAPAN STRUKTUR BAGAN
-  // Baris 1: Kepala Madrasah dan Ketua Komite
-  const kamadItem = items.find((i) =>
-    /kepala\s*madrasah|kamad/i.test(i.jabatan || '') ||
-    (/^kepala$/i.test((i.jabatan || '').trim())) ||
-    (/kepala\s*sekolah/i.test(i.jabatan || '')) ||
-    (/kepala/i.test(i.jabatan || '') && !/tata\s*usaha|tu|perpus|perpustakaan|lab|leb|komputer|ipa/i.test(i.jabatan || ''))
-  );
-  const komiteItem = items.find((i) => /komite/i.test(i.jabatan || ''));
-
-  // ID yang sudah terpasang di baris 1
-  const assignedIds = new Set([kamadItem?.id, komiteItem?.id].filter(Boolean));
-
-  // BARIS 2 KIRI: 4 SLOT WAKA (Kurikulum, Kesiswaan, Sarpras, Humas)
-  const wakaItems = items.filter(
-    (i) => !assignedIds.has(i.id) && /waka|wakil/i.test(i.jabatan || '')
-  );
-  wakaItems.forEach((i) => assignedIds.add(i.id));
-
-  const wakaKurikulum = wakaItems.find((i) =>
-    /kurikulum|kumer|akademik/i.test(i.jabatan || '')
-  );
-  const wakaKesiswaan = wakaItems.find((i) =>
-    /kesiswaan/i.test(i.jabatan || '')
-  );
-  const wakaSarpras = wakaItems.find((i) =>
-    /sarpras|sarana/i.test(i.jabatan || '')
-  );
-  const wakaHumas = wakaItems.find((i) =>
-    /humas/i.test(i.jabatan || '')
-  );
-
-  const matchedWakaIds = new Set(
-    [wakaKurikulum?.id, wakaKesiswaan?.id, wakaSarpras?.id, wakaHumas?.id].filter(Boolean)
-  );
-  const unassignedWaka = wakaItems.filter((i) => !matchedWakaIds.has(i.id));
-
-  const slotWaka1 = wakaKurikulum || unassignedWaka.shift() || null;
-  const slotWaka2 = wakaKesiswaan || unassignedWaka.shift() || null;
-  const slotWaka3 = wakaSarpras || unassignedWaka.shift() || null;
-  const slotWaka4 = wakaHumas || unassignedWaka.shift() || null;
-
-  const wakaSlots = [
-    { role: 'WAKA KURIKULUM', item: slotWaka1 },
-    { role: 'WAKA KESISWAAN', item: slotWaka2 },
-    { role: 'WAKA SARPRAS', item: slotWaka3 },
-    { role: 'WAKA HUMAS', item: slotWaka4 },
-    ...unassignedWaka.map((item, idx) => ({ role: item.jabatan || `WAKA ${idx + 5}`, item }))
-  ];
-
-  // BARIS 2 KANAN: 4 SLOT TENAGA KEPENDIDIKAN (Kepala TU, Bendahara, Operator, Staf TU)
-  const tendikItems = items.filter(
-    (i) =>
-      !assignedIds.has(i.id) &&
-      /tata\s*usaha|tu|operator|ops|bendahara|tenaga\s*kependidikan|tendik|staf|staff|administrasi|admin/i.test(
-        i.jabatan || ''
-      )
-  );
-  tendikItems.forEach((i) => assignedIds.add(i.id));
-
-  const tendikKaTU = tendikItems.find((i) =>
-    /kepala\s*tata\s*usaha|ka\.?\s*tu|kepala\s*tu|ktu/i.test(i.jabatan || '')
-  );
-  const tendikBendahara = tendikItems.find((i) =>
-    /bendahara/i.test(i.jabatan || '')
-  );
-  const tendikOperator = tendikItems.find((i) =>
-    /operator|ops/i.test(i.jabatan || '')
-  );
-  const tendikStaf = tendikItems.find(
-    (i) =>
-      i.id !== tendikKaTU?.id &&
-      i.id !== tendikBendahara?.id &&
-      i.id !== tendikOperator?.id &&
-      /staf|staff|administrasi|admin|tata\s*usaha|tu|tenaga\s*kependidikan/i.test(i.jabatan || '')
-  );
-
-  const matchedTendikIds = new Set(
-    [tendikKaTU?.id, tendikBendahara?.id, tendikOperator?.id, tendikStaf?.id].filter(Boolean)
-  );
-  const unassignedTendik = tendikItems.filter((i) => !matchedTendikIds.has(i.id));
-
-  const slotTendik1 = tendikKaTU || unassignedTendik.shift() || null;
-  const slotTendik2 = tendikBendahara || unassignedTendik.shift() || null;
-  const slotTendik3 = tendikOperator || unassignedTendik.shift() || null;
-  const slotTendik4 = tendikStaf || unassignedTendik.shift() || null;
-
-  const tendikSlots = [
-    { role: 'KEPALA TATA USAHA', item: slotTendik1 },
-    { role: 'BENDAHARA', item: slotTendik2 },
-    { role: 'OPERATOR', item: slotTendik3 },
-    { role: 'STAF TATA USAHA', item: slotTendik4 },
-    ...unassignedTendik.map((item, idx) => ({ role: item.jabatan || `STAF ${idx + 5}`, item }))
-  ];
-
-  // BARIS 2 KANAN (UNIT PENUNJANG): 3 SLOT KEPALA (Kepala Perpustakaan, Kepala Lab IPA, Kepala Lab Komputer)
-  const kepalaUnitItems = items.filter(
-    (i) =>
-      !assignedIds.has(i.id) &&
-      /perpus|perpustakaan|lab|leb/i.test(i.jabatan || '')
-  );
-  kepalaUnitItems.forEach((i) => assignedIds.add(i.id));
-
-  const kepalaPerpus = kepalaUnitItems.find((i) =>
-    /perpus|perpustakaan/i.test(i.jabatan || '')
-  );
-  const kepalaLabIpa = kepalaUnitItems.find((i) =>
-    /ipa|biologi|fisika|kimia|sains/i.test(i.jabatan || '')
-  );
-  const kepalaLabKomputer = kepalaUnitItems.find((i) =>
-    /komputer|komp|tik|multimedia|it/i.test(i.jabatan || '')
-  );
-
-  const matchedKepalaUnitIds = new Set(
-    [kepalaPerpus?.id, kepalaLabIpa?.id, kepalaLabKomputer?.id].filter(Boolean)
-  );
-  const unassignedKepalaUnit = kepalaUnitItems.filter((i) => !matchedKepalaUnitIds.has(i.id));
-
-  const slotKepala1 = kepalaPerpus || unassignedKepalaUnit.shift() || null;
-  const slotKepala2 = kepalaLabIpa || unassignedKepalaUnit.shift() || null;
-  const slotKepala3 = kepalaLabKomputer || unassignedKepalaUnit.shift() || null;
-
-  const kepalaUnitSlots = [
-    { role: 'KEPALA PERPUSTAKAAN', item: slotKepala1 },
-    { role: 'KEPALA LAB IPA', item: slotKepala2 },
-    { role: 'KEPALA LAB KOMPUTER', item: slotKepala3 },
-    ...unassignedKepalaUnit.map((item, idx) => ({ role: item.jabatan || `KEPALA UNIT ${idx + 4}`, item }))
-  ];
-
-  // BARIS 3 KIRI: 6 SLOT WALI KELAS (7A, 7B, 8A, 8B, 9A, 9B)
-  const waliItems = items.filter(
-    (i) => !assignedIds.has(i.id) && /wali/i.test(i.jabatan || '')
-  );
-  waliItems.forEach((i) => assignedIds.add(i.id));
-
-  const wali7A = waliItems.find((i) => /7\s*[-._]?\s*a|vii\s*[-._]?\s*a/i.test(i.jabatan || ''));
-  const wali7B = waliItems.find((i) => /7\s*[-._]?\s*b|vii\s*[-._]?\s*b/i.test(i.jabatan || ''));
-  const wali8A = waliItems.find((i) => /8\s*[-._]?\s*a|viii\s*[-._]?\s*a/i.test(i.jabatan || ''));
-  const wali8B = waliItems.find((i) => /8\s*[-._]?\s*b|viii\s*[-._]?\s*b/i.test(i.jabatan || ''));
-  const wali9A = waliItems.find((i) => /9\s*[-._]?\s*a|ix\s*[-._]?\s*a/i.test(i.jabatan || ''));
-  const wali9B = waliItems.find((i) => /9\s*[-._]?\s*b|ix\s*[-._]?\s*b/i.test(i.jabatan || ''));
-
-  const matchedWaliIds = new Set(
-    [wali7A?.id, wali7B?.id, wali8A?.id, wali8B?.id, wali9A?.id, wali9B?.id].filter(Boolean)
-  );
-  const unassignedWali = waliItems.filter((i) => !matchedWaliIds.has(i.id));
-
-  const slotWali1 = wali7A || unassignedWali.shift() || null;
-  const slotWali2 = wali7B || unassignedWali.shift() || null;
-  const slotWali3 = wali8A || unassignedWali.shift() || null;
-  const slotWali4 = wali8B || unassignedWali.shift() || null;
-  const slotWali5 = wali9A || unassignedWali.shift() || null;
-  const slotWali6 = wali9B || unassignedWali.shift() || null;
-
-  const waliSlots = [
-    { role: 'WALI KELAS 7A', item: slotWali1 },
-    { role: 'WALI KELAS 7B', item: slotWali2 },
-    { role: 'WALI KELAS 8A', item: slotWali3 },
-    { role: 'WALI KELAS 8B', item: slotWali4 },
-    { role: 'WALI KELAS 9A', item: slotWali5 },
-    { role: 'WALI KELAS 9B', item: slotWali6 },
-    ...unassignedWali.map((item, idx) => ({ role: item.jabatan || `WALI KELAS ${idx + 7}`, item }))
-  ];
-
-  // BARIS 3 KANAN: 15 SLOT DEWAN GURU
-  const guruItems = items.filter((i) => !assignedIds.has(i.id));
-
-  const guruSlots = Array.from({ length: Math.max(15, guruItems.length) }).map((_, idx) => ({
-    role: 'GURU',
-    title: `Guru ${idx + 1}`,
-    item: guruItems[idx] || null
-  }));
+  const {
+    kamadItem,
+    komiteItem,
+    wakaSlots,
+    tendikSlots,
+    kepalaUnitSlots,
+    waliSlots,
+    guruSlots
+  } = susunBaganStruktur(items);
 
   return (
     <div className="space-y-6">
@@ -456,38 +296,41 @@ export default function AdminProfilStruktur() {
 
       {/* PANEL UTAMA BAGAN ORGANISASI */}
       <Panel>
-        <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
+        <div className="p-4 sm:p-8">
           {loading ? (
             <div className="py-12 text-center text-muted">
               <RefreshCw size={24} className="mx-auto animate-spin text-brand" />
               <p className="mt-2 text-[12.5px]">Memuat bagan struktur organisasi…</p>
             </div>
           ) : (
-            <>
-              {/* BARIS 1: KEPALA MADRASAH & KETUA KOMITE (BERDAMPINGAN 2 KOLOM, UKURAN 70% KOMPAK) */}
-              <div className="flex flex-col items-center w-full">
-                <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-[210px] sm:max-w-[260px] mx-auto items-center">
-                  {/* Kepala Madrasah */}
-                  <div className="flex flex-col items-center w-full">
-                    {kamadItem ? (
-                      <SlotCard
-                        item={kamadItem}
-                        onEdit={openModal}
-                        onDelete={handleDelete}
-                        isTop
-                      />
-                    ) : (
-                      <EmptySlot
-                        title="Kepala Madrasah"
-                        defaultJabatan="Kepala Madrasah"
-                        onAdd={openModal}
-                        isTop
-                      />
-                    )}
-                  </div>
+            <div className="flex flex-col items-center">
+              {/* BARIS 1: KEPALA MADRASAH (TENGAH) ↔ KETUA KOMITE (GARIS KOORDINASI PUTUS-PUTUS) */}
+              <div className="grid grid-cols-[1fr_auto_1fr] items-center w-full max-w-md mx-auto">
+                <div aria-hidden="true" />
 
-                  {/* Ketua Komite */}
-                  <div className="flex flex-col items-center w-full">
+                {/* Kepala Madrasah */}
+                <div className="w-[91px] sm:w-[105px] flex flex-col items-center">
+                  {kamadItem ? (
+                    <SlotCard
+                      item={kamadItem}
+                      onEdit={openModal}
+                      onDelete={handleDelete}
+                      isTop
+                    />
+                  ) : (
+                    <EmptySlot
+                      title="Kepala Madrasah"
+                      defaultJabatan="Kepala Madrasah"
+                      onAdd={openModal}
+                      isTop
+                    />
+                  )}
+                </div>
+
+                {/* Garis Koordinasi + Ketua Komite */}
+                <div className="flex items-center">
+                  <div className="w-4 sm:w-8 border-t-2 border-dashed border-slate-500/80 shrink-0" aria-hidden="true" />
+                  <div className="w-[77px] sm:w-[91px] shrink-0">
                     {komiteItem ? (
                       <SlotCard
                         item={komiteItem}
@@ -503,147 +346,200 @@ export default function AdminProfilStruktur() {
                     )}
                   </div>
                 </div>
-
-                {/* Garis Vertikal Penghubung ke Baris 2 */}
-                <div className="my-1.5 sm:my-3 h-3 sm:h-4 w-0.5 bg-line" />
               </div>
 
-              {/* BARIS 2: WAKIL KEPALA MADRASAH (4 CARD) & TENAGA KEPENDIDIKAN (4 CARD) */}
-              {/* Di mobile version: kedua container sejajar dengan gulir ke kanan (no scrollbar) */}
-              <div className="flex sm:justify-center items-start gap-2.5 sm:gap-4 overflow-x-auto no-scrollbar w-full pb-1">
-                {/* Sisi Kiri: Wakil Kepala Madrasah (4 Card Slots) */}
-                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
-                  <div className="border-b border-line pb-1.5 sm:pb-2">
-                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Wakil Kepala Madrasah</h3>
-                    <p className="text-[6px] sm:text-[7.5px] text-muted">Kurikulum, kesiswaan, sarpras, humas (4 waka)</p>
-                  </div>
+              {/* Garis Komando Vertikal dari Kepala Madrasah ke Baris 2 */}
+              <div className="mx-auto h-5 sm:h-7 w-[2px] bg-slate-500/80" aria-hidden="true" />
 
-                  {/* Di mobile: 2 baris (2x2); di desktop: 1 baris (4 kolom) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 w-fit mx-auto">
-                    {wakaSlots.map((slot, idx) => (
-                      <div key={slot.item?.id || `waka-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
-                        {slot.item ? (
-                          <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
-                        ) : (
-                          <EmptySlot
-                            title={slot.role}
-                            defaultJabatan={slot.role}
-                            onAdd={openModal}
-                          />
-                        )}
+              {/* BARIS 2: WAKIL KEPALA MADRASAH, TENAGA KEPENDIDIKAN, & KEPALA LAB/PERPUS */}
+              <div className="w-full overflow-x-auto no-scrollbar">
+                <div className="mx-auto flex w-fit items-stretch">
+                  {/* Cabang Kiri: Wakil Kepala Madrasah (4 Card Slots) */}
+                  <div className="relative flex flex-col items-center px-1.5 py-5 sm:px-2 sm:py-6">
+                    <div className="absolute top-0 left-1/2 right-0 h-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <span className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+
+                    <div className="w-fit flex-1 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                      <div className="border-b border-line pb-1.5 sm:pb-2">
+                        <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Wakil Kepala Madrasah</h3>
+                        <p className="text-[6px] sm:text-[7.5px] text-muted">Kurikulum, kesiswaan, sarpras, humas (4 waka)</p>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Sisi Kanan: Tenaga Kependidikan (4 Card Slots) */}
-                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
-                  <div className="border-b border-line pb-1.5 sm:pb-2">
-                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Tenaga Kependidikan</h3>
-                    <p className="text-[6px] sm:text-[7.5px] text-muted">Tata usaha, bendahara, operator, staf (4 staf)</p>
-                  </div>
-
-                  {/* Di mobile: 2 baris (2x2); di desktop: 1 baris (4 kolom) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 w-fit mx-auto">
-                    {tendikSlots.map((slot, idx) => (
-                      <div key={slot.item?.id || `tendik-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
-                        {slot.item ? (
-                          <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
-                        ) : (
-                          <EmptySlot
-                            title={slot.role}
-                            defaultJabatan={slot.role}
-                            onAdd={openModal}
-                          />
-                        )}
+                      {/* Di mobile: 2 baris (2x2); di desktop: 1 baris (4 kolom) */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 w-fit mx-auto">
+                        {wakaSlots.map((slot, idx) => (
+                          <div key={slot.item?.id || `waka-slot-${idx}`} className="w-[72px] sm:w-[76px] md:w-[80px]">
+                            {slot.item ? (
+                              <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
+                            ) : (
+                              <EmptySlot
+                                title={slot.role}
+                                defaultJabatan={slot.role}
+                                onAdd={openModal}
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                {/* Sisi Kanan: Kepala Laboratorium & Perpustakaan (3 Card Slots) */}
-                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
-                  <div className="border-b border-line pb-1.5 sm:pb-2">
-                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Kepala Laboratorium & Perpustakaan</h3>
-                    <p className="text-[6px] sm:text-[7.5px] text-muted">Perpus, lab IPA, lab komputer (3 kepala)</p>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute bottom-0 left-1/2 right-0 h-[2px] bg-slate-500/80" aria-hidden="true" />
                   </div>
 
-                  {/* Di mobile: 2 kolom; di desktop: 3 kolom */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 w-fit mx-auto">
-                    {kepalaUnitSlots.map((slot, idx) => (
-                      <div key={slot.item?.id || `kepala-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
-                        {slot.item ? (
-                          <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
-                        ) : (
-                          <EmptySlot
-                            title={slot.role}
-                            defaultJabatan={slot.role}
-                            onAdd={openModal}
-                          />
-                        )}
+                  {/* Cabang Tengah: Tenaga Kependidikan (4 Card Slots) */}
+                  <div className="relative flex flex-col items-center px-1.5 py-5 sm:px-2 sm:py-6">
+                    <div className="absolute top-0 inset-x-0 h-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <span className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+
+                    <div className="w-fit flex-1 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                      <div className="border-b border-line pb-1.5 sm:pb-2">
+                        <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Tenaga Kependidikan</h3>
+                        <p className="text-[6px] sm:text-[7.5px] text-muted">Tata usaha, bendahara, operator, staf (4 staf)</p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
-              {/* Garis Vertikal Penghubung ke Baris 3 */}
-              <div className="my-1.5 sm:my-3 mx-auto h-3 sm:h-4 w-0.5 bg-line" />
-
-              {/* BARIS 3: WALI KELAS (6 CARD) & DEWAN GURU (15 CARD) JADI SATU BARIS */}
-              {/* Di mobile version: kedua container sejajar dengan gulir ke kanan (no scrollbar) */}
-              <div className="flex sm:justify-center items-start gap-2.5 sm:gap-4 overflow-x-auto no-scrollbar w-full pb-1">
-                {/* Sisi Kiri: Wali Kelas (6 Card Slots) */}
-                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
-                  <div className="border-b border-line pb-1.5 sm:pb-2">
-                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Wali Kelas</h3>
-                    <p className="text-[6px] sm:text-[7.5px] text-muted">6 rombongan belajar (Kelas 7, 8, dan 9)</p>
-                  </div>
-
-                  {/* Di mobile: 3 baris (3x2); di desktop: 2 baris (2x3) */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 w-fit mx-auto">
-                    {waliSlots.map((slot, idx) => (
-                      <div key={slot.item?.id || `wali-slot-${idx}`} className="w-[72px] sm:w-[80px] md:w-[86px]">
-                        {slot.item ? (
-                          <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
-                        ) : (
-                          <EmptySlot
-                            title={slot.role}
-                            defaultJabatan={slot.role}
-                            onAdd={openModal}
-                          />
-                        )}
+                      {/* Di mobile: 2 baris (2x2); di desktop: 1 baris (4 kolom) */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 w-fit mx-auto">
+                        {tendikSlots.map((slot, idx) => (
+                          <div key={slot.item?.id || `tendik-slot-${idx}`} className="w-[72px] sm:w-[76px] md:w-[80px]">
+                            {slot.item ? (
+                              <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
+                            ) : (
+                              <EmptySlot
+                                title={slot.role}
+                                defaultJabatan={slot.role}
+                                onAdd={openModal}
+                              />
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                {/* Sisi Kanan: Dewan Guru (15 Card Slots) */}
-                <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
-                  <div className="border-b border-line pb-1.5 sm:pb-2">
-                    <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Dewan Guru</h3>
-                    <p className="text-[6px] sm:text-[7.5px] text-muted">Tenaga pendidik mata pelajaran (15 guru)</p>
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute bottom-0 inset-x-0 h-[2px] bg-slate-500/80" aria-hidden="true" />
                   </div>
 
-                  {/* Di mobile & desktop: 3 baris (3x5 = 15 card) */}
-                  <div className="grid grid-cols-5 gap-1 sm:gap-2 w-fit mx-auto">
-                    {guruSlots.map((slot, idx) => (
-                      <div key={slot.item?.id || `guru-slot-${idx}`} className="w-[52px] sm:w-[68px] md:w-[76px]">
-                        {slot.item ? (
-                          <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
-                        ) : (
-                          <EmptySlot
-                            title={slot.title}
-                            defaultJabatan={slot.role}
-                            onAdd={openModal}
-                          />
-                        )}
+                  {/* Cabang Kanan: Kepala Laboratorium & Perpustakaan (3 Card Slots) */}
+                  <div className="relative flex flex-col items-center px-1.5 py-5 sm:px-2 sm:py-6">
+                    <div className="absolute top-0 left-0 right-1/2 h-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <span className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+
+                    <div className="w-fit flex-1 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                      <div className="border-b border-line pb-1.5 sm:pb-2">
+                        <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Kepala Laboratorium & Perpustakaan</h3>
+                        <p className="text-[6px] sm:text-[7.5px] text-muted">Perpus, lab IPA, lab komputer (3 kepala)</p>
                       </div>
-                    ))}
+
+                      {/* Di mobile: 2 kolom; di desktop: 3 kolom */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 w-fit mx-auto">
+                        {kepalaUnitSlots.map((slot, idx) => (
+                          <div key={slot.item?.id || `kepala-slot-${idx}`} className="w-[72px] sm:w-[76px] md:w-[80px]">
+                            {slot.item ? (
+                              <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
+                            ) : (
+                              <EmptySlot
+                                title={slot.role}
+                                defaultJabatan={slot.role}
+                                onAdd={openModal}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute bottom-0 left-0 right-1/2 h-[2px] bg-slate-500/80" aria-hidden="true" />
                   </div>
                 </div>
               </div>
-            </>
+
+              {/* Garis Komando Vertikal dari Baris 2 ke Baris 3 */}
+              <div className="mx-auto h-5 sm:h-7 w-[2px] bg-slate-500/80" aria-hidden="true" />
+
+              {/* BARIS 3: WALI KELAS (6 CARD) & DEWAN GURU (15 CARD) */}
+              <div className="w-full overflow-x-auto no-scrollbar pb-1">
+                <div className="mx-auto flex w-fit items-start">
+                  {/* Cabang Kiri: Wali Kelas (6 Card Slots) */}
+                  <div className="relative flex flex-col items-center px-1.5 pt-5 sm:px-2 sm:pt-6">
+                    <div className="absolute top-0 left-1/2 right-0 h-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <span className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+
+                    <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                      <div className="border-b border-line pb-1.5 sm:pb-2">
+                        <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Wali Kelas</h3>
+                        <p className="text-[6px] sm:text-[7.5px] text-muted">6 rombongan belajar (Kelas 7, 8, dan 9)</p>
+                      </div>
+
+                      {/* Di mobile: 3 baris (3x2); di desktop: 2 baris (2x3) */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 w-fit mx-auto">
+                        {waliSlots.map((slot, idx) => (
+                          <div key={slot.item?.id || `wali-slot-${idx}`} className="w-[72px] sm:w-[76px] md:w-[80px]">
+                            {slot.item ? (
+                              <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
+                            ) : (
+                              <EmptySlot
+                                title={slot.role}
+                                defaultJabatan={slot.role}
+                                onAdd={openModal}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Cabang Kanan: Dewan Guru (15 Card Slots) */}
+                  <div className="relative flex flex-col items-center px-1.5 pt-5 sm:px-2 sm:pt-6">
+                    <div className="absolute top-0 left-0 right-1/2 h-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 sm:h-6 w-[2px] bg-slate-500/80" aria-hidden="true" />
+                    <span className="absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-2 w-2 rounded-full bg-brand" aria-hidden="true" />
+
+                    <div className="w-fit shrink-0 rounded-lg sm:rounded-xl border border-line bg-paper p-2 sm:p-3 shadow-xs space-y-2">
+                      <div className="border-b border-line pb-1.5 sm:pb-2">
+                        <h3 className="text-[8px] sm:text-[9.5px] font-bold text-ink">Dewan Guru</h3>
+                        <p className="text-[6px] sm:text-[7.5px] text-muted">Tenaga pendidik mata pelajaran (15 guru)</p>
+                      </div>
+
+                      {/* Di mobile & desktop: 3 baris (3x5 = 15 card) */}
+                      <div className="grid grid-cols-5 gap-1 sm:gap-2 w-fit mx-auto">
+                        {guruSlots.map((slot, idx) => (
+                          <div key={slot.item?.id || `guru-slot-${idx}`} className="w-[52px] sm:w-[68px] md:w-[76px]">
+                            {slot.item ? (
+                              <SlotCard item={slot.item} onEdit={openModal} onDelete={handleDelete} compact />
+                            ) : (
+                              <EmptySlot
+                                title={slot.title}
+                                defaultJabatan={slot.role}
+                                onAdd={openModal}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Keterangan Garis Hirarki */}
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-4 text-[10.5px] sm:text-[11px] text-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-5 border-t-2 border-slate-500/80" aria-hidden="true" />
+                  Garis Komando
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-5 border-t-2 border-dashed border-slate-500/80" aria-hidden="true" />
+                  Garis Koordinasi
+                </span>
+              </div>
+            </div>
           )}
         </div>
       </Panel>

@@ -32,9 +32,9 @@ import {
   Field,
   Input,
   Textarea,
-  buttonClass,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 const KATEGORI = ['Umum', 'Formulir', 'Jadwal', 'Panduan', 'Brosur', 'Administrasi', 'Akademik'];
 
@@ -88,7 +88,24 @@ export default function AdminUnduhan() {
   };
 
   useEffect(() => {
-    fetchUnduhan();
+    let ignore = false;
+    unduhanService
+      .getAll()
+      .then((data) => {
+        if (!ignore) {
+          setItems(Array.isArray(data) ? data : []);
+          setAlert({ type: '', message: '' });
+        }
+      })
+      .catch((error) => {
+        if (!ignore) setAlert({ type: 'error', message: getErrorMessage(error, 'Gagal memuat dokumen.') });
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Membuka modal tambah atau edit dokumen

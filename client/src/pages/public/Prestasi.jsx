@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Award, CalendarDays, Clock, Medal, Search, Trophy, UserRound } from 'lucide-react';
+import { CalendarDays, Clock, Medal, Search, Trophy, UserRound } from 'lucide-react';
 import { prestasiService } from '../../services/prestasiService';
 import { formatDate, formatTime, getFileUrl } from '../../utils/helpers';
 import PageHeader from '../../components/public/PageHeader';

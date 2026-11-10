@@ -19,10 +19,10 @@ import {
   Button,
   Alert,
   Loader,
-  buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
 } from '../../components/admin/ui';
+import { buttonClass } from '../../components/admin/uiStyles';
 
 export default function AdminProfilIdentitas() {
   const [profileData, setProfileData] = useState({

@@ -1,6 +1,6 @@
 import ProtectedRoute from './ProtectedRoute';
 
-const SPMB_ROLES = ['CALON_PENDAFTAR', 'PENDAFTAR'];
+const SPMB_ROLES = ['CALON_PENDAFTAR'];
 
 export default function SpmbGuard() {
   return (

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CalendarDays, CalendarPlus, Clock, MapPin, Sparkles } from 'lucide-react';
+import { CalendarPlus, Clock, MapPin, Sparkles } from 'lucide-react';
 import { agendaService } from '../../services/agendaService';
 import { formatArticleHtml, formatDate, stripHtml } from '../../utils/helpers';
 import PageHeader from '../../components/public/PageHeader';

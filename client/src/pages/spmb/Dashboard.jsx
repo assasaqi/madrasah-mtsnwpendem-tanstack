@@ -13,7 +13,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { spmbService } from '../../services/spmbService';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import SuratKeteranganLulus from '../../components/spmb/documents/SuratKeteranganLulus';
 import { formatDate, getErrorMessage, getField, getFileUrl } from '../../utils/helpers';
 import {

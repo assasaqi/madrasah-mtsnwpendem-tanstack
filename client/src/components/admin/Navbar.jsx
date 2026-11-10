@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { Menu, User, ChevronDown, LogOut, Settings } from 'lucide-react';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../context/authContextObject';
 import { getFileUrl } from '../../utils/helpers';
-import { cx } from './ui';
+import { cx } from './uiStyles';
 
 export default function Navbar({ setSidebarOpen, getPageTitle }) {
   const navigate = useNavigate();

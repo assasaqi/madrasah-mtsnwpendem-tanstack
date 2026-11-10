@@ -1,15 +1,6 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRoute } from '@tanstack/react-router';
 import Redirect from '../components/ui/Redirect';
-import GlobalSavingOverlay from '../components/common/GlobalSavingOverlay';
-
-function RootComponent() {
-  return (
-    <>
-      <Outlet />
-      <GlobalSavingOverlay />
-    </>
-  );
-}
+import RootComponent from '../components/common/RootComponent';
 
 export const rootRoute = createRootRoute({
   component: RootComponent,

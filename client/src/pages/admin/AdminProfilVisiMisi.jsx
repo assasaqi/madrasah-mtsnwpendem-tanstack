@@ -6,6 +6,7 @@ import {
   Info
 } from 'lucide-react';
 import { getAdminSchoolProfile, updateAdminSchoolProfile } from '../../services/profileService';
+import { queryClient } from '../../lib/queryClient';
 import { getErrorMessage, stripHtml } from '../../utils/helpers';
 import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
@@ -114,6 +115,7 @@ export default function AdminProfilVisiMisi() {
       formData.append('misi', JSON.stringify(misiArray));
 
       await updateAdminSchoolProfile(formData);
+      queryClient.invalidateQueries({ queryKey: ['schoolProfile'] });
 
       setStatusMsg({ type: 'success', text: 'Visi dan misi madrasah berhasil disimpan.' });
     } catch (err) {

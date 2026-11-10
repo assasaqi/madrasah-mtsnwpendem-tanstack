@@ -12,7 +12,8 @@ import {
   CalendarDays
 } from 'lucide-react';
 import { beritaService } from '../../services/beritaService';
-import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
@@ -31,7 +32,6 @@ import {
   Field,
   Input,
   Select,
-  Textarea,
   buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
@@ -188,6 +188,14 @@ export default function AdminBerita() {
       return;
     }
 
+    if (stripHtml(formData.konten).length < 10) {
+      setNotice({
+        type: 'error',
+        message: 'Isi artikel minimal 10 karakter.'
+      });
+      return;
+    }
+
     try {
       setSubmitting(true);
       const payload = {
@@ -241,7 +249,7 @@ export default function AdminBerita() {
 
     const judul = String(item?.judul || item?.title || '').toLowerCase();
     const katNama = String(item?.kategori?.nama || item?.kategori?.name || item?.category || '').toLowerCase();
-    const konten = String(item?.konten || item?.content || '').toLowerCase();
+    const konten = stripHtml(item?.konten || item?.content || '').toLowerCase();
 
     return judul.includes(q) || katNama.includes(q) || konten.includes(q);
   });
@@ -335,7 +343,7 @@ export default function AdminBerita() {
                               {item.judul || item.title || '-'}
                             </p>
                             <p className="mt-0.5 line-clamp-1 text-[10.5px] text-muted">
-                              {item.konten || item.content || 'Belum ada isi artikel.'}
+                              {stripHtml(item.konten || item.content || '') || 'Belum ada isi artikel.'}
                             </p>
                             <p className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-muted md:hidden">
                               {item.author?.email && (
@@ -491,13 +499,11 @@ export default function AdminBerita() {
           )}
 
           <Field label="Isi artikel" required>
-            <Textarea
-              name="konten"
-              rows={8}
-              required
+            <RichTextEditor
               value={formData.konten}
-              onChange={handleInputChange}
+              onChange={(html) => setFormData((prev) => ({ ...prev, konten: html }))}
               placeholder="Tuliskan berita lengkap di sini…"
+              minHeight={240}
             />
           </Field>
 

@@ -186,11 +186,6 @@ export default function AdminProfilIdentitas() {
       <PageHeader
         title="Identitas Madrasah"
         description="Informasi resmi nama madrasah, akreditasi, logo kelembagaan, dan banner utama website."
-        actions={
-          <Button variant="primary" icon={Save} onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Menyimpan…' : 'Simpan perubahan'}
-          </Button>
-        }
       />
 
       {statusMsg.text && (

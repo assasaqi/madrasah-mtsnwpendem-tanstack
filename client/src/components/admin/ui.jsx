@@ -1,5 +1,16 @@
-import { useEffect } from 'react';
-import { X, Search, Loader2, Inbox, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import {
+  X,
+  Search,
+  Loader2,
+  Inbox,
+  AlertTriangle,
+  CheckCircle2,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify
+} from 'lucide-react';
 
 export const cx = (...parts) => parts.filter(Boolean).join(' ');
 
@@ -336,8 +347,62 @@ export function Input({ className, ...props }) {
   return <input className={cx(controlClass, className)} {...props} />;
 }
 
-export function Textarea({ className, ...props }) {
-  return <textarea className={cx(controlClass, 'leading-relaxed', className)} {...props} />;
+const TEXTAREA_ALIGN_OPTIONS = [
+  { value: 'left', label: 'Rata kiri', className: 'text-left', icon: AlignLeft },
+  { value: 'center', label: 'Rata tengah', className: 'text-center', icon: AlignCenter },
+  { value: 'right', label: 'Rata kanan', className: 'text-right', icon: AlignRight },
+  { value: 'justify', label: 'Rata kanan-kiri (Justify)', className: 'text-justify', icon: AlignJustify }
+];
+
+export function Textarea({ className, defaultAlign = 'left', showAlign = true, ...props }) {
+  const [align, setAlign] = useState(defaultAlign);
+  const activeOption =
+    TEXTAREA_ALIGN_OPTIONS.find((item) => item.value === align) || TEXTAREA_ALIGN_OPTIONS[0];
+
+  if (!showAlign) {
+    return <textarea className={cx(controlClass, 'leading-relaxed', className)} {...props} />;
+  }
+
+  return (
+    <div className="overflow-hidden rounded-md border border-line bg-paper transition-colors focus-within:border-brand/60 focus-within:ring-2 focus-within:ring-brand/10">
+      <div className="flex items-center justify-between border-b border-line bg-[#faf8f3] px-2 py-1">
+        <span className="text-[10px] font-medium text-muted">Perataan teks</span>
+        <div className="flex items-center gap-0.5">
+          {TEXTAREA_ALIGN_OPTIONS.map(({ value, label, icon: Icon }) => {
+            const active = align === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setAlign(value)}
+                disabled={props.disabled}
+                title={label}
+                aria-label={label}
+                aria-pressed={active}
+                className={cx(
+                  'inline-flex h-6 w-6 items-center justify-center rounded transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-40',
+                  active
+                    ? 'bg-brand text-white shadow-2xs'
+                    : 'text-ink/70 hover:bg-[#ede9de] hover:text-ink'
+                )}
+              >
+                <Icon size={13} />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <textarea
+        className={cx(
+          'w-full bg-paper px-3 py-2 text-[12.5px] leading-relaxed text-ink outline-none placeholder:text-muted/65 disabled:cursor-not-allowed disabled:bg-[#f6f4ee] disabled:text-muted',
+          activeOption.className,
+          className
+        )}
+        {...props}
+      />
+    </div>
+  );
 }
 
 export function Select({ className, children, ...props }) {

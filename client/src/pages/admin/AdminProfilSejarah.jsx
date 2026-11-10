@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { History, Save, Info } from 'lucide-react';
 import { getSejarah, updateSejarah } from '../../services/profileService';
-import { getErrorMessage } from '../../utils/helpers';
+import { getErrorMessage, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
   SectionTitle,
   Field,
-  Textarea,
   Button,
   Alert,
   Loader
@@ -39,6 +39,11 @@ export default function AdminProfilSejarah() {
   // Menyimpan narasi sejarah singkat ke server
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (sejarah.length > 10000) {
+      setStatus({ type: 'error', message: 'Narasi sejarah terlalu panjang (maksimal 10.000 karakter).' });
+      return;
+    }
 
     try {
       setSaving(true);
@@ -86,14 +91,13 @@ export default function AdminProfilSejarah() {
 
               <Field
                 label="Isi narasi"
-                hint={`${sejarah.length} dari 10.000 karakter`}
+                hint={`${stripHtml(sejarah).length.toLocaleString('id-ID')} huruf · ${sejarah.length.toLocaleString('id-ID')} / 10.000 karakter`}
               >
-                <Textarea
-                  rows={16}
+                <RichTextEditor
                   value={sejarah}
-                  onChange={(e) => setSejarah(e.target.value)}
-                  maxLength={10000}
+                  onChange={setSejarah}
                   placeholder="Contoh: Madrasah ini didirikan pada tahun 1985 atas prakarsa para tokoh agama setempat…"
+                  minHeight={300}
                 />
               </Field>
             </div>

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CalendarDays, CalendarPlus, Clock, MapPin, Sparkles } from 'lucide-react';
 import { agendaService } from '../../services/agendaService';
-import { formatDate, stripHtml } from '../../utils/helpers';
+import { formatArticleHtml, formatDate, stripHtml } from '../../utils/helpers';
 import PageHeader from '../../components/public/PageHeader';
 import { Alert } from '../../components/ui';
 
@@ -119,6 +119,13 @@ function AgendaCard({ item, lewat }) {
             </p>
           )}
         </div>
+
+        {item.deskripsi && (
+          <div
+            className="public-article mt-3 border-t border-line/60 pt-3 text-[12px] leading-relaxed text-ink/80"
+            dangerouslySetInnerHTML={{ __html: formatArticleHtml(item.deskripsi) }}
+          />
+        )}
       </div>
 
       <div className="mt-5 border-t border-line/70 pt-3.5">

@@ -108,11 +108,6 @@ export default function AdminProfilKontak() {
       <PageHeader
         title="Kontak Madrasah"
         description="Kelola alamat kantor, nomor telepon, WhatsApp helpdesk, dan integrasi peta lokasi madrasah."
-        actions={
-          <Button variant="primary" icon={Save} onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Menyimpan…' : 'Simpan perubahan'}
-          </Button>
-        }
       />
 
       {statusMsg.text && (

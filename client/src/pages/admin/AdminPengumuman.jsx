@@ -12,7 +12,8 @@ import {
   CalendarDays
 } from 'lucide-react';
 import { pengumumanService } from '../../services/pengumumanService';
-import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl } from '../../utils/helpers';
+import { formatDate, formatTime, toLocalInput, getErrorMessage, getFileUrl, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
@@ -30,7 +31,6 @@ import {
   Modal,
   Field,
   Input,
-  Textarea,
   buttonClass,
   ImageCropperModal,
   UploadLoadingOverlay
@@ -129,6 +129,11 @@ export default function AdminPengumuman() {
   // Menyimpan pengumuman baru atau hasil edit
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (stripHtml(formData.konten).length < 10) {
+      setNotice({ type: 'error', message: 'Isi pengumuman minimal 10 karakter.' });
+      return;
+    }
+
     try {
       setSubmitting(true);
       setNotice({ type: '', message: '' });
@@ -174,7 +179,7 @@ export default function AdminPengumuman() {
   const filteredList = pengumumanList.filter((item) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
-    return [item.judul, item.konten].some((value) => String(value || '').toLowerCase().includes(q));
+    return [item.judul, stripHtml(item.konten)].some((value) => String(value || '').toLowerCase().includes(q));
   });
 
   const jumlahAktif = pengumumanList.filter((item) => item.isPublished).length;
@@ -234,7 +239,7 @@ export default function AdminPengumuman() {
                       <Td>
                         <p className="max-w-[420px] font-semibold text-ink">{item.judul}</p>
                         <p className="mt-0.5 line-clamp-2 max-w-[420px] text-[10.5px] leading-relaxed text-muted">
-                          {item.konten}
+                          {stripHtml(item.konten)}
                         </p>
                         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-muted md:hidden">
                           <span className="whitespace-nowrap">
@@ -356,12 +361,11 @@ export default function AdminPengumuman() {
           </Field>
 
           <Field label="Isi pengumuman" required>
-            <Textarea
-              rows={5}
-              required
+            <RichTextEditor
               value={formData.konten}
-              onChange={(event) => setFormData({ ...formData, konten: event.target.value })}
+              onChange={(html) => setFormData((prev) => ({ ...prev, konten: html }))}
               placeholder="Tuliskan rincian pengumuman…"
+              minHeight={200}
             />
           </Field>
 

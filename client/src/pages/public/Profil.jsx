@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation } from '@tanstack/react-router';
 import { UserRound } from 'lucide-react';
-import { getFileUrl } from '../../utils/helpers';
+import { formatArticleHtml, getFileUrl } from '../../utils/helpers';
 import { getFasilitasIcon } from '../../utils/fasilitasIcons';
 import useSchoolProfile from '../../hooks/useSchoolProfile';
 import PageHeader from '../../components/public/PageHeader';
@@ -274,12 +274,11 @@ export default function Profil() {
     item: guruItems[idx] || null
   }));
 
-  const paragrafSejarah = String(profil?.sejarah || '')
-    .split(/\n{2,}/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const sejarahHtml = formatArticleHtml(profil?.sejarah || '');
 
   const visi = profil?.visi ? String(profil.visi).trim() : '';
+  const isMisiRichHtml =
+    misi.length === 1 && /<\/?(p|ol|ul|li|h[1-6]|strong|em|u|s|blockquote|br)\b/i.test(String(misi[0] || ''));
   const currentMeta = SECTION_META[currentTab] || SECTION_META.visi;
 
   return (
@@ -338,18 +337,25 @@ export default function Profil() {
               </h2>
 
               {misi.length > 0 ? (
-                <ol className="mt-4 space-y-3.5 text-[15px] leading-[1.8] text-ink/90 sm:text-[16px]">
-                  {misi.map((item, index) => (
-                    <li key={`${index}-${item}`} className="flex items-start gap-3">
-                      <span className="font-bold text-brand shrink-0 select-none">
-                        {index + 1}.
-                      </span>
-                      <p className="flex-1">
-                        {item}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
+                isMisiRichHtml ? (
+                  <div
+                    className="public-article mt-4 text-[15px] leading-[1.8] text-ink/90 sm:text-[16px]"
+                    dangerouslySetInnerHTML={{ __html: formatArticleHtml(misi[0]) }}
+                  />
+                ) : (
+                  <ol className="mt-4 space-y-3.5 text-[15px] leading-[1.8] text-ink/90 sm:text-[16px]">
+                    {misi.map((item, index) => (
+                      <li key={`${index}-${item}`} className="flex items-start gap-3">
+                        <span className="font-bold text-brand shrink-0 select-none">
+                          {index + 1}.
+                        </span>
+                        <p className="flex-1">
+                          {item}
+                        </p>
+                      </li>
+                    ))}
+                  </ol>
+                )
               ) : (
                 <p className="mt-4 text-[13px] text-muted">
                   Misi madrasah belum tersedia.
@@ -365,14 +371,11 @@ export default function Profil() {
                 Sejarah Singkat
               </h2>
 
-              {paragrafSejarah.length > 0 ? (
-                <div className="mt-4 space-y-4 text-[15px] leading-[1.8] text-ink/90 sm:text-[16px]">
-                  {paragrafSejarah.map((paragraf, index) => (
-                    <p key={index}>
-                      {paragraf}
-                    </p>
-                  ))}
-                </div>
+              {sejarahHtml ? (
+                <div
+                  className="public-article mt-4 text-[15px] leading-[1.8] text-ink/90 sm:text-[16px]"
+                  dangerouslySetInnerHTML={{ __html: sejarahHtml }}
+                />
               ) : (
                 <p className="mt-4 text-[13px] text-muted">
                   Narasi sejarah madrasah belum tersedia.

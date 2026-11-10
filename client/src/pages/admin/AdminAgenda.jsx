@@ -10,7 +10,8 @@ import {
   Trash2
 } from 'lucide-react';
 import { agendaService } from '../../services/agendaService';
-import { formatDate, getErrorMessage } from '../../utils/helpers';
+import { formatDate, getErrorMessage, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
@@ -26,8 +27,7 @@ import {
   Alert,
   Modal,
   Field,
-  Input,
-  Textarea
+  Input
 } from '../../components/admin/ui';
 
 const emptyForm = {
@@ -120,7 +120,7 @@ export default function AdminAgenda() {
       setAlert({ type: 'error', message: 'Judul minimal 3 karakter.' });
       return;
     }
-    if (form.deskripsi.trim().length < 10) {
+    if (stripHtml(form.deskripsi).length < 10) {
       setAlert({ type: 'error', message: 'Deskripsi minimal 10 karakter.' });
       return;
     }
@@ -171,7 +171,7 @@ export default function AdminAgenda() {
   const filteredItems = items.filter((item) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
-    return [item.judul, item.deskripsi, item.lokasi].some((value) =>
+    return [item.judul, stripHtml(item.deskripsi), item.lokasi].some((value) =>
       String(value || '').toLowerCase().includes(q)
     );
   });
@@ -238,7 +238,7 @@ export default function AdminAgenda() {
                       <Td>
                         <p className="max-w-[360px] font-semibold text-ink">{item.judul}</p>
                         <p className="mt-0.5 line-clamp-2 max-w-[360px] text-[10.5px] leading-relaxed text-muted">
-                          {item.deskripsi}
+                          {stripHtml(item.deskripsi)}
                         </p>
                         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-muted md:hidden">
                           <span className="flex items-center gap-1">
@@ -360,13 +360,11 @@ export default function AdminAgenda() {
           </Field>
 
           <Field label="Deskripsi" required>
-            <Textarea
-              rows={4}
-              required
-              minLength={10}
+            <RichTextEditor
               value={form.deskripsi}
-              onChange={(event) => setForm({ ...form, deskripsi: event.target.value })}
+              onChange={(html) => setForm((prev) => ({ ...prev, deskripsi: html }))}
               placeholder="Jelaskan tujuan, peserta, dan hal yang perlu dibawa…"
+              minHeight={150}
             />
           </Field>
 

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { faqService } from '../../services/faqService';
 import { getErrorMessage, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
@@ -25,8 +26,7 @@ import {
   Alert,
   Modal,
   Field,
-  Input,
-  Textarea
+  Input
 } from '../../components/admin/ui';
 
 const KATEGORI = ['Umum', 'SPMB', 'Akademik', 'Administrasi', 'Kegiatan', 'Layanan'];
@@ -99,7 +99,7 @@ export default function AdminFaq() {
       setAlert({ type: 'error', message: 'Pertanyaan minimal 5 karakter.' });
       return;
     }
-    if (form.jawaban.trim().length < 10) {
+    if (stripHtml(form.jawaban).length < 10) {
       setAlert({ type: 'error', message: 'Jawaban minimal 10 karakter.' });
       return;
     }
@@ -138,7 +138,7 @@ export default function AdminFaq() {
   const filteredItems = items.filter((item) => {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return true;
-    return [item.pertanyaan, item.jawaban, item.kategori].some((value) =>
+    return [item.pertanyaan, stripHtml(item.jawaban), item.kategori].some((value) =>
       String(value || '').toLowerCase().includes(q)
     );
   });
@@ -300,13 +300,11 @@ export default function AdminFaq() {
           </div>
 
           <Field label="Jawaban" required>
-            <Textarea
-              rows={5}
-              required
-              minLength={10}
+            <RichTextEditor
               value={form.jawaban}
-              onChange={(event) => setForm({ ...form, jawaban: event.target.value })}
+              onChange={(html) => setForm((prev) => ({ ...prev, jawaban: html }))}
               placeholder="Tuliskan jawaban yang jelas dan ringkas…"
+              minHeight={160}
             />
           </Field>
 

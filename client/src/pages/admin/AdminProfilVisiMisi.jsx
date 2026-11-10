@@ -6,7 +6,8 @@ import {
   Info
 } from 'lucide-react';
 import { getAdminSchoolProfile, updateAdminSchoolProfile } from '../../services/profileService';
-import { getErrorMessage } from '../../utils/helpers';
+import { getErrorMessage, stripHtml } from '../../utils/helpers';
+import RichTextEditor from '../../components/admin/RichTextEditor';
 import {
   PageHeader,
   Panel,
@@ -17,6 +18,37 @@ import {
   Alert,
   Loader
 } from '../../components/admin/ui';
+
+const HTML_TAG_PATTERN = /<\/?(p|ol|ul|li|h[1-6]|strong|em|u|s|blockquote|br)\b/i;
+
+const escapeHtml = (text) =>
+  String(text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+// Mengonversi data misi (HTML atau array poin lama) ke format HTML editor
+const misiToEditorHtml = (rawMisi) => {
+  let items = [];
+
+  if (Array.isArray(rawMisi)) {
+    items = rawMisi.map((item) => String(item || '').trim()).filter(Boolean);
+  } else if (typeof rawMisi === 'string' && rawMisi.trim()) {
+    try {
+      const parsed = JSON.parse(rawMisi);
+      items = Array.isArray(parsed)
+        ? parsed.map((item) => String(item || '').trim()).filter(Boolean)
+        : [rawMisi.trim()];
+    } catch {
+      items = rawMisi.split('\n').map((item) => item.trim()).filter(Boolean);
+    }
+  }
+
+  if (items.length === 0) return '';
+  if (items.length === 1 && HTML_TAG_PATTERN.test(items[0])) return items[0];
+
+  return `<ol>${items.map((item) => `<li><p>${escapeHtml(item)}</p></li>`).join('')}</ol>`;
+};
 
 export default function AdminProfilVisiMisi() {
   const [data, setData] = useState({
@@ -36,21 +68,9 @@ export default function AdminProfilVisiMisi() {
       try {
         const d = await getAdminSchoolProfile();
         if (!ignore && d) {
-          let misiText = '';
-          if (Array.isArray(d.misi)) {
-            misiText = d.misi.join('\n');
-          } else if (typeof d.misi === 'string') {
-            try {
-              const parsed = JSON.parse(d.misi);
-              misiText = Array.isArray(parsed) ? parsed.join('\n') : d.misi;
-            } catch {
-              misiText = d.misi;
-            }
-          }
-
           setData({
             visi: d.visi || '',
-            misi: misiText || ''
+            misi: misiToEditorHtml(d.misi)
           });
         }
       } catch (err) {
@@ -75,7 +95,7 @@ export default function AdminProfilVisiMisi() {
     };
   }, []);
 
-  // Menangani perubahan input textarea
+  // Menangani perubahan input visi
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -89,13 +109,8 @@ export default function AdminProfilVisiMisi() {
       const formData = new FormData();
       formData.append('visi', data.visi || '');
 
-      // Memecah teks misi per baris menjadi array butir misi, membersihkan penomoran awal bila ada
-      const misiArray = data.misi
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean)
-        .map((line) => line.replace(/^\d+[.)-]\s*/, ''));
-
+      const hasMisiContent = Boolean(stripHtml(data.misi));
+      const misiArray = hasMisiContent ? [data.misi] : [];
       formData.append('misi', JSON.stringify(misiArray));
 
       await updateAdminSchoolProfile(formData);
@@ -120,11 +135,6 @@ export default function AdminProfilVisiMisi() {
       <PageHeader
         title="Visi & Misi Madrasah"
         description="Kelola visi jangka panjang dan pokok-pokok misi madrasah yang tampil pada website resmi."
-        actions={
-          <Button variant="primary" icon={Save} onClick={handleSubmit} disabled={loading}>
-            {loading ? 'Menyimpan…' : 'Simpan Visi & Misi'}
-          </Button>
-        }
       />
 
       {statusMsg.text && (
@@ -158,32 +168,28 @@ export default function AdminProfilVisiMisi() {
           </div>
         </Panel>
 
-        {/* Panel Misi Madrasah (Format form textarea sederhana seperti form visi) */}
+        {/* Panel Misi Madrasah */}
         <Panel>
           <SectionTitle
             icon={Compass}
             title="Misi Madrasah"
-            description="Langkah-langkah strategis untuk mewujudkan visi. Tuliskan setiap butir misi pada baris baru."
+            description="Langkah-langkah strategis untuk mewujudkan visi madrasah."
           />
 
           <div className="space-y-4 px-4 py-4">
             <div className="flex items-start gap-2.5 rounded-lg border border-line border-l-2 border-l-[#1d5b3a] bg-[#eaf3ec]/40 px-3.5 py-2.5 text-[11.5px] leading-relaxed text-[#1d5b3a]">
               <Info size={14} className="mt-0.5 shrink-0" />
               <span>
-                Tuliskan setiap pokok misi pada <strong>baris baru (Enter)</strong>. Sistem akan otomatis menampilkan butir misi dalam urutan angka yang rapi di halaman profil madrasah.
+                Gunakan tombol toolbar pada editor di bawah untuk menyusun daftar bernomor, poin, cetak tebal, atau subjudul pada pokok-pokok misi madrasah.
               </span>
             </div>
 
-            <Field
-              label="Pokok-Pokok Misi"
-              hint="Satu butir misi per baris."
-            >
-              <Textarea
-                name="misi"
-                rows={6}
+            <Field label="Pokok-Pokok Misi">
+              <RichTextEditor
                 value={data.misi}
-                onChange={handleChange}
-                placeholder="Contoh:&#10;Menyelenggarakan pembelajaran berkualitas dan islami.&#10;Membina akhlak mulia dan kepribadian santri."
+                onChange={(html) => setData((prev) => ({ ...prev, misi: html }))}
+                placeholder="Tuliskan pokok-pokok misi madrasah di sini…"
+                minHeight={200}
               />
             </Field>
           </div>
